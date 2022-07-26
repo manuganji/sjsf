@@ -1,6 +1,4 @@
-import React from 'react';
-import { expect } from 'chai';
-import sinon from 'sinon';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
 
 import validateFormData, { isValid, toErrorList, withIdRefPrefix } from '../src/validate';

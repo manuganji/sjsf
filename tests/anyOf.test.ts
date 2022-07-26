@@ -1,7 +1,5 @@
-import React from 'react';
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
-import sinon from 'sinon';
 
 import { createFormComponent, createSandbox, setProps } from './test_utils';
 

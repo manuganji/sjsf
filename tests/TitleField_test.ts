@@ -1,7 +1,6 @@
-import React from 'react';
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 
-import TitleField from '../src/components/fields/TitleField';
+import TitleField from '../src/lib/components/fields/TitleField';
 import { createSandbox, createComponent } from './test_utils';
 
 describe('TitleField', () => {

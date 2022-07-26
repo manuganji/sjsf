@@ -1,7 +1,5 @@
-import React from 'react';
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
-import sinon from 'sinon';
 
 import { createFormComponent, createSandbox, setProps, submitForm } from './test_utils';
 
@@ -406,7 +404,7 @@ describe('NumberField', () => {
     });
 
     it('should infer the value from an enum on change', () => {
-      const spy = sinon.spy();
+      const spy = vi.fn();
       const { node } = createFormComponent({
         schema: {
           enum: [1, 2]

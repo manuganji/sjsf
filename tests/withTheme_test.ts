@@ -1,5 +1,4 @@
-import { expect } from 'chai';
-import React, { Component, createRef } from 'react';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 
 import { withTheme } from '../src';
 import { createComponent, createSandbox } from './test_utils';

@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import React from 'react';
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
+
 
 import {
   ADDITIONAL_PROPERTY_FLAG,

@@ -1,16 +1,15 @@
 /* Utils for tests. */
 
-import React from 'react';
-import sinon from 'sinon';
+import { SpyInstance, vi, describe } from 'vitest'
 import { renderIntoDocument, act, Simulate } from 'react-dom/test-utils';
 import { findDOMNode, render } from 'react-dom';
 
-import Form from '../src';
+import Form from '../src/lib';
 
 export function createComponent(Component, props) {
-  const onChange = sinon.spy();
-  const onError = sinon.spy();
-  const onSubmit = sinon.spy();
+  const onChange = vi.fn();
+  const onError = vi.fn();
+  const onSubmit = vi.fn();
   const comp = renderIntoDocument(
     <Component onSubmit={onSubmit} onError={onError} onChange={onChange} {...props} />
   );

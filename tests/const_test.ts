@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 
 import { createFormComponent, createSandbox } from './test_utils';
 

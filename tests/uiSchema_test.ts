@@ -1,12 +1,10 @@
-import { expect } from 'chai';
-import React from 'react';
-import sinon from 'sinon';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { render } from 'react-dom';
 import { Simulate } from 'react-dom/test-utils';
 import SelectWidget from '../src/components/widgets/SelectWidget';
 import RadioWidget from '../src/components/widgets/RadioWidget';
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
-import Form from '../src';
+import Form from '../src/lib';
 
 describe('uiSchema', () => {
   let sandbox;

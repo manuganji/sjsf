@@ -1,11 +1,10 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import React, { createRef } from 'react';
 import { renderIntoDocument, Simulate } from 'react-dom/test-utils';
 import { render, findDOMNode } from 'react-dom';
 import { Portal } from 'react-portal';
 
-import Form from '../src';
+import Form from '../src/lib';
 import {
   createComponent,
   createFormComponent,
@@ -96,7 +95,7 @@ describeRepeated('Form common', (createFormComponent) => {
     }
 
     beforeEach(() => {
-      onChangeProp = sinon.spy();
+      onChangeProp = vi.fn();
       schema = {
         type: 'object',
         title: 'root object',
@@ -1058,7 +1057,7 @@ describeRepeated('Form common', (createFormComponent) => {
     let formProps;
 
     beforeEach(() => {
-      onChangeProp = sinon.spy();
+      onChangeProp = vi.fn();
       formProps = {
         schema: {
           type: 'string',
@@ -3261,7 +3260,7 @@ describe('Form omitExtraData and liveOmit', () => {
     });
 
     it('should not block form submission', () => {
-      const onSubmit = sinon.spy();
+      const onSubmit = vi.fn();
       const schema = {
         type: 'object',
         properties: {
@@ -3360,7 +3359,7 @@ describe('Form omitExtraData and liveOmit', () => {
       }
     };
 
-    const onSubmit = sinon.spy();
+    const onSubmit = vi.fn();
 
     const props = {
       schema,

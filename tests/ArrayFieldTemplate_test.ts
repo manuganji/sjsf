@@ -1,5 +1,4 @@
-import React, { PureComponent } from 'react';
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
 import { createFormComponent, createSandbox } from './test_utils';
 
