@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 function TextareaWidget(props) {
   const {
@@ -13,24 +13,24 @@ function TextareaWidget(props) {
     autofocus,
     onChange,
     onBlur,
-    onFocus,
+    onFocus
   } = props;
   const _onChange = ({ target: { value } }) => {
-    return onChange(value === "" ? options.emptyValue : value);
+    return onChange(value === '' ? options.emptyValue : value);
   };
   return (
     <textarea
       id={id}
       className="form-control"
-      value={value ? value : ""}
+      value={value ? value : ''}
       placeholder={placeholder}
       required={required}
       disabled={disabled}
       readOnly={readonly}
       autoFocus={autofocus}
       rows={options.rows}
-      onBlur={onBlur && (event => onBlur(id, event.target.value))}
-      onFocus={onFocus && (event => onFocus(id, event.target.value))}
+      onBlur={onBlur && ((event) => onBlur(id, event.target.value))}
+      onFocus={onFocus && ((event) => onFocus(id, event.target.value))}
       onChange={_onChange}
     />
   );
@@ -38,16 +38,16 @@ function TextareaWidget(props) {
 
 TextareaWidget.defaultProps = {
   autofocus: false,
-  options: {},
+  options: {}
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   TextareaWidget.propTypes = {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     options: PropTypes.shape({
-      rows: PropTypes.number,
+      rows: PropTypes.number
     }),
     value: PropTypes.string,
     required: PropTypes.bool,
@@ -56,7 +56,7 @@ if (process.env.NODE_ENV !== "production") {
     autofocus: PropTypes.bool,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
-    onFocus: PropTypes.func,
+    onFocus: PropTypes.func
   };
 }
 

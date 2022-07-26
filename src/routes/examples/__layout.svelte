@@ -1,8 +1,8 @@
 <script lang="ts">
-	import {} from 'svelte';
+  import {} from 'svelte';
 </script>
 
 <div>
-	<ul><li><a href="/examples/integer">Integer</a></li></ul>
-	<slot />
+  <ul><li><a href="/examples/integer">Integer</a></li></ul>
+  <slot />
 </div>

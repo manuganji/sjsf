@@ -1,12 +1,8 @@
-import React from "react";
-import { getSubmitButtonOptions } from "../../utils";
+import React from 'react';
+import { getSubmitButtonOptions } from '../../utils';
 
 export default function SubmitButton({ uiSchema }) {
-  const {
-    submitText,
-    norender,
-    props: submitButtonProps,
-  } = getSubmitButtonOptions(uiSchema);
+  const { submitText, norender, props: submitButtonProps } = getSubmitButtonOptions(uiSchema);
   return (
     <div>
       {!norender && (

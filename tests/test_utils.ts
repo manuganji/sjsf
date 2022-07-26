@@ -1,23 +1,18 @@
 /* Utils for tests. */
 
-import React from "react";
-import sinon from "sinon";
-import { renderIntoDocument, act, Simulate } from "react-dom/test-utils";
-import { findDOMNode, render } from "react-dom";
+import React from 'react';
+import sinon from 'sinon';
+import { renderIntoDocument, act, Simulate } from 'react-dom/test-utils';
+import { findDOMNode, render } from 'react-dom';
 
-import Form from "../src";
+import Form from '../src';
 
 export function createComponent(Component, props) {
   const onChange = sinon.spy();
   const onError = sinon.spy();
   const onSubmit = sinon.spy();
   const comp = renderIntoDocument(
-    <Component
-      onSubmit={onSubmit}
-      onError={onError}
-      onChange={onChange}
-      {...props}
-    />
+    <Component onSubmit={onSubmit} onError={onError} onChange={onChange} {...props} />
   );
   const node = findDOMNode(comp);
   return { comp, node, onChange, onError, onSubmit };
@@ -43,14 +38,11 @@ export function describeRepeated(title, fn) {
   const formExtraPropsList = [
     { omitExtraData: false },
     { omitExtraData: true },
-    { omitExtraData: true, liveOmit: true },
+    { omitExtraData: true, liveOmit: true }
   ];
   for (let formExtraProps of formExtraPropsList) {
-    const createFormComponentFn = props =>
-      createFormComponent({ ...props, ...formExtraProps });
-    describe(title + " " + JSON.stringify(formExtraProps), () =>
-      fn(createFormComponentFn)
-    );
+    const createFormComponentFn = (props) => createFormComponent({ ...props, ...formExtraProps });
+    describe(title + ' ' + JSON.stringify(formExtraProps), () => fn(createFormComponentFn));
   }
 }
 

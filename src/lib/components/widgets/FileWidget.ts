@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import { dataURItoBlob, shouldRender } from "../../utils";
+import { dataURItoBlob, shouldRender } from '../../utils';
 
 function addNameToDataURL(dataURL, name) {
-  return dataURL.replace(";base64", `;name=${encodeURIComponent(name)};base64`);
+  return dataURL.replace(';base64', `;name=${encodeURIComponent(name)};base64`);
 }
 
 function processFile(file) {
@@ -12,12 +12,12 @@ function processFile(file) {
   return new Promise((resolve, reject) => {
     const reader = new window.FileReader();
     reader.onerror = reject;
-    reader.onload = event => {
+    reader.onload = (event) => {
       resolve({
         dataURL: addNameToDataURL(event.target.result, name),
         name,
         size,
-        type,
+        type
       });
     };
     reader.readAsDataURL(file);
@@ -49,13 +49,13 @@ function FilesInfo(props) {
 
 function extractFileInfo(dataURLs) {
   return dataURLs
-    .filter(dataURL => typeof dataURL !== "undefined")
-    .map(dataURL => {
+    .filter((dataURL) => typeof dataURL !== 'undefined')
+    .map((dataURL) => {
       const { blob, name } = dataURItoBlob(dataURL);
       return {
         name: name,
         size: blob.size,
-        type: blob.type,
+        type: blob.type
       };
     });
 }
@@ -72,12 +72,12 @@ class FileWidget extends Component {
     return shouldRender(this, nextProps, nextState);
   }
 
-  onChange = event => {
+  onChange = (event) => {
     const { multiple, onChange } = this.props;
-    processFiles(event.target.files).then(filesInfo => {
+    processFiles(event.target.files).then((filesInfo) => {
       const state = {
-        values: filesInfo.map(fileInfo => fileInfo.dataURL),
-        filesInfo,
+        values: filesInfo.map((fileInfo) => fileInfo.dataURL),
+        filesInfo
       };
       this.setState(state, () => {
         if (multiple) {
@@ -96,7 +96,7 @@ class FileWidget extends Component {
       <div>
         <p>
           <input
-            ref={ref => (this.inputRef = ref)}
+            ref={(ref) => (this.inputRef = ref)}
             id={id}
             type="file"
             disabled={readonly || disabled}
@@ -114,17 +114,14 @@ class FileWidget extends Component {
 }
 
 FileWidget.defaultProps = {
-  autofocus: false,
+  autofocus: false
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   FileWidget.propTypes = {
     multiple: PropTypes.bool,
-    value: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.arrayOf(PropTypes.string),
-    ]),
-    autofocus: PropTypes.bool,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]),
+    autofocus: PropTypes.bool
   };
 }
 

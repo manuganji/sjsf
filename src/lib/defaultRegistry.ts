@@ -1,5 +1,5 @@
-import fields from "./components/fields";
-import widgets from "./components/widgets";
+import fields from './components/fields';
+import widgets from './components/widgets';
 
 export function getDefaultRegistry() {
   return {
@@ -7,6 +7,6 @@ export function getDefaultRegistry() {
     widgets,
     definitions: {},
     rootSchema: {},
-    formContext: {},
+    formContext: {}
   };
 }

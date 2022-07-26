@@ -1,5 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 function selectValue(value, selected, all) {
   const at = all.indexOf(value);
@@ -10,7 +10,7 @@ function selectValue(value, selected, all) {
 }
 
 function deselectValue(value, selected) {
-  return selected.filter(v => v !== value);
+  return selected.filter((v) => v !== value);
 }
 
 function CheckboxesWidget(props) {
@@ -20,10 +20,8 @@ function CheckboxesWidget(props) {
     <div className="checkboxes" id={id}>
       {enumOptions.map((option, index) => {
         const checked = value.indexOf(option.value) !== -1;
-        const itemDisabled =
-          enumDisabled && enumDisabled.indexOf(option.value) != -1;
-        const disabledCls =
-          disabled || itemDisabled || readonly ? "disabled" : "";
+        const itemDisabled = enumDisabled && enumDisabled.indexOf(option.value) != -1;
+        const disabledCls = disabled || itemDisabled || readonly ? 'disabled' : '';
         const checkbox = (
           <span>
             <input
@@ -32,7 +30,7 @@ function CheckboxesWidget(props) {
               checked={checked}
               disabled={disabled || itemDisabled || readonly}
               autoFocus={autofocus && index === 0}
-              onChange={event => {
+              onChange={(event) => {
                 const all = enumOptions.map(({ value }) => value);
                 if (event.target.checked) {
                   onChange(selectValue(option.value, value, all));
@@ -61,17 +59,17 @@ function CheckboxesWidget(props) {
 CheckboxesWidget.defaultProps = {
   autofocus: false,
   options: {
-    inline: false,
-  },
+    inline: false
+  }
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   CheckboxesWidget.propTypes = {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
     options: PropTypes.shape({
       enumOptions: PropTypes.array,
-      inline: PropTypes.bool,
+      inline: PropTypes.bool
     }).isRequired,
     value: PropTypes.any,
     required: PropTypes.bool,
@@ -79,7 +77,7 @@ if (process.env.NODE_ENV !== "production") {
     disabled: PropTypes.bool,
     multiple: PropTypes.bool,
     autofocus: PropTypes.bool,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func
   };
 }
 

@@ -1,12 +1,12 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react';
 
-import { expect } from "chai";
-import { createFormComponent, createSandbox } from "./test_utils";
+import { expect } from 'chai';
+import { createFormComponent, createSandbox } from './test_utils';
 
-describe("ObjectFieldTemplate", () => {
+describe('ObjectFieldTemplate', () => {
   let sandbox;
 
-  const formData = { foo: "bar", bar: "foo" };
+  const formData = { foo: 'bar', bar: 'foo' };
 
   beforeEach(() => {
     sandbox = createSandbox();
@@ -18,13 +18,7 @@ describe("ObjectFieldTemplate", () => {
 
   class ObjectFieldTemplate extends PureComponent {
     render() {
-      const {
-        TitleField,
-        DescriptionField,
-        properties,
-        title,
-        description,
-      } = this.props;
+      const { TitleField, DescriptionField, properties, title, description } = this.props;
       return (
         <div className="root">
           <TitleField title={title} />
@@ -46,75 +40,75 @@ describe("ObjectFieldTemplate", () => {
     description ? <div className="description-field" /> : null;
 
   let node;
-  describe("with template globally configured", () => {
+  describe('with template globally configured', () => {
     node = createFormComponent({
       schema: {
-        type: "object",
-        properties: { foo: { type: "string" }, bar: { type: "string" } },
+        type: 'object',
+        properties: { foo: { type: 'string' }, bar: { type: 'string' } }
       },
-      uiSchema: { "ui:description": "foobar" },
+      uiSchema: { 'ui:description': 'foobar' },
       formData,
       ObjectFieldTemplate,
       fields: {
         TitleField,
-        DescriptionField,
-      },
+        DescriptionField
+      }
     }).node;
     sharedIts();
   });
-  describe("with template configured in ui:ObjectFieldTemplate", () => {
+  describe('with template configured in ui:ObjectFieldTemplate', () => {
     node = createFormComponent({
       schema: {
-        type: "object",
-        properties: { foo: { type: "string" }, bar: { type: "string" } },
+        type: 'object',
+        properties: { foo: { type: 'string' }, bar: { type: 'string' } }
       },
       uiSchema: {
-        "ui:description": "foobar",
-        "ui:ObjectFieldTemplate": ObjectFieldTemplate,
+        'ui:description': 'foobar',
+        'ui:ObjectFieldTemplate': ObjectFieldTemplate
       },
       formData,
       fields: {
         TitleField,
-        DescriptionField,
-      },
+        DescriptionField
+      }
     }).node;
     sharedIts();
   });
-  describe("with template configured globally overridden by ui:ObjectFieldTemplate", () => {
+  describe('with template configured globally overridden by ui:ObjectFieldTemplate', () => {
     node = createFormComponent({
       schema: {
-        type: "object",
-        properties: { foo: { type: "string" }, bar: { type: "string" } },
+        type: 'object',
+        properties: { foo: { type: 'string' }, bar: { type: 'string' } }
       },
       uiSchema: {
-        "ui:description": "foobar",
-        "ui:ObjectFieldTemplate": ObjectFieldTemplate,
+        'ui:description': 'foobar',
+        'ui:ObjectFieldTemplate': ObjectFieldTemplate
       },
       formData,
       ObjectFieldTemplate: () => <div />, // Empty object field template, proof that it's overridden
       fields: {
         TitleField,
-        DescriptionField,
-      },
+        DescriptionField
+      }
     }).node;
     sharedIts();
   });
 
   function sharedIts() {
-    it("should render one root element", () => {
-      expect(node.querySelectorAll(".root")).to.have.length.of(1);
+    it('should render one root element', () => {
+      expect(node.querySelectorAll('.root')).to.have.length.of(1);
     });
 
-    it("should render one title", () => {
-      expect(node.querySelectorAll(".title-field")).to.have.length.of(1);
+    it('should render one title', () => {
+      expect(node.querySelectorAll('.title-field')).to.have.length.of(1);
     });
 
-    it("should render one description", () => {
-      expect(node.querySelectorAll(".description-field")).to.have.length.of(1);
+    it('should render one description', () => {
+      expect(node.querySelectorAll('.description-field')).to.have.length.of(1);
     });
 
-    it("should render two property containers", () => {
-      expect(node.querySelectorAll(".property")).to.have.length.of(2);
+    it('should render two property containers', () => {
+      expect(node.querySelectorAll('.property')).to.have.length.of(2);
     });
   }
 });

@@ -1,7 +1,7 @@
-import React from "react";
-import * as types from "../../types";
+import React from 'react';
+import * as types from '../../types';
 
-import { getWidget, getUiOptions, optionsList } from "../../utils";
+import { getWidget, getUiOptions, optionsList } from '../../utils';
 
 function BooleanField(props) {
   const {
@@ -18,30 +18,28 @@ function BooleanField(props) {
     onChange,
     onFocus,
     onBlur,
-    rawErrors,
+    rawErrors
   } = props;
   const { title } = schema;
   const { widgets, formContext, fields } = registry;
-  const { widget = "checkbox", ...options } = getUiOptions(uiSchema);
+  const { widget = 'checkbox', ...options } = getUiOptions(uiSchema);
   const Widget = getWidget(schema, widget, widgets);
 
   let enumOptions;
 
   if (Array.isArray(schema.oneOf)) {
     enumOptions = optionsList({
-      oneOf: schema.oneOf.map(option => ({
+      oneOf: schema.oneOf.map((option) => ({
         ...option,
-        title: option.title || (option.const === true ? "Yes" : "No"),
-      })),
+        title: option.title || (option.const === true ? 'Yes' : 'No')
+      }))
     });
   } else {
     enumOptions = optionsList({
       enum: schema.enum || [true, false],
       enumNames:
         schema.enumNames ||
-        (schema.enum && schema.enum[0] === false
-          ? ["No", "Yes"]
-          : ["Yes", "No"]),
+        (schema.enum && schema.enum[0] === false ? ['No', 'Yes'] : ['Yes', 'No'])
     });
   }
 
@@ -68,7 +66,7 @@ function BooleanField(props) {
   );
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   BooleanField.propTypes = types.fieldProps;
 }
 
@@ -76,7 +74,7 @@ BooleanField.defaultProps = {
   uiSchema: {},
   disabled: false,
   readonly: false,
-  autofocus: false,
+  autofocus: false
 };
 
 export default BooleanField;

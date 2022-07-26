@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { schemaRequiresTrueValue } from "../../utils";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { schemaRequiresTrueValue } from '../../utils';
 
 function CheckboxWidget(props) {
   const {
@@ -14,7 +14,7 @@ function CheckboxWidget(props) {
     onBlur,
     onFocus,
     onChange,
-    DescriptionField,
+    DescriptionField
   } = props;
 
   // Because an unchecked checkbox will cause html5 validation to fail, only add
@@ -23,21 +23,19 @@ function CheckboxWidget(props) {
   const required = schemaRequiresTrueValue(schema);
 
   return (
-    <div className={`checkbox ${disabled || readonly ? "disabled" : ""}`}>
-      {schema.description && (
-        <DescriptionField description={schema.description} />
-      )}
+    <div className={`checkbox ${disabled || readonly ? 'disabled' : ''}`}>
+      {schema.description && <DescriptionField description={schema.description} />}
       <label>
         <input
           type="checkbox"
           id={id}
-          checked={typeof value === "undefined" ? false : value}
+          checked={typeof value === 'undefined' ? false : value}
           required={required}
           disabled={disabled || readonly}
           autoFocus={autofocus}
-          onChange={event => onChange(event.target.checked)}
-          onBlur={onBlur && (event => onBlur(id, event.target.checked))}
-          onFocus={onFocus && (event => onFocus(id, event.target.checked))}
+          onChange={(event) => onChange(event.target.checked)}
+          onBlur={onBlur && ((event) => onBlur(id, event.target.checked))}
+          onFocus={onFocus && ((event) => onFocus(id, event.target.checked))}
         />
         <span>{label}</span>
       </label>
@@ -46,10 +44,10 @@ function CheckboxWidget(props) {
 }
 
 CheckboxWidget.defaultProps = {
-  autofocus: false,
+  autofocus: false
 };
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   CheckboxWidget.propTypes = {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
@@ -58,7 +56,7 @@ if (process.env.NODE_ENV !== "production") {
     disabled: PropTypes.bool,
     readonly: PropTypes.bool,
     autofocus: PropTypes.bool,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func
   };
 }
 

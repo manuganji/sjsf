@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import _pick from "lodash/pick";
-import _get from "lodash/get";
-import _isEmpty from "lodash/isEmpty";
-import { getDefaultRegistry } from "../defaultRegistry";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import _pick from 'lodash/pick';
+import _get from 'lodash/get';
+import _isEmpty from 'lodash/isEmpty';
+import { getDefaultRegistry } from '../defaultRegistry';
 
-import { default as DefaultErrorList } from "./ErrorList";
+import { default as DefaultErrorList } from './ErrorList';
 import {
   getDefaultFormState,
   retrieveSchema,
@@ -13,10 +13,10 @@ import {
   toIdSchema,
   deepEquals,
   toPathSchema,
-  isObject,
-} from "../utils";
-import validateFormData, { toErrorList } from "../validate";
-import { mergeObjects } from "../utils";
+  isObject
+} from '../utils';
+import validateFormData, { toErrorList } from '../validate';
+import { mergeObjects } from '../utils';
 
 export default class Form extends Component {
   static defaultProps = {
@@ -27,16 +27,13 @@ export default class Form extends Component {
     readonly: false,
     noHtml5Validate: false,
     ErrorList: DefaultErrorList,
-    omitExtraData: false,
+    omitExtraData: false
   };
 
   constructor(props) {
     super(props);
     this.state = this.getStateFromProps(props, props.formData);
-    if (
-      this.props.onChange &&
-      !deepEquals(this.state.formData, this.props.formData)
-    ) {
+    if (this.props.onChange && !deepEquals(this.state.formData, this.props.formData)) {
       this.props.onChange(this.state);
     }
     this.formElement = null;
@@ -56,11 +53,10 @@ export default class Form extends Component {
 
   getStateFromProps(props, inputFormData) {
     const state = this.state || {};
-    const schema = "schema" in props ? props.schema : this.props.schema;
-    const uiSchema = "uiSchema" in props ? props.uiSchema : this.props.uiSchema;
-    const edit = typeof inputFormData !== "undefined";
-    const liveValidate =
-      "liveValidate" in props ? props.liveValidate : this.props.liveValidate;
+    const schema = 'schema' in props ? props.schema : this.props.schema;
+    const uiSchema = 'uiSchema' in props ? props.uiSchema : this.props.uiSchema;
+    const edit = typeof inputFormData !== 'undefined';
+    const liveValidate = 'liveValidate' in props ? props.liveValidate : this.props.liveValidate;
     const mustValidate = edit && !props.noValidate && liveValidate;
     const rootSchema = schema;
     const formData = getDefaultFormState(schema, inputFormData, rootSchema);
@@ -74,19 +70,16 @@ export default class Form extends Component {
       } else if (!props.liveValidate) {
         return {
           errors: state.schemaValidationErrors || [],
-          errorSchema: state.schemaValidationErrorSchema || {},
+          errorSchema: state.schemaValidationErrorSchema || {}
         };
       }
       return {
         errors: state.errors || [],
-        errorSchema: state.errorSchema || {},
+        errorSchema: state.errorSchema || {}
       };
     };
 
-    let errors,
-      errorSchema,
-      schemaValidationErrors,
-      schemaValidationErrorSchema;
+    let errors, errorSchema, schemaValidationErrors, schemaValidationErrorSchema;
     if (mustValidate) {
       const schemaValidation = this.validate(
         formData,
@@ -106,16 +99,12 @@ export default class Form extends Component {
       schemaValidationErrorSchema = state.schemaValidationErrorSchema;
     }
     if (props.extraErrors) {
-      errorSchema = mergeObjects(
-        errorSchema,
-        props.extraErrors,
-        !!"concat arrays"
-      );
+      errorSchema = mergeObjects(errorSchema, props.extraErrors, !!'concat arrays');
       errors = toErrorList(errorSchema);
     }
     const idSchema = toIdSchema(
       retrievedSchema,
-      uiSchema["ui:rootFieldId"],
+      uiSchema['ui:rootFieldId'],
       rootSchema,
       formData,
       props.idPrefix,
@@ -129,7 +118,7 @@ export default class Form extends Component {
       edit,
       errors,
       errorSchema,
-      additionalMetaSchemas,
+      additionalMetaSchemas
     };
     if (schemaValidationErrors) {
       nextState.schemaValidationErrors = schemaValidationErrors;
@@ -181,36 +170,36 @@ export default class Form extends Component {
 
   getUsedFormData = (formData, fields) => {
     //for the case of a single input form
-    if (fields.length === 0 && typeof formData !== "object") {
+    if (fields.length === 0 && typeof formData !== 'object') {
       return formData;
     }
 
     let data = _pick(formData, fields);
     if (Array.isArray(formData)) {
-      return Object.keys(data).map(key => data[key]);
+      return Object.keys(data).map((key) => data[key]);
     }
 
     return data;
   };
 
   getFieldNames = (pathSchema, formData) => {
-    const getAllPaths = (_obj, acc = [], paths = [""]) => {
-      Object.keys(_obj).forEach(key => {
-        if (typeof _obj[key] === "object") {
-          let newPaths = paths.map(path => `${path}.${key}`);
+    const getAllPaths = (_obj, acc = [], paths = ['']) => {
+      Object.keys(_obj).forEach((key) => {
+        if (typeof _obj[key] === 'object') {
+          let newPaths = paths.map((path) => `${path}.${key}`);
           // If an object is marked with additionalProperties, all its keys are valid
-          if (_obj[key].__rjsf_additionalProperties && _obj[key].$name !== "") {
+          if (_obj[key].__rjsf_additionalProperties && _obj[key].$name !== '') {
             acc.push(_obj[key].$name);
           } else {
             getAllPaths(_obj[key], acc, newPaths);
           }
-        } else if (key === "$name" && _obj[key] !== "") {
-          paths.forEach(path => {
-            path = path.replace(/^\./, "");
+        } else if (key === '$name' && _obj[key] !== '') {
+          paths.forEach((path) => {
+            path = path.replace(/^\./, '');
             const formValue = _get(formData, path);
             // adds path to fieldNames if it points to a value
             // or an empty object/array
-            if (typeof formValue !== "object" || _isEmpty(formValue)) {
+            if (typeof formValue !== 'object' || _isEmpty(formValue)) {
               acc.push(path);
             }
           });
@@ -232,23 +221,14 @@ export default class Form extends Component {
     let newFormData = formData;
 
     if (this.props.omitExtraData === true && this.props.liveOmit === true) {
-      const retrievedSchema = retrieveSchema(
-        this.state.schema,
-        this.state.schema,
-        formData
-      );
-      const pathSchema = toPathSchema(
-        retrievedSchema,
-        "",
-        this.state.schema,
-        formData
-      );
+      const retrievedSchema = retrieveSchema(this.state.schema, this.state.schema, formData);
+      const pathSchema = toPathSchema(retrievedSchema, '', this.state.schema, formData);
 
       const fieldNames = this.getFieldNames(pathSchema, formData);
 
       newFormData = this.getUsedFormData(formData, fieldNames);
       state = {
-        formData: newFormData,
+        formData: newFormData
       };
     }
 
@@ -259,11 +239,7 @@ export default class Form extends Component {
       const schemaValidationErrors = errors;
       const schemaValidationErrorSchema = errorSchema;
       if (this.props.extraErrors) {
-        errorSchema = mergeObjects(
-          errorSchema,
-          this.props.extraErrors,
-          !!"concat arrays"
-        );
+        errorSchema = mergeObjects(errorSchema, this.props.extraErrors, !!'concat arrays');
         errors = toErrorList(errorSchema);
       }
       state = {
@@ -271,26 +247,19 @@ export default class Form extends Component {
         errors,
         errorSchema,
         schemaValidationErrors,
-        schemaValidationErrorSchema,
+        schemaValidationErrorSchema
       };
     } else if (!this.props.noValidate && newErrorSchema) {
       const errorSchema = this.props.extraErrors
-        ? mergeObjects(
-            newErrorSchema,
-            this.props.extraErrors,
-            !!"concat arrays"
-          )
+        ? mergeObjects(newErrorSchema, this.props.extraErrors, !!'concat arrays')
         : newErrorSchema;
       state = {
         formData: newFormData,
         errorSchema: errorSchema,
-        errors: toErrorList(errorSchema),
+        errors: toErrorList(errorSchema)
       };
     }
-    this.setState(
-      state,
-      () => this.props.onChange && this.props.onChange(this.state)
-    );
+    this.setState(state, () => this.props.onChange && this.props.onChange(this.state));
   };
 
   onBlur = (...args) => {
@@ -305,7 +274,7 @@ export default class Form extends Component {
     }
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
     if (event.target !== event.currentTarget) {
       return;
@@ -315,17 +284,8 @@ export default class Form extends Component {
     let newFormData = this.state.formData;
 
     if (this.props.omitExtraData === true) {
-      const retrievedSchema = retrieveSchema(
-        this.state.schema,
-        this.state.schema,
-        newFormData
-      );
-      const pathSchema = toPathSchema(
-        retrievedSchema,
-        "",
-        this.state.schema,
-        newFormData
-      );
+      const retrievedSchema = retrieveSchema(this.state.schema, this.state.schema, newFormData);
+      const pathSchema = toPathSchema(retrievedSchema, '', this.state.schema, newFormData);
 
       const fieldNames = this.getFieldNames(pathSchema, newFormData);
 
@@ -340,11 +300,7 @@ export default class Form extends Component {
       const schemaValidationErrorSchema = errorSchema;
       if (Object.keys(errors).length > 0) {
         if (this.props.extraErrors) {
-          errorSchema = mergeObjects(
-            errorSchema,
-            this.props.extraErrors,
-            !!"concat arrays"
-          );
+          errorSchema = mergeObjects(errorSchema, this.props.extraErrors, !!'concat arrays');
           errors = toErrorList(errorSchema);
         }
         this.setState(
@@ -352,13 +308,13 @@ export default class Form extends Component {
             errors,
             errorSchema,
             schemaValidationErrors,
-            schemaValidationErrorSchema,
+            schemaValidationErrorSchema
           },
           () => {
             if (this.props.onError) {
               this.props.onError(errors);
             } else {
-              console.error("Form validation failed", errors);
+              console.error('Form validation failed', errors);
             }
           }
         );
@@ -384,14 +340,11 @@ export default class Form extends Component {
         errors: errors,
         errorSchema: errorSchema,
         schemaValidationErrors: [],
-        schemaValidationErrorSchema: {},
+        schemaValidationErrorSchema: {}
       },
       () => {
         if (this.props.onSubmit) {
-          this.props.onSubmit(
-            { ...this.state, formData: newFormData, status: "submitted" },
-            event
-          );
+          this.props.onSubmit({ ...this.state, formData: newFormData, status: 'submitted' }, event);
         }
       }
     );
@@ -409,15 +362,15 @@ export default class Form extends Component {
       FieldTemplate: this.props.FieldTemplate,
       definitions: this.props.schema.definitions || {},
       rootSchema: this.props.schema,
-      formContext: this.props.formContext || {},
+      formContext: this.props.formContext || {}
     };
   }
 
   submit() {
     if (this.formElement) {
       this.formElement.dispatchEvent(
-        new CustomEvent("submit", {
-          cancelable: true,
+        new CustomEvent('submit', {
+          cancelable: true
         })
       );
     }
@@ -456,7 +409,7 @@ export default class Form extends Component {
        * }
        * ```
        */
-      _internalFormWrapper,
+      _internalFormWrapper
     } = this.props;
 
     const { schema, uiSchema, formData, errorSchema, idSchema } = this.state;
@@ -466,20 +419,16 @@ export default class Form extends Component {
     // PropTypes.elementType to use for the inner tag so we'll need to pass `tagName` along if it is provided.
     // NOTE, the `as` prop is native to `semantic-ui` and is emulated in the `material-ui` theme
     const as = _internalFormWrapper ? tagName : undefined;
-    const FormTag = _internalFormWrapper || tagName || "form";
+    const FormTag = _internalFormWrapper || tagName || 'form';
     const SubmitButton = registry.widgets.SubmitButton;
     if (deprecatedAutocomplete) {
-      console.warn(
-        "Using autocomplete property of Form is deprecated, use autoComplete instead."
-      );
+      console.warn('Using autocomplete property of Form is deprecated, use autoComplete instead.');
     }
-    const autoComplete = currentAutoComplete
-      ? currentAutoComplete
-      : deprecatedAutocomplete;
+    const autoComplete = currentAutoComplete ? currentAutoComplete : deprecatedAutocomplete;
 
     return (
       <FormTag
-        className={className ? className : "rjsf"}
+        className={className ? className : 'rjsf'}
         id={id}
         name={name}
         method={method}
@@ -491,9 +440,10 @@ export default class Form extends Component {
         noValidate={noHtml5Validate}
         onSubmit={this.onSubmit}
         as={as}
-        ref={form => {
+        ref={(form) => {
           this.formElement = form;
-        }}>
+        }}
+      >
         {this.renderErrors()}
         <_SchemaField
           schema={schema}
@@ -517,16 +467,14 @@ export default class Form extends Component {
   }
 }
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   Form.propTypes = {
     schema: PropTypes.object.isRequired,
     uiSchema: PropTypes.object,
     formData: PropTypes.any,
     disabled: PropTypes.bool,
     readonly: PropTypes.bool,
-    widgets: PropTypes.objectOf(
-      PropTypes.oneOfType([PropTypes.func, PropTypes.object])
-    ),
+    widgets: PropTypes.objectOf(PropTypes.oneOfType([PropTypes.func, PropTypes.object])),
     fields: PropTypes.objectOf(PropTypes.elementType),
     ArrayFieldTemplate: PropTypes.elementType,
     ObjectFieldTemplate: PropTypes.elementType,
@@ -557,6 +505,6 @@ if (process.env.NODE_ENV !== "production") {
     customFormats: PropTypes.object,
     additionalMetaSchemas: PropTypes.arrayOf(PropTypes.object),
     omitExtraData: PropTypes.bool,
-    extraErrors: PropTypes.object,
+    extraErrors: PropTypes.object
   };
 }

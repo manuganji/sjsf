@@ -10,126 +10,126 @@ const ROOT_SCHEMA_PREFIX = '__rjsf_rootSchema';
 import { isObject, mergeObjects } from './utils';
 
 function createAjvInstance() {
-	const ajv = new Ajv({
-		errorDataPath: 'property',
-		allErrors: true,
-		multipleOfPrecision: 8,
-		schemaId: 'auto',
-		unknownFormats: 'ignore'
-	});
+  const ajv = new Ajv({
+    errorDataPath: 'property',
+    allErrors: true,
+    multipleOfPrecision: 8,
+    schemaId: 'auto',
+    unknownFormats: 'ignore'
+  });
 
-	// add custom formats
-	ajv.addFormat('data-url', /^data:([a-z]+\/[a-z0-9-+.]+)?;(?:name=(.*);)?base64,(.*)$/);
-	ajv.addFormat(
-		'color',
-		/^(#?([0-9A-Fa-f]{3}){1,2}\b|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow|(rgb\(\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*\))|(rgb\(\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*\)))$/
-	);
-	return ajv;
+  // add custom formats
+  ajv.addFormat('data-url', /^data:([a-z]+\/[a-z0-9-+.]+)?;(?:name=(.*);)?base64,(.*)$/);
+  ajv.addFormat(
+    'color',
+    /^(#?([0-9A-Fa-f]{3}){1,2}\b|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow|(rgb\(\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*\))|(rgb\(\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*\)))$/
+  );
+  return ajv;
 }
 
 function toErrorSchema(errors) {
-	// Transforms a ajv validation errors list:
-	// [
-	//   {property: ".level1.level2[2].level3", message: "err a"},
-	//   {property: ".level1.level2[2].level3", message: "err b"},
-	//   {property: ".level1.level2[4].level3", message: "err b"},
-	// ]
-	// Into an error tree:
-	// {
-	//   level1: {
-	//     level2: {
-	//       2: {level3: {errors: ["err a", "err b"]}},
-	//       4: {level3: {errors: ["err b"]}},
-	//     }
-	//   }
-	// };
-	if (!errors.length) {
-		return {};
-	}
-	return errors.reduce((errorSchema, error) => {
-		const { property, message } = error;
-		const path = toPath(property);
-		let parent = errorSchema;
+  // Transforms a ajv validation errors list:
+  // [
+  //   {property: ".level1.level2[2].level3", message: "err a"},
+  //   {property: ".level1.level2[2].level3", message: "err b"},
+  //   {property: ".level1.level2[4].level3", message: "err b"},
+  // ]
+  // Into an error tree:
+  // {
+  //   level1: {
+  //     level2: {
+  //       2: {level3: {errors: ["err a", "err b"]}},
+  //       4: {level3: {errors: ["err b"]}},
+  //     }
+  //   }
+  // };
+  if (!errors.length) {
+    return {};
+  }
+  return errors.reduce((errorSchema, error) => {
+    const { property, message } = error;
+    const path = toPath(property);
+    let parent = errorSchema;
 
-		// If the property is at the root (.level1) then toPath creates
-		// an empty array element at the first index. Remove it.
-		if (path.length > 0 && path[0] === '') {
-			path.splice(0, 1);
-		}
+    // If the property is at the root (.level1) then toPath creates
+    // an empty array element at the first index. Remove it.
+    if (path.length > 0 && path[0] === '') {
+      path.splice(0, 1);
+    }
 
-		for (const segment of path.slice(0)) {
-			if (!(segment in parent)) {
-				parent[segment] = {};
-			}
-			parent = parent[segment];
-		}
+    for (const segment of path.slice(0)) {
+      if (!(segment in parent)) {
+        parent[segment] = {};
+      }
+      parent = parent[segment];
+    }
 
-		if (Array.isArray(parent.__errors)) {
-			// We store the list of errors for this node in a property named __errors
-			// to avoid name collision with a possible sub schema field named
-			// "errors" (see `validate.createErrorHandler`).
-			parent.__errors = parent.__errors.concat(message);
-		} else {
-			if (message) {
-				parent.__errors = [message];
-			}
-		}
-		return errorSchema;
-	}, {});
+    if (Array.isArray(parent.__errors)) {
+      // We store the list of errors for this node in a property named __errors
+      // to avoid name collision with a possible sub schema field named
+      // "errors" (see `validate.createErrorHandler`).
+      parent.__errors = parent.__errors.concat(message);
+    } else {
+      if (message) {
+        parent.__errors = [message];
+      }
+    }
+    return errorSchema;
+  }, {});
 }
 
 export function toErrorList(errorSchema, fieldName = 'root') {
-	// XXX: We should transform fieldName as a full field path string.
-	let errorList = [];
-	if ('__errors' in errorSchema) {
-		errorList = errorList.concat(
-			errorSchema.__errors.map((stack) => {
-				return {
-					stack: `${fieldName}: ${stack}`
-				};
-			})
-		);
-	}
-	return Object.keys(errorSchema).reduce((acc, key) => {
-		if (key !== '__errors') {
-			acc = acc.concat(toErrorList(errorSchema[key], key));
-		}
-		return acc;
-	}, errorList);
+  // XXX: We should transform fieldName as a full field path string.
+  let errorList = [];
+  if ('__errors' in errorSchema) {
+    errorList = errorList.concat(
+      errorSchema.__errors.map((stack) => {
+        return {
+          stack: `${fieldName}: ${stack}`
+        };
+      })
+    );
+  }
+  return Object.keys(errorSchema).reduce((acc, key) => {
+    if (key !== '__errors') {
+      acc = acc.concat(toErrorList(errorSchema[key], key));
+    }
+    return acc;
+  }, errorList);
 }
 
 function createErrorHandler(formData) {
-	const handler = {
-		// We store the list of errors for this node in a property named __errors
-		// to avoid name collision with a possible sub schema field named
-		// "errors" (see `utils.toErrorSchema`).
-		__errors: [],
-		addError(message) {
-			this.__errors.push(message);
-		}
-	};
-	if (isObject(formData)) {
-		return Object.keys(formData).reduce((acc, key) => {
-			return { ...acc, [key]: createErrorHandler(formData[key]) };
-		}, handler);
-	}
-	if (Array.isArray(formData)) {
-		return formData.reduce((acc, value, key) => {
-			return { ...acc, [key]: createErrorHandler(value) };
-		}, handler);
-	}
-	return handler;
+  const handler = {
+    // We store the list of errors for this node in a property named __errors
+    // to avoid name collision with a possible sub schema field named
+    // "errors" (see `utils.toErrorSchema`).
+    __errors: [],
+    addError(message) {
+      this.__errors.push(message);
+    }
+  };
+  if (isObject(formData)) {
+    return Object.keys(formData).reduce((acc, key) => {
+      return { ...acc, [key]: createErrorHandler(formData[key]) };
+    }, handler);
+  }
+  if (Array.isArray(formData)) {
+    return formData.reduce((acc, value, key) => {
+      return { ...acc, [key]: createErrorHandler(value) };
+    }, handler);
+  }
+  return handler;
 }
 
 function unwrapErrorHandler(errorHandler) {
-	return Object.keys(errorHandler).reduce((acc, key) => {
-		if (key === 'addError') {
-			return acc;
-		} else if (key === '__errors') {
-			return { ...acc, [key]: errorHandler[key] };
-		}
-		return { ...acc, [key]: unwrapErrorHandler(errorHandler[key]) };
-	}, {});
+  return Object.keys(errorHandler).reduce((acc, key) => {
+    if (key === 'addError') {
+      return acc;
+    } else if (key === '__errors') {
+      return { ...acc, [key]: errorHandler[key] };
+    }
+    return { ...acc, [key]: unwrapErrorHandler(errorHandler[key]) };
+  }, {});
 }
 
 /**
@@ -137,24 +137,24 @@ function unwrapErrorHandler(errorHandler) {
  * At some point, components should be updated to support ajv.
  */
 function transformAjvErrors(errors = []) {
-	if (errors === null) {
-		return [];
-	}
+  if (errors === null) {
+    return [];
+  }
 
-	return errors.map((e) => {
-		const { dataPath, keyword, message, params, schemaPath } = e;
-		let property = `${dataPath}`;
+  return errors.map((e) => {
+    const { dataPath, keyword, message, params, schemaPath } = e;
+    let property = `${dataPath}`;
 
-		// put data in expected format
-		return {
-			name: keyword,
-			property,
-			message,
-			params, // specific to ajv
-			stack: `${property} ${message}`.trim(),
-			schemaPath
-		};
-	});
+    // put data in expected format
+    return {
+      name: keyword,
+      property,
+      message,
+      params, // specific to ajv
+      stack: `${property} ${message}`.trim(),
+      schemaPath
+    };
+  });
 }
 
 /**
@@ -163,98 +163,98 @@ function transformAjvErrors(errors = []) {
  * will be used to add custom validation errors for each field.
  */
 export default function validateFormData(
-	formData,
-	schema,
-	customValidate,
-	transformErrors,
-	additionalMetaSchemas = [],
-	customFormats = {}
+  formData,
+  schema,
+  customValidate,
+  transformErrors,
+  additionalMetaSchemas = [],
+  customFormats = {}
 ) {
-	// Include form data with undefined values, which is required for validation.
-	const rootSchema = schema;
-	formData = getDefaultFormState(schema, formData, rootSchema, true);
+  // Include form data with undefined values, which is required for validation.
+  const rootSchema = schema;
+  formData = getDefaultFormState(schema, formData, rootSchema, true);
 
-	const newMetaSchemas = !deepEquals(formerMetaSchema, additionalMetaSchemas);
-	const newFormats = !deepEquals(formerCustomFormats, customFormats);
+  const newMetaSchemas = !deepEquals(formerMetaSchema, additionalMetaSchemas);
+  const newFormats = !deepEquals(formerCustomFormats, customFormats);
 
-	if (newMetaSchemas || newFormats) {
-		ajv = createAjvInstance();
-	}
+  if (newMetaSchemas || newFormats) {
+    ajv = createAjvInstance();
+  }
 
-	// add more schemas to validate against
-	if (additionalMetaSchemas && newMetaSchemas && Array.isArray(additionalMetaSchemas)) {
-		ajv.addMetaSchema(additionalMetaSchemas);
-		formerMetaSchema = additionalMetaSchemas;
-	}
+  // add more schemas to validate against
+  if (additionalMetaSchemas && newMetaSchemas && Array.isArray(additionalMetaSchemas)) {
+    ajv.addMetaSchema(additionalMetaSchemas);
+    formerMetaSchema = additionalMetaSchemas;
+  }
 
-	// add more custom formats to validate against
-	if (customFormats && newFormats && isObject(customFormats)) {
-		Object.keys(customFormats).forEach((formatName) => {
-			ajv.addFormat(formatName, customFormats[formatName]);
-		});
+  // add more custom formats to validate against
+  if (customFormats && newFormats && isObject(customFormats)) {
+    Object.keys(customFormats).forEach((formatName) => {
+      ajv.addFormat(formatName, customFormats[formatName]);
+    });
 
-		formerCustomFormats = customFormats;
-	}
+    formerCustomFormats = customFormats;
+  }
 
-	let validationError = null;
-	try {
-		ajv.validate(schema, formData);
-	} catch (err) {
-		validationError = err;
-	}
+  let validationError = null;
+  try {
+    ajv.validate(schema, formData);
+  } catch (err) {
+    validationError = err;
+  }
 
-	let errors = transformAjvErrors(ajv.errors);
-	// Clear errors to prevent persistent errors, see #1104
+  let errors = transformAjvErrors(ajv.errors);
+  // Clear errors to prevent persistent errors, see #1104
 
-	ajv.errors = null;
+  ajv.errors = null;
 
-	const noProperMetaSchema =
-		validationError &&
-		validationError.message &&
-		typeof validationError.message === 'string' &&
-		validationError.message.includes('no schema with key or ref ');
+  const noProperMetaSchema =
+    validationError &&
+    validationError.message &&
+    typeof validationError.message === 'string' &&
+    validationError.message.includes('no schema with key or ref ');
 
-	if (noProperMetaSchema) {
-		errors = [
-			...errors,
-			{
-				stack: validationError.message
-			}
-		];
-	}
-	if (typeof transformErrors === 'function') {
-		errors = transformErrors(errors);
-	}
+  if (noProperMetaSchema) {
+    errors = [
+      ...errors,
+      {
+        stack: validationError.message
+      }
+    ];
+  }
+  if (typeof transformErrors === 'function') {
+    errors = transformErrors(errors);
+  }
 
-	let errorSchema = toErrorSchema(errors);
+  let errorSchema = toErrorSchema(errors);
 
-	if (noProperMetaSchema) {
-		errorSchema = {
-			...errorSchema,
-			...{
-				$schema: {
-					__errors: [validationError.message]
-				}
-			}
-		};
-	}
+  if (noProperMetaSchema) {
+    errorSchema = {
+      ...errorSchema,
+      ...{
+        $schema: {
+          __errors: [validationError.message]
+        }
+      }
+    };
+  }
 
-	if (typeof customValidate !== 'function') {
-		return { errors, errorSchema };
-	}
+  if (typeof customValidate !== 'function') {
+    return { errors, errorSchema };
+  }
 
-	const errorHandler = customValidate(formData, createErrorHandler(formData));
-	const userErrorSchema = unwrapErrorHandler(errorHandler);
-	const newErrorSchema = mergeObjects(errorSchema, userErrorSchema, true);
-	// XXX: The errors list produced is not fully compliant with the format
-	// exposed by the jsonschema lib, which contains full field paths and other
-	// properties.
-	const newErrors = toErrorList(newErrorSchema);
+  const errorHandler = customValidate(formData, createErrorHandler(formData));
+  const userErrorSchema = unwrapErrorHandler(errorHandler);
+  const newErrorSchema = mergeObjects(errorSchema, userErrorSchema, true);
+  // XXX: The errors list produced is not fully compliant with the format
+  // exposed by the jsonschema lib, which contains full field paths and other
+  // properties.
+  const newErrors = toErrorList(newErrorSchema);
 
-	return {
-		errors: newErrors,
-		errorSchema: newErrorSchema
-	};
+  return {
+    errors: newErrors,
+    errorSchema: newErrorSchema
+  };
 }
 
 /**
@@ -262,24 +262,24 @@ export default function validateFormData(
  * This is used in isValid to make references to the rootSchema
  */
 export function withIdRefPrefix(schemaNode) {
-	let obj = schemaNode;
-	if (schemaNode.constructor === Object) {
-		obj = { ...schemaNode };
-		for (const key in obj) {
-			const value = obj[key];
-			if (key === '$ref' && typeof value === 'string' && value.startsWith('#')) {
-				obj[key] = ROOT_SCHEMA_PREFIX + value;
-			} else {
-				obj[key] = withIdRefPrefix(value);
-			}
-		}
-	} else if (Array.isArray(schemaNode)) {
-		obj = [...schemaNode];
-		for (var i = 0; i < obj.length; i++) {
-			obj[i] = withIdRefPrefix(obj[i]);
-		}
-	}
-	return obj;
+  let obj = schemaNode;
+  if (schemaNode.constructor === Object) {
+    obj = { ...schemaNode };
+    for (const key in obj) {
+      const value = obj[key];
+      if (key === '$ref' && typeof value === 'string' && value.startsWith('#')) {
+        obj[key] = ROOT_SCHEMA_PREFIX + value;
+      } else {
+        obj[key] = withIdRefPrefix(value);
+      }
+    }
+  } else if (Array.isArray(schemaNode)) {
+    obj = [...schemaNode];
+    for (var i = 0; i < obj.length; i++) {
+      obj[i] = withIdRefPrefix(obj[i]);
+    }
+  }
+  return obj;
 }
 
 /**
@@ -288,16 +288,16 @@ export function withIdRefPrefix(schemaNode) {
  * false.
  */
 export function isValid(schema, data, rootSchema) {
-	try {
-		// add the rootSchema ROOT_SCHEMA_PREFIX as id.
-		// then rewrite the schema ref's to point to the rootSchema
-		// this accounts for the case where schema have references to models
-		// that lives in the rootSchema but not in the schema in question.
-		return ajv.addSchema(rootSchema, ROOT_SCHEMA_PREFIX).validate(withIdRefPrefix(schema), data);
-	} catch (e) {
-		return false;
-	} finally {
-		// make sure we remove the rootSchema from the global ajv instance
-		ajv.removeSchema(ROOT_SCHEMA_PREFIX);
-	}
+  try {
+    // add the rootSchema ROOT_SCHEMA_PREFIX as id.
+    // then rewrite the schema ref's to point to the rootSchema
+    // this accounts for the case where schema have references to models
+    // that lives in the rootSchema but not in the schema in question.
+    return ajv.addSchema(rootSchema, ROOT_SCHEMA_PREFIX).validate(withIdRefPrefix(schema), data);
+  } catch (e) {
+    return false;
+  } finally {
+    // make sure we remove the rootSchema from the global ajv instance
+    ajv.removeSchema(ROOT_SCHEMA_PREFIX);
+  }
 }
