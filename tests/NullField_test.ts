@@ -1,6 +1,5 @@
-import { expect } from 'chai';
+import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
-import sinon from 'sinon';
 
 describe('NullField', () => {
   let sandbox;
