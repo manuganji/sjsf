@@ -16,69 +16,69 @@ describe('NumberField', () => {
 
   describe('Number widget', () => {
     it('should use step to represent the multipleOf keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           multipleOf: 5
         }
       });
 
-      expect(node.querySelector('input').step).to.eql('5');
+      expect(container.querySelector('input').step).to.eql('5');
     });
 
     it('should use min to represent the minimum keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           minimum: 0
         }
       });
 
-      expect(node.querySelector('input').min).to.eql('0');
+      expect(container.querySelector('input').min).to.eql('0');
     });
 
     it('should use max to represent the maximum keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           maximum: 100
         }
       });
 
-      expect(node.querySelector('input').max).to.eql('100');
+      expect(container.querySelector('input').max).to.eql('100');
     });
 
     it('should use step to represent the multipleOf keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           multipleOf: 5
         }
       });
 
-      expect(node.querySelector('input').step).to.eql('5');
+      expect(container.querySelector('input').step).to.eql('5');
     });
 
     it('should use min to represent the minimum keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           minimum: 0
         }
       });
 
-      expect(node.querySelector('input').min).to.eql('0');
+      expect(container.querySelector('input').min).to.eql('0');
     });
 
     it('should use max to represent the maximum keyword', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           maximum: 100
         }
       });
 
-      expect(node.querySelector('input').max).to.eql('100');
+      expect(container.querySelector('input').max).to.eql('100');
     });
   });
   describe('Number and text widget', () => {
@@ -92,7 +92,7 @@ describe('NumberField', () => {
     ];
     for (let uiSchema of uiSchemas) {
       it('should render a string field with a label', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number',
             title: 'foo'
@@ -100,11 +100,11 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(node.querySelector('.field label').textContent).eql('foo');
+        expect(container.querySelector('.field label').textContent).eql('foo');
       });
 
       it('should render a string field with a description', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number',
             description: 'bar'
@@ -112,24 +112,24 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(node.querySelector('.field-description').textContent).eql('bar');
+        expect(container.querySelector('.field-description').textContent).eql('bar');
       });
 
       it('formData should default to undefined', () => {
-        const { node, onSubmit } = createFormComponent({
+        const { container: container, onSubmit } = createFormComponent({
           schema: { type: 'number' },
           uiSchema,
           noValidate: true
         });
 
-        submitForm(node);
+        submitForm(container);
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
           formData: undefined
         });
       });
 
       it('should assign a default value', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number',
             default: 2
@@ -137,18 +137,18 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(node.querySelector('.field input').value).eql('2');
+        expect(container.querySelector('.field input').value).eql('2');
       });
 
       it('should handle a change event', () => {
-        const { node, onChange } = createFormComponent({
+        const { container: container, onChange } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '2' }
         });
 
@@ -159,7 +159,7 @@ describe('NumberField', () => {
 
       it('should handle a blur event', () => {
         const onBlur = sandbox.spy();
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
@@ -167,7 +167,7 @@ describe('NumberField', () => {
           onBlur
         });
 
-        const input = node.querySelector('input');
+        const input = container.querySelector('input');
         Simulate.blur(input, {
           target: { value: '2' }
         });
@@ -177,7 +177,7 @@ describe('NumberField', () => {
 
       it('should handle a focus event', () => {
         const onFocus = sandbox.spy();
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
@@ -185,7 +185,7 @@ describe('NumberField', () => {
           onFocus
         });
 
-        const input = node.querySelector('input');
+        const input = container.querySelector('input');
         Simulate.focus(input, {
           target: { value: '2' }
         });
@@ -194,7 +194,7 @@ describe('NumberField', () => {
       });
 
       it('should fill field with data', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
@@ -202,18 +202,18 @@ describe('NumberField', () => {
           formData: 2
         });
 
-        expect(node.querySelector('.field input').value).eql('2');
+        expect(container.querySelector('.field input').value).eql('2');
       });
 
       describe('when inputting a number that ends with a dot and/or zero it should normalize it, without changing the input value', () => {
-        const { node, onChange } = createFormComponent({
+        const { container: container, onChange } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        const $input = node.querySelector('input');
+        const $input = container.querySelector('input');
 
         const tests = [
           {
@@ -275,14 +275,14 @@ describe('NumberField', () => {
       });
 
       it('should normalize values beginning with a decimal point', () => {
-        const { node, onChange } = createFormComponent({
+        const { container: container, onChange } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        const $input = node.querySelector('input');
+        const $input = container.querySelector('input');
 
         Simulate.change($input, {
           target: { value: '.00' }
@@ -299,13 +299,13 @@ describe('NumberField', () => {
           type: 'number'
         };
 
-        const { comp, node, rerender } = createFormComponent({
+        const { component: comp, container: container, rerender } = createFormComponent({
           schema,
           uiSchema,
           formData: 2.03
         });
 
-        const $input = node.querySelector('input');
+        const $input = container.querySelector('input');
 
         expect($input.value).eql('2.03');
 
@@ -318,65 +318,65 @@ describe('NumberField', () => {
       });
 
       it('should render the widget with the expected id', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        expect(node.querySelector('input').id).eql('root');
+        expect(container.querySelector('input').id).eql('root');
       });
 
       it('should render with trailing zeroes', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '2.' }
         });
         // "2." is not really a valid number in a input field of type number
         // so we need to use getAttribute("value") instead since .value outputs the empty string
-        expect(node.querySelector('.field input').getAttribute('value')).eql('2.');
+        expect(container.querySelector('.field input').getAttribute('value')).eql('2.');
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '2.0' }
         });
-        expect(node.querySelector('.field input').value).eql('2.0');
+        expect(container.querySelector('.field input').value).eql('2.0');
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '2.00' }
         });
-        expect(node.querySelector('.field input').value).eql('2.00');
+        expect(container.querySelector('.field input').value).eql('2.00');
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '2.000' }
         });
-        expect(node.querySelector('.field input').value).eql('2.000');
+        expect(container.querySelector('.field input').value).eql('2.000');
       });
 
       it('should allow a zero to be input', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
           uiSchema
         });
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '0' }
         });
-        expect(node.querySelector('.field input').value).eql('0');
+        expect(container.querySelector('.field input').value).eql('0');
       });
 
       it('should render customized StringField', () => {
         const CustomStringField = () => <div id="custom" />;
 
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'number'
           },
@@ -386,37 +386,37 @@ describe('NumberField', () => {
           }
         });
 
-        expect(node.querySelector('#custom')).to.exist;
+        expect(container.querySelector('#custom')).to.exist;
       });
     }
   });
 
   describe('SelectWidget', () => {
     it('should render a number field', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           enum: [1, 2]
         }
       });
 
-      expect(node.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
     });
 
     it('should infer the value from an enum on change', () => {
       const spy = vi.fn();
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           enum: [1, 2]
         },
         onChange: spy
       });
 
-      expect(node.querySelectorAll('.field select')).to.have.length.of(1);
-      const $select = node.querySelector('.field select');
+      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      const $select = container.querySelector('.field select');
       expect($select.value).eql('');
 
-      Simulate.change(node.querySelector('.field select'), {
+      Simulate.change(container.querySelector('.field select'), {
         target: { value: '1' }
       });
       expect($select.value).eql('1');
@@ -424,7 +424,7 @@ describe('NumberField', () => {
     });
 
     it('should render a string field with a label', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           enum: [1, 2],
@@ -432,7 +432,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(node.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('.field label').textContent).eql('foo');
     });
 
     it('should assign a default value', () => {
@@ -449,14 +449,14 @@ describe('NumberField', () => {
     });
 
     it('should handle a change event', () => {
-      const { node, onChange } = createFormComponent({
+      const { container: container, onChange } = createFormComponent({
         schema: {
           type: 'number',
           enum: [1, 2]
         }
       });
 
-      Simulate.change(node.querySelector('select'), {
+      Simulate.change(container.querySelector('select'), {
         target: { value: '2' }
       });
 
@@ -464,26 +464,26 @@ describe('NumberField', () => {
     });
 
     it('should fill field with data', () => {
-      const { node, onSubmit } = createFormComponent({
+      const { container: container, onSubmit } = createFormComponent({
         schema: {
           type: 'number',
           enum: [1, 2]
         },
         formData: 2
       });
-      submitForm(node);
+      submitForm(container);
       sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: 2 });
     });
 
     it('should render the widget with the expected id', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'number',
           enum: [1, 2]
         }
       });
 
-      expect(node.querySelector('select').id).eql('root');
+      expect(container.querySelector('select').id).eql('root');
     });
 
     it('should render a select element with a blank option, when default value is not set.', () => {
@@ -497,14 +497,14 @@ describe('NumberField', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      const selects = node.querySelectorAll('select');
+      const selects = container.querySelectorAll('select');
       expect(selects[0].value).eql('');
 
-      const options = node.querySelectorAll('option');
+      const options = container.querySelectorAll('option');
       expect(options.length).eql(2);
       expect(options[0].innerHTML).eql('');
     });
@@ -521,14 +521,14 @@ describe('NumberField', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      const selects = node.querySelectorAll('select');
+      const selects = container.querySelectorAll('select');
       expect(selects[0].value).eql('2');
 
-      const options = node.querySelectorAll('option');
+      const options = container.querySelectorAll('option');
       expect(options.length).eql(1);
       expect(options[0].innerHTML).eql('2');
     });
@@ -545,14 +545,14 @@ describe('NumberField', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      const selects = node.querySelectorAll('select');
+      const selects = container.querySelectorAll('select');
       expect(selects[0].value).eql('0');
 
-      const options = node.querySelectorAll('option');
+      const options = container.querySelectorAll('option');
       expect(options.length).eql(1);
       expect(options[0].innerHTML).eql('0');
     });

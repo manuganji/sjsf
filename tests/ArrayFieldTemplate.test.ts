@@ -49,18 +49,18 @@ describe('ArrayFieldTemplate', () => {
 
       describe('with template globally configured', () => {
         it('should render a stateful custom component', () => {
-          const { node } = createFormComponent({
+          const { container } = createFormComponent({
             schema: { type: 'array', items: { type: 'string' } },
             formData,
             ArrayFieldTemplate
           });
 
-          expect(node.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
         });
       });
       describe('with template configured in ui:ArrayFieldTemplate', () => {
         it('should render a stateful custom component', () => {
-          const { node } = createFormComponent({
+          const { container } = createFormComponent({
             schema: { type: 'array', items: { type: 'string' } },
             formData,
             uiSchema: {
@@ -68,12 +68,12 @@ describe('ArrayFieldTemplate', () => {
             }
           });
 
-          expect(node.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
         });
       });
       describe('with template configured globally being overriden in ui:ArrayFieldTemplate', () => {
         it('should render a stateful custom component', () => {
-          const { node } = createFormComponent({
+          const { container } = createFormComponent({
             schema: { type: 'array', items: { type: 'string' } },
             formData,
             uiSchema: {
@@ -83,7 +83,7 @@ describe('ArrayFieldTemplate', () => {
             ArrayFieldTemplate: () => <div />
           });
 
-          expect(node.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
         });
       });
     });
@@ -96,7 +96,7 @@ describe('ArrayFieldTemplate', () => {
         items: { type: 'string' }
       };
 
-      let node;
+      let container;
 
       describe('with template globally configured', () => {
         const uiSchema = {
@@ -104,12 +104,12 @@ describe('ArrayFieldTemplate', () => {
         };
 
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             ArrayFieldTemplate,
             formData,
             schema,
             uiSchema
-          }).node;
+          }).container;
         });
 
         sharedIts();
@@ -121,11 +121,11 @@ describe('ArrayFieldTemplate', () => {
         };
 
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             formData,
             schema,
             uiSchema
-          }).node;
+          }).container;
         });
         sharedIts();
       });
@@ -136,43 +136,43 @@ describe('ArrayFieldTemplate', () => {
         };
 
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             formData,
             schema,
             uiSchema,
             // Empty field template for proof that we're doing overrides
             ArrayFieldTemplate: () => <div />
-          }).node;
+          }).container;
         });
         sharedIts();
       });
       function sharedIts() {
         it('should render one root element for the array', () => {
-          expect(node.querySelectorAll('.custom-array')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array')).to.have.length.of(1);
         });
 
         it('should render one add button', () => {
-          expect(node.querySelectorAll('.custom-array-add')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array-add')).to.have.length.of(1);
         });
 
         it('should render one child for each array item', () => {
-          expect(node.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
+          expect(container.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
         });
 
         it('should render text input for each array item', () => {
           expect(
-            node.querySelectorAll('.custom-array-item .field input[type=text]')
+            container.querySelectorAll('.custom-array-item .field input[type=text]')
           ).to.have.length.of(formData.length);
         });
 
         it('should render move up button for all but one array items', () => {
-          expect(node.querySelectorAll('.custom-array-item-move-up')).to.have.length.of(
+          expect(container.querySelectorAll('.custom-array-item-move-up')).to.have.length.of(
             formData.length - 1
           );
         });
 
         it('should render move down button for all but one array items', () => {
-          expect(node.querySelectorAll('.custom-array-item-move-down')).to.have.length.of(
+          expect(container.querySelectorAll('.custom-array-item-move-down')).to.have.length.of(
             formData.length - 1
           );
         });
@@ -187,19 +187,19 @@ describe('ArrayFieldTemplate', () => {
         items: [{ type: 'string' }, { type: 'string' }, { type: 'string' }]
       };
 
-      let node;
+      let container;
 
       describe('with template globally configured', () => {
         const uiSchema = {
           classNames: 'custom-array'
         };
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             formData,
             schema,
             uiSchema,
             ArrayFieldTemplate
-          }).node;
+          }).container;
         });
         sharedIts();
       });
@@ -210,11 +210,11 @@ describe('ArrayFieldTemplate', () => {
           'ui:ArrayFieldTemplate': ArrayFieldTemplate
         };
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             formData,
             schema,
             uiSchema
-          }).node;
+          }).container;
         });
         sharedIts();
       });
@@ -224,41 +224,41 @@ describe('ArrayFieldTemplate', () => {
           'ui:ArrayFieldTemplate': ArrayFieldTemplate
         };
         beforeEach(() => {
-          node = createFormComponent({
+          container = createFormComponent({
             formData,
             schema,
             uiSchema,
             // Empty field template for proof that we're doing overrides
             ArrayFieldTemplate: () => <div />
-          }).node;
+          }).container;
         });
         sharedIts();
       });
       function sharedIts() {
         it('should render one root element for the array', () => {
-          expect(node.querySelectorAll('.custom-array')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array')).to.have.length.of(1);
         });
 
         it('should not render an add button', () => {
-          expect(node.querySelectorAll('.custom-array-add')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-add')).to.have.length.of(0);
         });
 
         it('should render one child for each array item', () => {
-          expect(node.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
+          expect(container.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
         });
 
         it('should render text input for each array item', () => {
           expect(
-            node.querySelectorAll('.custom-array-item .field input[type=text]')
+            container.querySelectorAll('.custom-array-item .field input[type=text]')
           ).to.have.length.of(formData.length);
         });
 
         it('should not render any move up buttons', () => {
-          expect(node.querySelectorAll('.custom-array-item-move-up')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-item-move-up')).to.have.length.of(0);
         });
 
         it('should not render any move down buttons', () => {
-          expect(node.querySelectorAll('.custom-array-item-move-down')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-item-move-down')).to.have.length.of(0);
         });
       }
     });
@@ -278,12 +278,12 @@ describe('ArrayFieldTemplate', () => {
     }
 
     it('should render a stateful custom component', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: { type: 'array', items: { type: 'string' } },
         formData,
         ArrayFieldTemplate
       });
-      expect(node.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
     });
   });
 
@@ -316,12 +316,12 @@ describe('ArrayFieldTemplate', () => {
           </div>
         );
       };
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: { type: 'array', items: { type: 'string' } },
         formData,
         ArrayFieldTemplate
       });
-      Simulate.click(node.querySelector('.array-item-add'));
+      Simulate.click(container.querySelector('.array-item-add'));
     });
   });
 });

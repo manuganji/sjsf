@@ -23,11 +23,11 @@ describe('allOf', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelectorAll('input')).to.have.length.of(1);
+    expect(container.querySelectorAll('input')).to.have.length.of(1);
   });
 
   it('should be able to handle incompatible types and not crash', () => {
@@ -40,10 +40,10 @@ describe('allOf', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelectorAll('input')).to.have.length.of(0);
+    expect(container.querySelectorAll('input')).to.have.length.of(0);
   });
 });

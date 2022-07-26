@@ -30,9 +30,9 @@ describe('TitleField', () => {
       title: 'Field title',
       required: true
     };
-    const { node } = createComponent(TitleFieldWrapper, props);
+    const { container } = createComponent(TitleFieldWrapper, props);
 
-    expect(node.tagName).to.equal('LEGEND');
+    expect(container.tagName).to.equal('LEGEND');
   });
 
   it('should have the expected id', () => {
@@ -41,9 +41,9 @@ describe('TitleField', () => {
       required: true,
       id: 'sample_id'
     };
-    const { node } = createComponent(TitleFieldWrapper, props);
+    const { container } = createComponent(TitleFieldWrapper, props);
 
-    expect(node.id).to.equal('sample_id');
+    expect(container.id).to.equal('sample_id');
   });
 
   it('should include only title, when field is not required', () => {
@@ -51,9 +51,9 @@ describe('TitleField', () => {
       title: 'Field title',
       required: false
     };
-    const { node } = createComponent(TitleFieldWrapper, props);
+    const { container } = createComponent(TitleFieldWrapper, props);
 
-    expect(node.textContent).to.equal(props.title);
+    expect(container.textContent).to.equal(props.title);
   });
 
   it('should add an asterisk to the title, when field is required', () => {
@@ -61,10 +61,10 @@ describe('TitleField', () => {
       title: 'Field title',
       required: true
     };
-    const { node } = createComponent(TitleFieldWrapper, props);
+    const { container } = createComponent(TitleFieldWrapper, props);
 
-    expect(node.textContent).to.equal(props.title + '*');
+    expect(container.textContent).to.equal(props.title + '*');
 
-    expect(node.querySelector('span.required').textContent).to.equal('*');
+    expect(container.querySelector('span.required').textContent).to.equal('*');
   });
 });

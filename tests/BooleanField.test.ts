@@ -17,39 +17,39 @@ describe('BooleanField', () => {
   });
 
   it('should render a boolean field', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       }
     });
 
-    expect(node.querySelectorAll('.field input[type=checkbox]')).to.have.length.of(1);
+    expect(container.querySelectorAll('.field input[type=checkbox]')).to.have.length.of(1);
   });
 
   it('should render a boolean field with the expected id', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       }
     });
 
-    expect(node.querySelector('.field input[type=checkbox]').id).eql('root');
+    expect(container.querySelector('.field input[type=checkbox]')?.id).eql('root');
   });
 
   it('should render a boolean field with a label', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         title: 'foo'
       }
     });
 
-    expect(node.querySelector('.field label span').textContent).eql('foo');
+    expect(container.querySelector('.field label span')?.textContent).eql('foo');
   });
 
   describe('HTML5 required attribute', () => {
     it('should not render a required attribute for simple required fields', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -61,11 +61,11 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(false);
+      expect(container.querySelector('input[type=checkbox]').required).eql(false);
     });
 
     it('should add a required attribute if the schema uses const with a true value', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -77,11 +77,11 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(true);
+      expect(container.querySelector('input[type=checkbox]').required).eql(true);
     });
 
     it('should add a required attribute if the schema uses an enum with a single value of true', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -93,11 +93,11 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(true);
+      expect(container.querySelector('input[type=checkbox]').required).eql(true);
     });
 
     it('should add a required attribute if the schema uses an anyOf with a single value of true', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -113,11 +113,11 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(true);
+      expect(container.querySelector('input[type=checkbox]').required).eql(true);
     });
 
     it('should add a required attribute if the schema uses a oneOf with a single value of true', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -133,11 +133,11 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(true);
+      expect(container.querySelector('input[type=checkbox]').required).eql(true);
     });
 
     it('should add a required attribute if the schema uses an allOf with a value of true', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'object',
           properties: {
@@ -153,30 +153,30 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(node.querySelector('input[type=checkbox]').required).eql(true);
+      expect(container.querySelector('input[type=checkbox]').required).eql(true);
     });
   });
 
   it('should render a single label', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         title: 'foo'
       }
     });
 
-    expect(node.querySelectorAll('.field label')).to.have.length.of(1);
+    expect(container.querySelectorAll('.field label')).to.have.length.of(1);
   });
 
   it('should render a description', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         description: 'my description'
       }
     });
 
-    const description = node.querySelector('.field-description');
+    const description = container.querySelector('.field-description');
     expect(description.textContent).eql('my description');
   });
 
@@ -185,7 +185,7 @@ describe('BooleanField', () => {
       return <div id="custom-ui-option-value">{uiSchema.custom_field_key['ui:options'].test}</div>;
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         description: 'my description'
@@ -203,11 +203,11 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(node.querySelector('#custom-ui-option-value').textContent).to.eql('foo');
+    expect(container.querySelector('#custom-ui-option-value').textContent).to.eql('foo');
   });
 
   it('should render the description using provided description field', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         description: 'my description'
@@ -219,70 +219,70 @@ describe('BooleanField', () => {
       }
     });
 
-    const description = node.querySelector('.field-description');
+    const description = container.querySelector('.field-description');
     expect(description.textContent).eql('my description overridden');
   });
 
   it('should assign a default value', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: true
       }
     });
 
-    expect(node.querySelector('.field input').checked).eql(true);
+    expect(container.querySelector('.field input').checked).eql(true);
   });
 
   it('formData should default to undefined', () => {
-    const { node, onSubmit } = createFormComponent({
+    const { container, onSubmit } = createFormComponent({
       schema: { type: 'boolean' },
       noValidate: true
     });
-    submitForm(node);
+    submitForm(container);
     sinon.assert.calledWithMatch(onSubmit.lastCall, {
       formData: undefined
     });
   });
 
   it('should handle a change event', () => {
-    const { node, onChange } = createFormComponent({
+    const { container, onChange } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
       }
     });
 
-    Simulate.change(node.querySelector('input'), {
+    Simulate.change(container.querySelector('input'), {
       target: { checked: true }
     });
     sinon.assert.calledWithMatch(onChange.lastCall, { formData: true });
   });
 
   it('should fill field with data', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       },
       formData: true
     });
 
-    expect(node.querySelector('.field input').checked).eql(true);
+    expect(container.querySelector('.field input').checked).eql(true);
   });
 
   it('should render radio widgets with the expected id', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       },
       uiSchema: { 'ui:widget': 'radio' }
     });
 
-    expect(node.querySelector('.field-radio-group').id).eql('root');
+    expect(container.querySelector('.field-radio-group').id).eql('root');
   });
 
   it('should have default enum option labels for radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       },
@@ -291,14 +291,14 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field-radio-group label'),
+      container.querySelectorAll('.field-radio-group label'),
       (label) => label.textContent
     );
     expect(labels).eql(['Yes', 'No']);
   });
 
   it('should support enum option ordering for radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         enum: [false, true]
@@ -308,14 +308,14 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field-radio-group label'),
+      container.querySelectorAll('.field-radio-group label'),
       (label) => label.textContent
     );
     expect(labels).eql(['No', 'Yes']);
   });
 
   it('should support enumNames for radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         enumNames: ['Yes', 'No']
@@ -325,14 +325,14 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field-radio-group label'),
+      container.querySelectorAll('.field-radio-group label'),
       (label) => label.textContent
     );
     expect(labels).eql(['Yes', 'No']);
   });
 
   it('should support oneOf titles for radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         oneOf: [
@@ -351,14 +351,14 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field-radio-group label'),
+      container.querySelectorAll('.field-radio-group label'),
       (label) => label.textContent
     );
     expect(labels).eql(['Yes', 'No']);
   });
 
   it('should preserve oneOf option ordering for radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         oneOf: [
@@ -377,14 +377,14 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field-radio-group label'),
+      container.querySelectorAll('.field-radio-group label'),
       (label) => label.textContent
     );
     expect(labels).eql(['No', 'Yes']);
   });
 
   it('should support inline radio widgets', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: { type: 'boolean' },
       formData: true,
       uiSchema: {
@@ -395,12 +395,12 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(node.querySelectorAll('.radio-inline')).to.have.length.of(2);
+    expect(container.querySelectorAll('.radio-inline')).to.have.length.of(2);
   });
 
   it('should handle a focus event for radio widgets', () => {
     const onFocus = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -411,8 +411,8 @@ describe('BooleanField', () => {
       onFocus
     });
 
-    const element = node.querySelector('.field-radio-group');
-    Simulate.focus(node.querySelector('input'), {
+    const element = container.querySelector('.field-radio-group');
+    Simulate.focus(container.querySelector('input'), {
       target: {
         value: false
       }
@@ -422,7 +422,7 @@ describe('BooleanField', () => {
 
   it('should handle a blur event for radio widgets', () => {
     const onBlur = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -433,8 +433,8 @@ describe('BooleanField', () => {
       onBlur
     });
 
-    const element = node.querySelector('.field-radio-group');
-    Simulate.blur(node.querySelector('input'), {
+    const element = container.querySelector('.field-radio-group');
+    Simulate.blur(container.querySelector('input'), {
       target: {
         value: false
       }
@@ -443,7 +443,7 @@ describe('BooleanField', () => {
   });
 
   it('should support enumNames for select', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         enumNames: ['Yes', 'No']
@@ -453,7 +453,7 @@ describe('BooleanField', () => {
     });
 
     const labels = [].map.call(
-      node.querySelectorAll('.field option'),
+      container.querySelectorAll('.field option'),
       (label) => label.textContent
     );
     expect(labels).eql(['', 'Yes', 'No']);
@@ -461,7 +461,7 @@ describe('BooleanField', () => {
 
   it('should handle a focus event with checkbox', () => {
     const onFocus = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -472,7 +472,7 @@ describe('BooleanField', () => {
       onFocus
     });
 
-    const element = node.querySelector('select');
+    const element = container.querySelector('select');
     Simulate.focus(element, {
       target: {
         value: false
@@ -483,7 +483,7 @@ describe('BooleanField', () => {
 
   it('should handle a blur event with select', () => {
     const onBlur = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -494,7 +494,7 @@ describe('BooleanField', () => {
       onBlur
     });
 
-    const element = node.querySelector('select');
+    const element = container.querySelector('select');
     Simulate.blur(element, {
       target: {
         value: false
@@ -504,17 +504,17 @@ describe('BooleanField', () => {
   });
 
   it('should render the widget with the expected id', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       }
     });
 
-    expect(node.querySelector('input[type=checkbox]').id).eql('root');
+    expect(container.querySelector('input[type=checkbox]').id).eql('root');
   });
 
   it('should render customized checkbox', () => {
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean'
       },
@@ -523,12 +523,12 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(node.querySelector('#custom')).to.exist;
+    expect(container.querySelector('#custom')).to.exist;
   });
 
   it('should handle a focus event with checkbox', () => {
     const onFocus = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -539,7 +539,7 @@ describe('BooleanField', () => {
       onFocus
     });
 
-    const element = node.querySelector('input');
+    const element = container.querySelector('input');
     Simulate.focus(element, {
       target: {
         checked: false
@@ -550,7 +550,7 @@ describe('BooleanField', () => {
 
   it('should handle a blur event with checkbox', () => {
     const onBlur = sandbox.spy();
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'boolean',
         default: false
@@ -561,7 +561,7 @@ describe('BooleanField', () => {
       onBlur
     });
 
-    const element = node.querySelector('input');
+    const element = container.querySelector('input');
     Simulate.blur(element, {
       target: {
         checked: false
@@ -590,8 +590,8 @@ describe('BooleanField', () => {
         }
       };
 
-      const { node } = createFormComponent({ schema, widgets, uiSchema });
-      expect(node.querySelector('#label-boolean')).to.not.be.null;
+      const { container } = createFormComponent({ schema, widgets, uiSchema });
+      expect(container.querySelector('#label-boolean')).to.not.be.null;
     });
 
     it('should pass schema title to widget', () => {
@@ -603,8 +603,8 @@ describe('BooleanField', () => {
         'ui:widget': 'Widget'
       };
 
-      const { node } = createFormComponent({ schema, widgets, uiSchema });
-      expect(node.querySelector('#label-test')).to.not.be.null;
+      const { container } = createFormComponent({ schema, widgets, uiSchema });
+      expect(container.querySelector('#label-test')).to.not.be.null;
     });
 
     it('should pass empty schema title to widget', () => {
@@ -615,33 +615,33 @@ describe('BooleanField', () => {
       const uiSchema = {
         'ui:widget': 'Widget'
       };
-      const { node } = createFormComponent({ schema, widgets, uiSchema });
-      expect(node.querySelector('#label-')).to.not.be.null;
+      const { container } = createFormComponent({ schema, widgets, uiSchema });
+      expect(container.querySelector('#label-')).to.not.be.null;
     });
   });
 
   describe('SelectWidget', () => {
     it('should render a field that contains an enum of booleans', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           enum: [true, false]
         }
       });
 
-      expect(node.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
     });
 
     it('should infer the value from an enum on change', () => {
       const spy = vi.fn();
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           enum: [true, false]
         },
         onChange: spy
       });
 
-      expect(node.querySelectorAll('.field select')).to.have.length.of(1);
-      const $select = node.querySelector('.field select');
+      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      const $select = container.querySelector('.field select');
       expect($select.value).eql('');
 
       Simulate.change($select, {
@@ -652,14 +652,14 @@ describe('BooleanField', () => {
     });
 
     it('should render a string field with a label', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           enum: [true, false],
           title: 'foo'
         }
       });
 
-      expect(node.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('.field label').textContent).eql('foo');
     });
 
     it('should assign a default value', () => {
@@ -675,13 +675,13 @@ describe('BooleanField', () => {
     });
 
     it('should handle a change event', () => {
-      const { node, onChange } = createFormComponent({
+      const { container, onChange } = createFormComponent({
         schema: {
           enum: [true, false]
         }
       });
 
-      Simulate.change(node.querySelector('select'), {
+      Simulate.change(container.querySelector('select'), {
         target: { value: 'false' }
       });
 
@@ -691,13 +691,13 @@ describe('BooleanField', () => {
     });
 
     it('should render the widget with the expected id', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           enum: [true, false]
         }
       });
 
-      expect(node.querySelector('select').id).eql('root');
+      expect(container.querySelector('select').id).eql('root');
     });
   });
 });

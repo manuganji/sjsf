@@ -21,11 +21,11 @@ describe('const', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelector('input#root_foo')).not.eql(null);
+    expect(container.querySelector('input#root_foo')).not.eql(null);
   });
 
   it('should render a schema that uses const with a number value', () => {
@@ -36,11 +36,11 @@ describe('const', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelector('input#root_foo')).not.eql(null);
+    expect(container.querySelector('input#root_foo')).not.eql(null);
   });
 
   it('should render a schema that uses const with a boolean value', () => {
@@ -51,10 +51,10 @@ describe('const', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelector("input#root_foo[type='checkbox']")).not.eql(null);
+    expect(container.querySelector("input#root_foo[type='checkbox']")).not.eql(null);
   });
 });

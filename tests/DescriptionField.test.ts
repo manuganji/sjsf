@@ -29,18 +29,18 @@ describe('DescriptionField', () => {
     const props = {
       description: <em>description</em>
     };
-    const { node } = createComponent(DescriptionFieldWrapper, props);
+    const { container } = createComponent(DescriptionFieldWrapper, props);
 
-    expect(node.tagName).to.equal('DIV');
+    expect(container.tagName).to.equal('DIV');
   });
 
   it('should return a p for a description text', () => {
     const props = {
       description: 'description'
     };
-    const { node } = createComponent(DescriptionFieldWrapper, props);
+    const { container } = createComponent(DescriptionFieldWrapper, props);
 
-    expect(node.tagName).to.equal('P');
+    expect(container.tagName).to.equal('P');
   });
 
   it('should have the expected id', () => {
@@ -48,8 +48,8 @@ describe('DescriptionField', () => {
       description: 'Field description',
       id: 'sample_id'
     };
-    const { node } = createComponent(DescriptionFieldWrapper, props);
+    const { container } = createComponent(DescriptionFieldWrapper, props);
 
-    expect(node.id).to.equal('sample_id');
+    expect(container.id).to.equal('sample_id');
   });
 });

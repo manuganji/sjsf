@@ -37,9 +37,9 @@ describe('ObjectFieldTemplate', () => {
   const DescriptionField = ({ description }) =>
     description ? <div className="description-field" /> : null;
 
-  let node;
+  let container;
   describe('with template globally configured', () => {
-    node = createFormComponent({
+    container = createFormComponent({
       schema: {
         type: 'object',
         properties: { foo: { type: 'string' }, bar: { type: 'string' } }
@@ -51,11 +51,11 @@ describe('ObjectFieldTemplate', () => {
         TitleField,
         DescriptionField
       }
-    }).node;
+    }).container;
     sharedIts();
   });
   describe('with template configured in ui:ObjectFieldTemplate', () => {
-    node = createFormComponent({
+    container = createFormComponent({
       schema: {
         type: 'object',
         properties: { foo: { type: 'string' }, bar: { type: 'string' } }
@@ -69,11 +69,11 @@ describe('ObjectFieldTemplate', () => {
         TitleField,
         DescriptionField
       }
-    }).node;
+    }).container;
     sharedIts();
   });
   describe('with template configured globally overridden by ui:ObjectFieldTemplate', () => {
-    node = createFormComponent({
+    container = createFormComponent({
       schema: {
         type: 'object',
         properties: { foo: { type: 'string' }, bar: { type: 'string' } }
@@ -88,25 +88,25 @@ describe('ObjectFieldTemplate', () => {
         TitleField,
         DescriptionField
       }
-    }).node;
+    }).container;
     sharedIts();
   });
 
   function sharedIts() {
     it('should render one root element', () => {
-      expect(node.querySelectorAll('.root')).to.have.length.of(1);
+      expect(container.querySelectorAll('.root')).to.have.length.of(1);
     });
 
     it('should render one title', () => {
-      expect(node.querySelectorAll('.title-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.title-field')).to.have.length.of(1);
     });
 
     it('should render one description', () => {
-      expect(node.querySelectorAll('.description-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.description-field')).to.have.length.of(1);
     });
 
     it('should render two property containers', () => {
-      expect(node.querySelectorAll('.property')).to.have.length.of(2);
+      expect(container.querySelectorAll('.property')).to.have.length.of(2);
     });
   }
 });

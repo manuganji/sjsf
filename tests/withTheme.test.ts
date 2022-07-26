@@ -42,11 +42,11 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ fields }), {
+      let { container } = createComponent(WrapperClassComponent({ fields }), {
         schema,
         uiSchema
       });
-      expect(node.querySelectorAll('.string-field')).to.have.length.of(2);
+      expect(container.querySelectorAll('.string-field')).to.have.length.of(2);
     });
 
     it('should use withTheme field and the user defined field', () => {
@@ -72,13 +72,13 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ fields: themeFields }), {
+      let { container } = createComponent(WrapperClassComponent({ fields: themeFields }), {
         schema,
         uiSchema,
         fields: userFields
       });
-      expect(node.querySelectorAll('.string-field')).to.have.length.of(1);
-      expect(node.querySelectorAll('.number-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.string-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.number-field')).to.have.length.of(1);
     });
 
     it('should use only the user defined field', () => {
@@ -104,13 +104,13 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ fields: themeFields }), {
+      let { container } = createComponent(WrapperClassComponent({ fields: themeFields }), {
         schema,
         uiSchema,
         fields: userFields
       });
-      expect(node.querySelectorAll('.string-field')).to.have.length.of(0);
-      expect(node.querySelectorAll('.form-control')).to.have.length.of(2);
+      expect(container.querySelectorAll('.string-field')).to.have.length.of(0);
+      expect(container.querySelectorAll('.form-control')).to.have.length.of(2);
     });
   });
 
@@ -123,11 +123,11 @@ describe('withTheme', () => {
         type: 'string'
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ widgets }), {
+      let { container } = createComponent(WrapperClassComponent({ widgets }), {
         schema,
         uiSchema
       });
-      expect(node.querySelectorAll('#test')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test')).to.have.length.of(1);
     });
 
     it('should use the withTheme widget as well as user defined widget', () => {
@@ -150,13 +150,13 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ widgets: themeWidgets }), {
+      let { container } = createComponent(WrapperClassComponent({ widgets: themeWidgets }), {
         schema,
         uiSchema,
         widgets: userWidgets
       });
-      expect(node.querySelectorAll('#test-theme-widget')).to.have.length.of(1);
-      expect(node.querySelectorAll('#test-user-widget')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test-theme-widget')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test-user-widget')).to.have.length.of(1);
     });
 
     it('should use only the user defined widget', () => {
@@ -175,13 +175,13 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ widgets: themeWidgets }), {
+      let { container } = createComponent(WrapperClassComponent({ widgets: themeWidgets }), {
         schema,
         uiSchema,
         widgets: userWidgets
       });
-      expect(node.querySelectorAll('#test-theme-widget')).to.have.length.of(0);
-      expect(node.querySelectorAll('#test-user-widget')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test-theme-widget')).to.have.length.of(0);
+      expect(container.querySelectorAll('#test-user-widget')).to.have.length.of(1);
     });
   });
 
@@ -204,11 +204,11 @@ describe('withTheme', () => {
         }
       };
       const uiSchema = {};
-      let { node } = createComponent(WrapperClassComponent({ ...themeTemplates }), {
+      let { container } = createComponent(WrapperClassComponent({ ...themeTemplates }), {
         schema,
         uiSchema
       });
-      expect(node.querySelectorAll('.with-theme-field-template')).to.have.length.of(1);
+      expect(container.querySelectorAll('.with-theme-field-template')).to.have.length.of(1);
     });
 
     it('should use only the user defined template', () => {
@@ -227,12 +227,12 @@ describe('withTheme', () => {
         type: 'object',
         properties: { foo: { type: 'string' }, bar: { type: 'string' } }
       };
-      let { node } = createComponent(WrapperClassComponent({ ...themeTemplates }), {
+      let { container } = createComponent(WrapperClassComponent({ ...themeTemplates }), {
         schema,
         ...userTemplates
       });
-      expect(node.querySelectorAll('.with-theme-field-template')).to.have.length.of(0);
-      expect(node.querySelectorAll('.user-field-template')).to.have.length.of(1);
+      expect(container.querySelectorAll('.with-theme-field-template')).to.have.length.of(0);
+      expect(container.querySelectorAll('.user-field-template')).to.have.length.of(1);
     });
 
     it('should forward the ref', () => {

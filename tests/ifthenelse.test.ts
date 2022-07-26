@@ -77,13 +77,13 @@ describe('conditional items', () => {
       country: 'United States of America'
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       formData
     });
 
-    expect(node.querySelector('input[label=zipcode]')).not.eql(null);
-    expect(node.querySelector('input[label=postal_code]')).to.eql(null);
+    expect(container.querySelector('input[label=zipcode]')).not.eql(null);
+    expect(container.querySelector('input[label=postal_code]')).to.eql(null);
   });
 
   it('should render else when condition is false', () => {
@@ -91,27 +91,27 @@ describe('conditional items', () => {
       country: 'France'
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       formData
     });
 
-    expect(node.querySelector('input[label=zipcode]')).to.eql(null);
-    expect(node.querySelector('input[label=postal_code]')).not.eql(null);
+    expect(container.querySelector('input[label=zipcode]')).to.eql(null);
+    expect(container.querySelector('input[label=postal_code]')).not.eql(null);
   });
 
   it('should render control when data has not been filled in', () => {
     const formData = {};
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       formData
     });
 
     // An empty formData will make the conditional evaluate to true because no properties are required in the if statement
     // Please see https://github.com/epoberezkin/ajv/issues/913
-    expect(node.querySelector('input[label=zipcode]')).not.eql(null);
-    expect(node.querySelector('input[label=postal_code]')).to.eql(null);
+    expect(container.querySelector('input[label=zipcode]')).not.eql(null);
+    expect(container.querySelector('input[label=postal_code]')).to.eql(null);
   });
 
   it('should render then when condition is true with reference', () => {
@@ -119,13 +119,13 @@ describe('conditional items', () => {
       country: 'United States of America'
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: schemaWithRef,
       formData
     });
 
-    expect(node.querySelector('input[label=zip_code]')).not.eql(null);
-    expect(node.querySelector('input[label=postal_code]')).to.eql(null);
+    expect(container.querySelector('input[label=zip_code]')).not.eql(null);
+    expect(container.querySelector('input[label=postal_code]')).to.eql(null);
   });
 
   it('should render else when condition is false with reference', () => {
@@ -133,13 +133,13 @@ describe('conditional items', () => {
       country: 'France'
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: schemaWithRef,
       formData
     });
 
-    expect(node.querySelector('input[label=zip_code]')).to.eql(null);
-    expect(node.querySelector('input[label=postal_code]')).not.eql(null);
+    expect(container.querySelector('input[label=zip_code]')).to.eql(null);
+    expect(container.querySelector('input[label=postal_code]')).not.eql(null);
   });
 
   describe('allOf if then else', () => {
@@ -186,12 +186,12 @@ describe('conditional items', () => {
         country: 'United States of America'
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: schemaWithAllOf,
         formData
       });
 
-      expect(node.querySelector('input[label=zipcode]')).not.eql(null);
+      expect(container.querySelector('input[label=zipcode]')).not.eql(null);
     });
 
     it('should render correctly when condition is false in allOf (1)', () => {
@@ -199,12 +199,12 @@ describe('conditional items', () => {
         country: ''
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: schemaWithAllOf,
         formData
       });
 
-      expect(node.querySelector('input[label=zipcode]')).to.eql(null);
+      expect(container.querySelector('input[label=zipcode]')).to.eql(null);
     });
 
     it('should render correctly when condition is true in allof (2)', () => {
@@ -212,14 +212,14 @@ describe('conditional items', () => {
         country: 'United Kingdom'
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: schemaWithAllOf,
         formData
       });
 
-      expect(node.querySelector('input[label=postcode]')).not.eql(null);
-      expect(node.querySelector('input[label=zipcode]')).to.eql(null);
-      expect(node.querySelector('input[label=telephone]')).to.eql(null);
+      expect(container.querySelector('input[label=postcode]')).not.eql(null);
+      expect(container.querySelector('input[label=zipcode]')).to.eql(null);
+      expect(container.querySelector('input[label=telephone]')).to.eql(null);
     });
 
     it('should render correctly when condition is true in allof (3)', () => {
@@ -227,14 +227,14 @@ describe('conditional items', () => {
         country: 'France'
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: schemaWithAllOf,
         formData
       });
 
-      expect(node.querySelector('input[label=postcode]')).to.eql(null);
-      expect(node.querySelector('input[label=zipcode]')).to.eql(null);
-      expect(node.querySelector('input[label=telephone]')).not.eql(null);
+      expect(container.querySelector('input[label=postcode]')).to.eql(null);
+      expect(container.querySelector('input[label=zipcode]')).to.eql(null);
+      expect(container.querySelector('input[label=telephone]')).not.eql(null);
     });
 
     const schemaWithAllOfRef = {
@@ -269,12 +269,12 @@ describe('conditional items', () => {
         country: 'United Kingdom'
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: schemaWithAllOfRef,
         formData
       });
 
-      expect(node.querySelector('input[label=postcode]')).not.eql(null);
+      expect(container.querySelector('input[label=postcode]')).not.eql(null);
     });
   });
 
@@ -289,7 +289,7 @@ describe('conditional items', () => {
       zipcode: '12345',
       otherKey: 'otherValue'
     };
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         ...schema,
         additionalProperties: true
@@ -298,10 +298,10 @@ describe('conditional items', () => {
     });
 
     // The zipcode field exists, but not as an additional property
-    expect(node.querySelector('input[label=zipcode]')).not.eql(null);
-    expect(node.querySelector('div.form-additional input[label=zipcode]')).to.eql(null);
+    expect(container.querySelector('input[label=zipcode]')).not.eql(null);
+    expect(container.querySelector('div.form-additional input[label=zipcode]')).to.eql(null);
 
     // The "otherKey" field exists as an additional property
-    expect(node.querySelector('div.form-additional input[label=otherKey]')).not.eql(null);
+    expect(container.querySelector('div.form-additional input[label=otherKey]')).not.eql(null);
   });
 });

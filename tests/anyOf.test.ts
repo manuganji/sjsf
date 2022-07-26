@@ -22,11 +22,11 @@ describe('anyOf', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelectorAll('select')).to.have.length.of(0);
+    expect(container.querySelectorAll('select')).to.have.length.of(0);
   });
 
   it('should render a select element if the anyOf keyword is present', () => {
@@ -46,16 +46,16 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelectorAll('select')).to.have.length.of(1);
-    expect(node.querySelector('select').id).eql('root__anyof_select');
+    expect(container.querySelectorAll('select')).to.have.length.of(1);
+    expect(container.querySelector('select').id).eql('root__anyof_select');
   });
 
   it('should assign a default value and set defaults on option change', () => {
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema: {
         anyOf: [
           {
@@ -77,7 +77,7 @@ describe('anyOf', () => {
       formData: { foo: 'defaultfoo' }
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
@@ -89,7 +89,7 @@ describe('anyOf', () => {
   });
 
   it('should assign a default value and set defaults on option change when using references', () => {
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema: {
         anyOf: [
           {
@@ -116,7 +116,7 @@ describe('anyOf', () => {
       formData: { foo: 'defaultfoo' }
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
@@ -128,7 +128,7 @@ describe('anyOf', () => {
   });
 
   it("should assign a default value and set defaults on option change with 'type': 'object' missing", () => {
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema: {
         type: 'object',
         anyOf: [
@@ -150,7 +150,7 @@ describe('anyOf', () => {
       formData: { foo: 'defaultfoo' }
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
@@ -183,12 +183,12 @@ describe('anyOf', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       widgets
     });
 
-    expect(node.querySelector('#CustomSelect')).to.exist;
+    expect(container.querySelector('#CustomSelect')).to.exist;
   });
 
   it('should change the rendered form when the select value is changed', () => {
@@ -208,21 +208,21 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    expect(node.querySelectorAll('#root_foo')).to.have.length.of(1);
-    expect(node.querySelectorAll('#root_bar')).to.have.length.of(0);
+    expect(container.querySelectorAll('#root_foo')).to.have.length.of(1);
+    expect(container.querySelectorAll('#root_bar')).to.have.length.of(0);
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
     });
 
-    expect(node.querySelectorAll('#root_foo')).to.have.length.of(0);
-    expect(node.querySelectorAll('#root_bar')).to.have.length.of(1);
+    expect(container.querySelectorAll('#root_foo')).to.have.length.of(0);
+    expect(container.querySelectorAll('#root_bar')).to.have.length.of(1);
   });
 
   it('should handle change events', () => {
@@ -242,11 +242,11 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema
     });
 
-    Simulate.change(node.querySelector('input#root_foo'), {
+    Simulate.change(container.querySelector('input#root_foo'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
@@ -275,15 +275,15 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema
     });
 
-    Simulate.change(node.querySelector('input#root_buzz'), {
+    Simulate.change(container.querySelector('input#root_buzz'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
-    Simulate.change(node.querySelector('input#root_foo'), {
+    Simulate.change(container.querySelector('input#root_foo'), {
       target: { value: 'Consectetur adipiscing elit' }
     });
 
@@ -294,7 +294,7 @@ describe('anyOf', () => {
       }
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
@@ -325,11 +325,11 @@ describe('anyOf', () => {
       }
     };
 
-    const { node, onChange } = createFormComponent({
+    const { container: container, onChange } = createFormComponent({
       schema
     });
 
-    Simulate.change(node.querySelector('input#root_userId'), {
+    Simulate.change(container.querySelector('input#root_userId'), {
       target: { value: 12345 }
     });
 
@@ -337,7 +337,7 @@ describe('anyOf', () => {
       formData: { userId: 12345 }
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     Simulate.change($select, {
       target: { value: $select.options[1].value }
@@ -347,7 +347,7 @@ describe('anyOf', () => {
       formData: { userId: undefined }
     });
 
-    Simulate.change(node.querySelector('input#root_userId'), {
+    Simulate.change(container.querySelector('input#root_userId'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
@@ -377,14 +377,14 @@ describe('anyOf', () => {
       return <div id="custom-anyof-field" />;
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       fields: {
         AnyOfField: CustomField
       }
     });
 
-    expect(node.querySelectorAll('#custom-anyof-field')).to.have.length(1);
+    expect(container.querySelectorAll('#custom-anyof-field')).to.have.length(1);
   });
 
   it('should select the correct field when the form is rendered from existing data', () => {
@@ -404,14 +404,14 @@ describe('anyOf', () => {
       }
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema,
       formData: {
         userId: 'foobarbaz'
       }
     });
 
-    expect(node.querySelector('select').value).eql('1');
+    expect(container.querySelector('select').value).eql('1');
   });
 
   it('should select the correct field when the formData property is updated', () => {
@@ -431,11 +431,11 @@ describe('anyOf', () => {
       }
     };
 
-    const { comp, node, rerender } = createFormComponent({
+    const { component: comp, container: container, rerender } = createFormComponent({
       schema
     });
 
-    expect(node.querySelector('select').value).eql('0');
+    expect(container.querySelector('select').value).eql('0');
 
     rerender({
       schema,
@@ -444,7 +444,7 @@ describe('anyOf', () => {
       }
     });
 
-    expect(node.querySelector('select').value).eql('1');
+    expect(container.querySelector('select').value).eql('1');
   });
 
   it('should not change the selected option when entering values', () => {
@@ -473,11 +473,11 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     expect($select.value).eql('0');
 
@@ -487,7 +487,7 @@ describe('anyOf', () => {
 
     expect($select.value).eql('1');
 
-    Simulate.change(node.querySelector('input#root_idCode'), {
+    Simulate.change(container.querySelector('input#root_idCode'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
@@ -536,11 +536,11 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     expect($select.value).eql('0');
 
@@ -550,7 +550,7 @@ describe('anyOf', () => {
 
     expect($select.value).eql('1');
 
-    Simulate.change(node.querySelector('input#root_idCode'), {
+    Simulate.change(container.querySelector('input#root_idCode'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
@@ -599,11 +599,11 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    const $select = node.querySelector('select');
+    const $select = container.querySelector('select');
 
     expect($select.value).eql('0');
 
@@ -613,7 +613,7 @@ describe('anyOf', () => {
 
     expect($select.value).eql('1');
 
-    Simulate.change(node.querySelector('input#root_idCode'), {
+    Simulate.change(container.querySelector('input#root_idCode'), {
       target: { value: 'Lorem ipsum dolor sit amet' }
     });
 
@@ -713,13 +713,13 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    let options = node.querySelectorAll('option');
-    expect(options[0].firstChild.nodeValue).eql('Address');
-    expect(options[1].firstChild.nodeValue).eql('Person');
+    let options = container.querySelectorAll('option');
+    expect(options[0].firstChild.containerValue).eql('Address');
+    expect(options[1].firstChild.containerValue).eql('Person');
   });
 
   it('should collect schema from $ref even when ref is within properties', () => {
@@ -759,13 +759,13 @@ describe('anyOf', () => {
       ]
     };
 
-    const { node } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
-    let options = node.querySelectorAll('option');
-    expect(options[0].firstChild.nodeValue).eql('Address');
-    expect(options[1].firstChild.nodeValue).eql('Person');
+    let options = container.querySelectorAll('option');
+    expect(options[0].firstChild.containerValue).eql('Address');
+    expect(options[1].firstChild.containerValue).eql('Person');
   });
 
   describe('Arrays', () => {
@@ -798,17 +798,17 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      expect(node.querySelector('.array-item-add button')).not.eql(null);
+      expect(container.querySelector('.array-item-add button')).not.eql(null);
 
-      Simulate.click(node.querySelector('.array-item-add button'));
+      Simulate.click(container.querySelector('.array-item-add button'));
 
-      expect(node.querySelectorAll('select')).to.have.length.of(1);
+      expect(container.querySelectorAll('select')).to.have.length.of(1);
 
-      expect(node.querySelectorAll('input#root_foo')).to.have.length.of(1);
+      expect(container.querySelectorAll('input#root_foo')).to.have.length.of(1);
     });
 
     it('should not change the selected option when switching order of items for anyOf inside array items', () => {
@@ -840,7 +840,7 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         formData: {
           items: [
@@ -852,14 +852,14 @@ describe('anyOf', () => {
         }
       });
 
-      let selects = node.querySelectorAll('select');
+      let selects = container.querySelectorAll('select');
       expect(selects[0].value).eql('0');
       expect(selects[1].value).eql('1');
 
-      const moveUpBtns = node.querySelectorAll('.array-item-move-up');
+      const moveUpBtns = container.querySelectorAll('.array-item-move-up');
       Simulate.click(moveUpBtns[1]);
 
-      selects = node.querySelectorAll('select');
+      selects = container.querySelectorAll('select');
       expect(selects[0].value).eql('1');
       expect(selects[1].value).eql('0');
     });
@@ -893,17 +893,17 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         formData: {
           items: [{}, {}]
         }
       });
 
-      const moveDownBtns = node.querySelectorAll('.array-item-move-down');
+      const moveDownBtns = container.querySelectorAll('.array-item-move-down');
       Simulate.click(moveDownBtns[0]);
 
-      const strInputs = node.querySelectorAll('fieldset .field-string input[type=text]');
+      const strInputs = container.querySelectorAll('fieldset .field-string input[type=text]');
 
       Simulate.change(strInputs[1], { target: { value: 'bar' } });
       expect(strInputs[1].value).eql('bar');
@@ -938,11 +938,11 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      const $select = node.querySelector('select');
+      const $select = container.querySelector('select');
 
       expect($select.options[0].text).eql('Foo');
       expect($select.options[1].text).eql('Option 2');
@@ -977,22 +977,22 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema
       });
 
-      expect(node.querySelector('.array-item-add button')).not.eql(null);
+      expect(container.querySelector('.array-item-add button')).not.eql(null);
 
-      Simulate.click(node.querySelector('.array-item-add button'));
+      Simulate.click(container.querySelector('.array-item-add button'));
 
-      const $select = node.querySelector('select');
+      const $select = container.querySelector('select');
       expect($select).not.eql(null);
       Simulate.change($select, {
         target: { value: $select.options[1].value }
       });
 
-      expect(node.querySelectorAll('input#root_foo')).to.have.length.of(1);
-      expect(node.querySelectorAll('input#root_bar')).to.have.length.of(1);
+      expect(container.querySelectorAll('input#root_foo')).to.have.length.of(1);
+      expect(container.querySelectorAll('input#root_bar')).to.have.length.of(1);
     });
 
     it('should correctly infer the selected option based on value', () => {
@@ -1051,7 +1051,7 @@ describe('anyOf', () => {
         }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         formData: {
           id: 'chain',
@@ -1071,7 +1071,7 @@ describe('anyOf', () => {
         }
       });
 
-      const idSelects = node.querySelectorAll('select#root_id');
+      const idSelects = container.querySelectorAll('select#root_id');
 
       expect(idSelects).to.have.length(4);
       expect(idSelects[0].value).eql('chain');
@@ -1102,35 +1102,35 @@ describe('anyOf', () => {
     }
 
     it('should show error on options with different types', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         validate
       });
 
-      Simulate.change(node.querySelector('input#root_userId'), {
+      Simulate.change(container.querySelector('input#root_userId'), {
         target: { value: 12345 }
       });
-      Simulate.submit(node);
+      Simulate.submit(container);
 
-      let inputs = node.querySelectorAll('.form-group.field-error input[type=number]');
+      let inputs = container.querySelectorAll('.form-group.field-error input[type=number]');
       expect(inputs[0].id).eql('root_userId');
 
-      const $select = node.querySelector('select');
+      const $select = container.querySelector('select');
 
       Simulate.change($select, {
         target: { value: $select.options[1].value }
       });
 
-      Simulate.change(node.querySelector('input#root_userId'), {
+      Simulate.change(container.querySelector('input#root_userId'), {
         target: { value: 'Lorem ipsum dolor sit amet' }
       });
-      Simulate.submit(node);
+      Simulate.submit(container);
 
-      inputs = node.querySelectorAll('.form-group.field-error input[type=text]');
+      inputs = container.querySelectorAll('.form-group.field-error input[type=text]');
       expect(inputs[0].id).eql('root_userId');
     });
     it('should NOT show error on options with different types when hideError: true', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         uiSchema: {
           'ui:hideError': true
@@ -1138,26 +1138,26 @@ describe('anyOf', () => {
         validate
       });
 
-      Simulate.change(node.querySelector('input#root_userId'), {
+      Simulate.change(container.querySelector('input#root_userId'), {
         target: { value: 12345 }
       });
-      Simulate.submit(node);
+      Simulate.submit(container);
 
-      let inputs = node.querySelectorAll('.form-group.field-error input[type=number]');
+      let inputs = container.querySelectorAll('.form-group.field-error input[type=number]');
       expect(inputs).to.have.length.of(0);
 
-      const $select = node.querySelector('select');
+      const $select = container.querySelector('select');
 
       Simulate.change($select, {
         target: { value: $select.options[1].value }
       });
 
-      Simulate.change(node.querySelector('input#root_userId'), {
+      Simulate.change(container.querySelector('input#root_userId'), {
         target: { value: 'Lorem ipsum dolor sit amet' }
       });
-      Simulate.submit(node);
+      Simulate.submit(container);
 
-      inputs = node.querySelectorAll('.form-group.field-error input[type=text]');
+      inputs = container.querySelectorAll('.form-group.field-error input[type=text]');
       expect(inputs).to.have.length.of(0);
     });
   });

@@ -9,14 +9,10 @@ import type { SvelteComponent } from 'svelte/types/runtime';
 export function createComponent(
   Component: SvelteComponent,
   props: any
-): {
-  comp: SvelteComponent;
-  node: RenderResult['container'];
-  onChange?: SpyInstance;
-  onSubmit?: SpyInstance;
-  onError?: SpyInstance;
-  rerender: (props: any) => void;
-  unmount: () => void;
+): Pick<RenderResult, 'component' | 'container' | 'rerender' | 'unmount'> & {
+  onChange: SpyInstance;
+  onSubmit: SpyInstance;
+  onError: SpyInstance;
 } {
   const onChange = vi.fn();
   const onError = vi.fn();
@@ -29,11 +25,19 @@ export function createComponent(
     rerender // @ts-ignore
   }: RenderResult = render(Component, { onSubmit, onError, onChange, ...props });
 
-  return { comp: component, node: container, onChange, onError, onSubmit, rerender, unmount };
+  return {
+    component: component,
+    container: container,
+    onChange,
+    onError,
+    onSubmit,
+    rerender,
+    unmount
+  };
 }
 
 export function createFormComponent(props) {
-  return createComponent(Form, { ...props });
+  return createComponent(Form, props);
 }
 
 export function createSandbox() {

@@ -423,7 +423,7 @@ describe('Validation', () => {
           }
         };
 
-        let onError, node;
+        let onError, container;
         beforeEach(() => {
           const compInfo = createFormComponent({
             schema,
@@ -432,8 +432,8 @@ describe('Validation', () => {
             }
           });
           onError = compInfo.onError;
-          node = compInfo.node;
-          submitForm(node);
+          container = compInfo.container;
+          submitForm(container);
         });
 
         it('should trigger onError call', () => {
@@ -450,8 +450,8 @@ describe('Validation', () => {
         });
 
         it('should render errors', () => {
-          expect(node.querySelectorAll('.errors li')).to.have.length.of(1);
-          expect(node.querySelector('.errors li').textContent).eql('.foo is a required property');
+          expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
+          expect(container.querySelector('.errors li').textContent).eql('.foo is a required property');
         });
       });
 
@@ -467,7 +467,7 @@ describe('Validation', () => {
           }
         };
 
-        let node, onError;
+        let container, onError;
 
         beforeEach(() => {
           onError = sandbox.spy();
@@ -478,14 +478,14 @@ describe('Validation', () => {
             },
             onError
           });
-          node = compInfo.node;
+          container = compInfo.container;
 
-          submitForm(node);
+          submitForm(container);
         });
 
         it('should render errors', () => {
-          expect(node.querySelectorAll('.errors li')).to.have.length.of(1);
-          expect(node.querySelector('.errors li').textContent).eql(
+          expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
+          expect(container.querySelector('.errors li').textContent).eql(
             '.foo should NOT be shorter than 10 characters'
           );
         });
@@ -517,13 +517,13 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { onError, node } = createFormComponent({
+        const { onError, container } = createFormComponent({
           schema,
           validate,
           formData
         });
 
-        submitForm(node);
+        submitForm(container);
         sinon.assert.calledWithMatch(onError.lastCall, [{ stack: 'root: Invalid' }]);
       });
 
@@ -538,13 +538,13 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { onChange, node } = createFormComponent({
+        const { onChange, container } = createFormComponent({
           schema,
           validate,
           formData,
           liveValidate: true
         });
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '1234' }
         });
 
@@ -567,14 +567,14 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           formData,
           validate,
           onSubmit
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.called(onSubmit);
       });
@@ -592,7 +592,7 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           formData,
           validate,
@@ -600,7 +600,7 @@ describe('Validation', () => {
           onError
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.notCalled(onSubmit);
         sinon.assert.called(onError);
@@ -625,12 +625,12 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { node, onError } = createFormComponent({
+        const { container, onError } = createFormComponent({
           schema,
           validate,
           formData
         });
-        submitForm(node);
+        submitForm(container);
         sinon.assert.calledWithMatch(onError.lastCall, [
           { stack: 'pass2: should NOT be shorter than 3 characters' },
           { stack: "pass2: Passwords don't match" }
@@ -663,13 +663,13 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { node, onError } = createFormComponent({
+        const { container, onError } = createFormComponent({
           schema,
           validate,
           formData
         });
 
-        submitForm(node);
+        submitForm(container);
         sinon.assert.calledWithMatch(onError.lastCall, [{ stack: "pass2: Passwords don't match" }]);
       });
 
@@ -690,12 +690,12 @@ describe('Validation', () => {
           return errors;
         }
 
-        const { node, onError } = createFormComponent({
+        const { container, onError } = createFormComponent({
           schema,
           validate,
           formData
         });
-        submitForm(node);
+        submitForm(container);
         sinon.assert.calledWithMatch(onError.lastCall, [{ stack: 'root: Forbidden value: bbb' }]);
       });
     });
@@ -711,7 +711,7 @@ describe('Validation', () => {
           }
         };
 
-        let node, onError;
+        let container, onError;
         beforeEach(() => {
           const compInfo = createFormComponent({
             schema,
@@ -720,14 +720,14 @@ describe('Validation', () => {
             },
             showErrorList: false
           });
-          node = compInfo.node;
+          container = compInfo.container;
           onError = compInfo.onError;
 
-          submitForm(node);
+          submitForm(container);
         });
 
         it('should not render error list if showErrorList prop true', () => {
-          expect(node.querySelectorAll('.errors li')).to.have.length.of(0);
+          expect(container.querySelectorAll('.errors li')).to.have.length.of(0);
         });
 
         it('should trigger onError call', () => {
@@ -774,7 +774,7 @@ describe('Validation', () => {
       );
 
       it('should use CustomErrorList', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           liveValidate: true,
@@ -782,19 +782,19 @@ describe('Validation', () => {
           ErrorList: CustomErrorList,
           formContext: { className: 'foo' }
         });
-        expect(node.querySelectorAll('.CustomErrorList')).to.have.length.of(1);
-        expect(node.querySelector('.CustomErrorList').textContent).eql('1 custom');
-        expect(node.querySelectorAll('.ErrorSchema')).to.have.length.of(1);
-        expect(node.querySelector('.ErrorSchema').textContent).eql('should be string');
-        expect(node.querySelectorAll('.Schema')).to.have.length.of(1);
-        expect(node.querySelector('.Schema').textContent).eql('string');
-        expect(node.querySelectorAll('.UiSchema')).to.have.length.of(1);
-        expect(node.querySelector('.UiSchema').textContent).eql('bar');
-        expect(node.querySelectorAll('.foo')).to.have.length.of(1);
+        expect(container.querySelectorAll('.CustomErrorList')).to.have.length.of(1);
+        expect(container.querySelector('.CustomErrorList').textContent).eql('1 custom');
+        expect(container.querySelectorAll('.ErrorSchema')).to.have.length.of(1);
+        expect(container.querySelector('.ErrorSchema').textContent).eql('should be string');
+        expect(container.querySelectorAll('.Schema')).to.have.length.of(1);
+        expect(container.querySelector('.Schema').textContent).eql('string');
+        expect(container.querySelectorAll('.UiSchema')).to.have.length.of(1);
+        expect(container.querySelector('.UiSchema').textContent).eql('bar');
+        expect(container.querySelectorAll('.foo')).to.have.length.of(1);
       });
     });
     describe('Custom meta schema', () => {
-      let onError, node;
+      let onError, container;
       const formData = {
         datasetId: 'no err'
       };
@@ -823,12 +823,12 @@ describe('Validation', () => {
           liveValidate: true,
           additionalMetaSchemas: [require('ajv/lib/refs/json-schema-draft-04.json')]
         });
-        node = withMetaSchema.node;
+        container = withMetaSchema.container;
         onError = withMetaSchema.onError;
-        submitForm(node);
+        submitForm(container);
       });
       it('should be used to validate schema', () => {
-        expect(node.querySelectorAll('.errors li')).to.have.length.of(1);
+        expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
         sinon.assert.calledWithMatch(onError.lastCall, [
           {
             message: 'should match pattern "\\d+"',
@@ -841,10 +841,10 @@ describe('Validation', () => {
         ]);
         onError.resetHistory();
 
-        Simulate.change(node.querySelector('input'), {
+        Simulate.change(container.querySelector('input'), {
           target: { value: '1234' }
         });
-        expect(node.querySelectorAll('.errors li')).to.have.length.of(0);
+        expect(container.querySelectorAll('.errors li')).to.have.length.of(0);
         sinon.assert.notCalled(onError);
       });
     });

@@ -33,59 +33,59 @@ describe('FieldTemplate', () => {
 
     describe('with template globally configured', () => {
       it('should render with disabled when ui:disabled is truthy', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': true },
           FieldTemplate
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': false },
           FieldTemplate
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
       });
     });
     describe('with template configured in ui:FieldTemplate', () => {
       it('should render with disabled when ui:disabled is truthy', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': true, 'ui:FieldTemplate': FieldTemplate }
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': false, 'ui:FieldTemplate': FieldTemplate }
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
       });
     });
     describe('with template configured globally being overriden in ui:FieldTemplate', () => {
       it('should render with disabled when ui:disabled is truthy', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': true, 'ui:FieldTemplate': FieldTemplate },
           // Empty field template to prove that overides work
           FieldTemplate: () => <div />
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': false, 'ui:FieldTemplate': FieldTemplate },
           // Empty field template to prove that overides work
           FieldTemplate: () => <div />
         });
-        expect(node.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
       });
     });
   });
@@ -105,13 +105,13 @@ describe('FieldTemplate', () => {
         properties: { fooBarBaz: { type: 'string' } }
       };
 
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         FieldTemplate
       });
 
-      expect(node.querySelectorAll('#root-schema')).to.have.length.of(1);
-      expect(node.querySelectorAll('#root-schema')[0].innerHTML).to.equal(JSON.stringify(schema));
+      expect(container.querySelectorAll('#root-schema')).to.have.length.of(1);
+      expect(container.querySelectorAll('#root-schema')[0].innerHTML).to.equal(JSON.stringify(schema));
     });
   });
 });

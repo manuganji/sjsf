@@ -40,8 +40,8 @@ describe('uiSchema', () => {
     };
 
     it('should apply custom class names to target widgets', () => {
-      const { node } = createFormComponent({ schema, uiSchema });
-      const [foo, bar] = node.querySelectorAll('.field-string');
+      const { container } = createFormComponent({ schema, uiSchema });
+      const [foo, bar] = container.querySelectorAll('.field-string');
 
       expect(foo.classList.contains('class-for-foo')).eql(true);
       expect(bar.classList.contains('class-for-bar')).eql(true);
@@ -71,9 +71,9 @@ describe('uiSchema', () => {
       };
 
       it('should render a root custom widget', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('.custom')).to.have.length.of(1);
+        expect(container.querySelectorAll('.custom')).to.have.length.of(1);
       });
     });
 
@@ -201,12 +201,12 @@ describe('uiSchema', () => {
       });
 
       it('should render merged ui:widget options for widget referenced as function', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
-        const widget = node.querySelector('#funcAll');
+        const widget = container.querySelector('#funcAll');
 
         expect(widget.style.background).to.equal('purple');
         expect(widget.style.color).to.equal('green');
@@ -215,12 +215,12 @@ describe('uiSchema', () => {
       });
 
       it('should render ui:widget default options for widget referenced as function', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
-        const widget = node.querySelector('#funcNone');
+        const widget = container.querySelector('#funcNone');
 
         expect(widget.style.background).to.equal('yellow');
         expect(widget.style.color).to.equal('green');
@@ -229,12 +229,12 @@ describe('uiSchema', () => {
       });
 
       it('should render merged ui:widget options for widget referenced as string', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
-        const widget = node.querySelector('#stringAll');
+        const widget = container.querySelector('#stringAll');
 
         expect(widget.style.background).to.equal('blue');
         expect(widget.style.color).to.equal('green');
@@ -243,12 +243,12 @@ describe('uiSchema', () => {
       });
 
       it('should render ui:widget default options for widget referenced as string', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
-        const widget = node.querySelector('#stringNone');
+        const widget = container.querySelector('#stringNone');
 
         expect(widget.style.background).to.equal('yellow');
         expect(widget.style.color).to.equal('green');
@@ -257,12 +257,12 @@ describe('uiSchema', () => {
       });
 
       it('should ui:option inputType for html5 input types', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
-        const widget = node.querySelector("input[type='tel']");
+        const widget = container.querySelector("input[type='tel']");
         expect(widget).to.not.be.null;
       });
     });
@@ -301,13 +301,13 @@ describe('uiSchema', () => {
       };
 
       it('should render a nested custom widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           widgets
         });
 
-        expect(node.querySelectorAll('.custom')).to.have.length.of(1);
+        expect(container.querySelectorAll('.custom')).to.have.length.of(1);
       });
     });
 
@@ -337,9 +337,9 @@ describe('uiSchema', () => {
         };
 
         it('should render a custom widget with options', () => {
-          const { node } = createFormComponent({ schema, uiSchema });
+          const { container } = createFormComponent({ schema, uiSchema });
 
-          expect(node.querySelectorAll('.custom')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom')).to.have.length.of(1);
         });
       });
 
@@ -358,13 +358,13 @@ describe('uiSchema', () => {
         };
 
         it('should render a custom widget with options', () => {
-          const { node } = createFormComponent({
+          const { container } = createFormComponent({
             schema,
             uiSchema,
             widgets
           });
 
-          expect(node.querySelectorAll('.custom')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom')).to.have.length.of(1);
         });
       });
     });
@@ -402,8 +402,8 @@ describe('uiSchema', () => {
       };
 
       it('should merge enumOptions with custom options', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelectorAll('.custom option')).to.have.length.of(2);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelectorAll('.custom option')).to.have.length.of(2);
       });
     });
 
@@ -427,10 +427,10 @@ describe('uiSchema', () => {
         }
       };
       it('should have atleast one option disabled', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
         const disabledOptionsLen = uiSchema.field['ui:enumDisabled'].length;
-        expect(node.querySelectorAll('option:disabled')).to.have.length.of(disabledOptionsLen);
-        expect(node.querySelectorAll('option:enabled')).to.have.length.of(
+        expect(container.querySelectorAll('option:disabled')).to.have.length.of(disabledOptionsLen);
+        expect(container.querySelectorAll('option:enabled')).to.have.length.of(
           // Two options, one disabled, plus the placeholder
           2 - disabledOptionsLen + 1
         );
@@ -457,10 +457,10 @@ describe('uiSchema', () => {
         }
       };
       it('should have atleast one radio option disabled', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
         const disabledOptionsLen = uiSchema.field['ui:enumDisabled'].length;
-        expect(node.querySelectorAll('input:disabled')).to.have.length.of(disabledOptionsLen);
-        expect(node.querySelectorAll('input:enabled')).to.have.length.of(
+        expect(container.querySelectorAll('input:disabled')).to.have.length.of(disabledOptionsLen);
+        expect(container.querySelectorAll('input:enabled')).to.have.length.of(
           // Two options, one disabled, plus the placeholder
           2 - disabledOptionsLen
         );
@@ -477,9 +477,9 @@ describe('uiSchema', () => {
         'ui:help': 'plop'
       };
 
-      const { node } = createFormComponent({ schema, uiSchema });
+      const { container } = createFormComponent({ schema, uiSchema });
 
-      expect(node.querySelector('p.help-block').textContent).eql('plop');
+      expect(container.querySelector('p.help-block').textContent).eql('plop');
     });
   });
 
@@ -492,9 +492,9 @@ describe('uiSchema', () => {
         'ui:title': 'plop'
       };
 
-      const { node } = createFormComponent({ schema, uiSchema });
+      const { container } = createFormComponent({ schema, uiSchema });
 
-      expect(node.querySelector('label.control-label').textContent).eql('plop');
+      expect(container.querySelector('label.control-label').textContent).eql('plop');
     });
   });
 
@@ -507,9 +507,9 @@ describe('uiSchema', () => {
         'ui:description': 'plop'
       };
 
-      const { node } = createFormComponent({ schema, uiSchema });
+      const { container } = createFormComponent({ schema, uiSchema });
 
-      expect(node.querySelector('p.field-description').textContent).eql('plop');
+      expect(container.querySelector('p.field-description').textContent).eql('plop');
     });
   });
 
@@ -521,9 +521,9 @@ describe('uiSchema', () => {
       'ui:help': <b>plop</b>
     };
 
-    const { node } = createFormComponent({ schema, uiSchema });
+    const { container } = createFormComponent({ schema, uiSchema });
 
-    expect(node.querySelector('div.help-block').textContent).eql('plop');
+    expect(container.querySelector('div.help-block').textContent).eql('plop');
   });
 
   describe('ui:focus', () => {
@@ -539,11 +539,11 @@ describe('uiSchema', () => {
       // activeElement only works correctly in jsdom if
       // the dom tree is connected to the document root.
       // https://github.com/jsdom/jsdom/issues/2723#issuecomment-664476384
-      const domNode = document.createElement('div');
-      document.body.appendChild(domNode);
-      render(<Form {...props} />, domNode);
-      expect(domNode.querySelector(selector)).eql(document.activeElement);
-      document.body.removeChild(domNode);
+      const domcontainer = document.createElement('div');
+      document.body.appendChild(domcontainer);
+      render(<Form {...props} />, domcontainer);
+      expect(domcontainer.querySelector(selector)).eql(document.activeElement);
+      document.body.removeChild(domcontainer);
     };
 
     describe('number', () => {
@@ -828,9 +828,9 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('input[type=file]')).to.have.length.of(1);
+        expect(container.querySelectorAll('input[type=file]')).to.have.length.of(1);
       });
     });
 
@@ -843,13 +843,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('textarea')).to.have.length.of(1);
+        expect(container.querySelectorAll('textarea')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -857,11 +857,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('textarea').value).eql('a');
+        expect(container.querySelector('textarea').value).eql('a');
       });
 
       it('should call onChange handler when text is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -869,7 +869,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('textarea'), {
+        Simulate.change(container.querySelector('textarea'), {
           target: {
             value: 'b'
           }
@@ -881,9 +881,9 @@ describe('uiSchema', () => {
       });
 
       it('should set a placeholder value', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelector('textarea').placeholder).eql('sample');
+        expect(container.querySelector('textarea').placeholder).eql('sample');
       });
     });
 
@@ -896,13 +896,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=password]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=password]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -910,11 +910,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=password]').value).eql('a');
+        expect(container.querySelector('[type=password]').value).eql('a');
       });
 
       it('should call onChange handler when text is updated is checked', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -922,7 +922,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=password]'), {
+        Simulate.change(container.querySelector('[type=password]'), {
           target: {
             value: 'b'
           }
@@ -934,9 +934,9 @@ describe('uiSchema', () => {
       });
 
       it('should set a placeholder value', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelector('[type=password]').placeholder).eql('sample');
+        expect(container.querySelector('[type=password]').placeholder).eql('sample');
       });
     });
 
@@ -948,13 +948,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=color]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=color]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -962,11 +962,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=color]').value).eql('#151ce6');
+        expect(container.querySelector('[type=color]').value).eql('#151ce6');
       });
 
       it('should call onChange handler when text is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -974,7 +974,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=color]'), {
+        Simulate.change(container.querySelector('[type=color]'), {
           target: {
             value: '#001122'
           }
@@ -993,13 +993,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1007,11 +1007,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=hidden]').value).eql('a');
+        expect(container.querySelector('[type=hidden]').value).eql('a');
       });
 
       it('should map widget value to a typed event property', () => {
-        const { node, onSubmit } = createFormComponent({
+        const { container, onSubmit } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1019,7 +1019,7 @@ describe('uiSchema', () => {
           }
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
           formData: { foo: 'a' }
@@ -1047,13 +1047,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1061,11 +1061,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelectorAll('[type=radio]')[1].checked).eql(true);
+        expect(container.querySelectorAll('[type=radio]')[1].checked).eql(true);
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1073,7 +1073,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelectorAll('[type=radio]')[1], {
+        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
@@ -1107,13 +1107,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=number]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=number]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1121,11 +1121,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=number]').value).eql('3.14');
+        expect(container.querySelector('[type=number]').value).eql('3.14');
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1133,7 +1133,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=number]'), {
+        Simulate.change(container.querySelector('[type=number]'), {
           target: {
             value: '6.28'
           }
@@ -1148,8 +1148,8 @@ describe('uiSchema', () => {
         let input;
 
         beforeEach(() => {
-          const { node } = createFormComponent({ schema, uiSchema });
-          input = node.querySelector('[type=number]');
+          const { container } = createFormComponent({ schema, uiSchema });
+          input = container.querySelector('[type=number]');
         });
 
         it('should support the minimum constraint', () => {
@@ -1169,8 +1169,8 @@ describe('uiSchema', () => {
           const uiSchema = {
             'ui:widget': 'updown'
           };
-          const { node } = createFormComponent({ schema, uiSchema });
-          input = node.querySelector('[type=number]');
+          const { container } = createFormComponent({ schema, uiSchema });
+          input = container.querySelector('[type=number]');
 
           expect(input.getAttribute('min')).eql('0');
           expect(input.getAttribute('max')).eql('0');
@@ -1190,13 +1190,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=range]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=range]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1204,11 +1204,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=range]').value).eql('13.14');
+        expect(container.querySelector('[type=range]').value).eql('13.14');
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1216,7 +1216,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=range]'), {
+        Simulate.change(container.querySelector('[type=range]'), {
           target: {
             value: '6.28'
           }
@@ -1231,8 +1231,8 @@ describe('uiSchema', () => {
         let input;
 
         beforeEach(() => {
-          const { node } = createFormComponent({ schema, uiSchema });
-          input = node.querySelector('[type=range]');
+          const { container } = createFormComponent({ schema, uiSchema });
+          input = container.querySelector('[type=range]');
         });
 
         it('should support the minimum constraint', () => {
@@ -1252,8 +1252,8 @@ describe('uiSchema', () => {
           const uiSchema = {
             'ui:widget': 'range'
           };
-          const { node } = createFormComponent({ schema, uiSchema });
-          input = node.querySelector('[type=range]');
+          const { container } = createFormComponent({ schema, uiSchema });
+          input = container.querySelector('[type=range]');
 
           expect(input.getAttribute('min')).eql('0');
           expect(input.getAttribute('max')).eql('0');
@@ -1283,13 +1283,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=radio]')).to.have.length.of(3);
+        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(3);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1297,11 +1297,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelectorAll('[type=radio]')[1].checked).eql(true);
+        expect(container.querySelectorAll('[type=radio]')[1].checked).eql(true);
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1309,7 +1309,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelectorAll('[type=radio]')[2], {
+        Simulate.change(container.querySelectorAll('[type=radio]')[2], {
           target: {
             checked: true
           }
@@ -1329,13 +1329,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1343,11 +1343,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=hidden]').value).eql('42');
+        expect(container.querySelector('[type=hidden]').value).eql('42');
       });
 
       it('should map widget value to a typed event property', () => {
-        const { node, onSubmit } = createFormComponent({
+        const { container, onSubmit } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1355,7 +1355,7 @@ describe('uiSchema', () => {
           }
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
           formData: { foo: 42 }
@@ -1382,13 +1382,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=number]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=number]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1396,11 +1396,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=number]').value).eql('3');
+        expect(container.querySelector('[type=number]').value).eql('3');
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1408,7 +1408,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=number]'), {
+        Simulate.change(container.querySelector('[type=number]'), {
           target: {
             value: '6'
           }
@@ -1428,13 +1428,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=range]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=range]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1442,11 +1442,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=range]').value).eql('3');
+        expect(container.querySelector('[type=range]').value).eql('3');
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1454,7 +1454,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('[type=range]'), {
+        Simulate.change(container.querySelector('[type=range]'), {
           target: {
             value: '6'
           }
@@ -1484,13 +1484,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1498,11 +1498,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelectorAll('[type=radio]')[1].checked).eql(true);
+        expect(container.querySelectorAll('[type=radio]')[1].checked).eql(true);
       });
 
       it('should call onChange handler when value is updated', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1510,7 +1510,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelectorAll('[type=radio]')[1], {
+        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
@@ -1530,13 +1530,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1544,11 +1544,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=hidden]').value).eql('42');
+        expect(container.querySelector('[type=hidden]').value).eql('42');
       });
 
       it('should map widget value to a typed event property', () => {
-        const { node, onSubmit } = createFormComponent({
+        const { container, onSubmit } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1556,7 +1556,7 @@ describe('uiSchema', () => {
           }
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
           formData: { foo: 42 }
@@ -1583,25 +1583,25 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=radio]')).to.have.length.of(2);
-        expect(node.querySelectorAll('[type=radio]')[0]).not.eql(null);
-        expect(node.querySelectorAll('[type=radio]')[1]).not.eql(null);
+        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')[0]).not.eql(null);
+        expect(container.querySelectorAll('[type=radio]')[1]).not.eql(null);
       });
 
       it('should render boolean option labels', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
         const labels = [].map.call(
-          node.querySelectorAll('.field-radio-group label'),
-          (node) => node.textContent
+          container.querySelectorAll('.field-radio-group label'),
+          (container) => container.textContent
         );
 
         expect(labels).eql(['Yes', 'No']);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1609,11 +1609,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelectorAll('[type=radio]')[1].checked).eql(true);
+        expect(container.querySelectorAll('[type=radio]')[1].checked).eql(true);
       });
 
       it('should call onChange handler when false is checked', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1621,7 +1621,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelectorAll('[type=radio]')[1], {
+        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
@@ -1633,7 +1633,7 @@ describe('uiSchema', () => {
       });
 
       it('should call onChange handler when true is checked', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1641,7 +1641,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelectorAll('[type=radio]')[0], {
+        Simulate.change(container.querySelectorAll('[type=radio]')[0], {
           target: {
             checked: true
           }
@@ -1661,20 +1661,20 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('select option')).to.have.length.of(3);
+        expect(container.querySelectorAll('select option')).to.have.length.of(3);
       });
 
       it('should render boolean option labels', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('option')[1].textContent).eql('Yes');
-        expect(node.querySelectorAll('option')[2].textContent).eql('No');
+        expect(container.querySelectorAll('option')[1].textContent).eql('Yes');
+        expect(container.querySelectorAll('option')[2].textContent).eql('No');
       });
 
       it('should call onChange handler when true is selected', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1682,7 +1682,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('select'), {
+        Simulate.change(container.querySelector('select'), {
           // DOM option change events always return strings
           target: {
             value: 'true'
@@ -1695,7 +1695,7 @@ describe('uiSchema', () => {
       });
 
       it('should call onChange handler when false is selected', () => {
-        const { node, onChange } = createFormComponent({
+        const { container, onChange } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1703,7 +1703,7 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(node.querySelector('select'), {
+        Simulate.change(container.querySelector('select'), {
           // DOM option change events always return strings
           target: {
             value: 'false'
@@ -1724,13 +1724,13 @@ describe('uiSchema', () => {
       };
 
       it('should accept a uiSchema object', () => {
-        const { node } = createFormComponent({ schema, uiSchema });
+        const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(node.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
       });
 
       it('should support formData', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1738,11 +1738,11 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(node.querySelector('[type=hidden]').value).eql('true');
+        expect(container.querySelector('[type=hidden]').value).eql('true');
       });
 
       it('should map widget value to a typed event property', () => {
-        const { node, onSubmit } = createFormComponent({
+        const { container, onSubmit } = createFormComponent({
           schema,
           uiSchema,
           formData: {
@@ -1750,7 +1750,7 @@ describe('uiSchema', () => {
           }
         });
 
-        submitForm(node);
+        submitForm(container);
 
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
           formData: { foo: true }
@@ -1775,9 +1775,9 @@ describe('uiSchema', () => {
       const uiSchema = {
         'ui:rootFieldId': 'myform'
       };
-      const { node } = createFormComponent({ schema, uiSchema });
+      const { container } = createFormComponent({ schema, uiSchema });
 
-      const ids = [].map.call(node.querySelectorAll('input[type=text]'), (node) => node.id);
+      const ids = [].map.call(container.querySelectorAll('input[type=text]'), (container) => container.id);
       expect(ids).eql(['myform_foo', 'myform_bar']);
     });
 
@@ -1791,13 +1791,13 @@ describe('uiSchema', () => {
       const uiSchema = {
         'ui:rootFieldId': 'myform'
       };
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         uiSchema,
         formData: ['foo', 'bar']
       });
 
-      const ids = [].map.call(node.querySelectorAll('input[type=text]'), (node) => node.id);
+      const ids = [].map.call(container.querySelectorAll('input[type=text]'), (container) => container.id);
       expect(ids).eql(['myform_0', 'myform_1']);
     });
 
@@ -1819,7 +1819,7 @@ describe('uiSchema', () => {
       const uiSchema = {
         'ui:rootFieldId': 'myform'
       };
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema,
         uiSchema,
         formData: [
@@ -1834,7 +1834,7 @@ describe('uiSchema', () => {
         ]
       });
 
-      const ids = [].map.call(node.querySelectorAll('input[type=text]'), (node) => node.id);
+      const ids = [].map.call(container.querySelectorAll('input[type=text]'), (container) => container.id);
       expect(ids).eql(['myform_0_foo', 'myform_0_bar', 'myform_1_foo', 'myform_1_bar']);
     });
   });
@@ -1842,7 +1842,7 @@ describe('uiSchema', () => {
   describe('Disabled', () => {
     describe('Fields', () => {
       describe('ArrayField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -1861,28 +1861,28 @@ describe('uiSchema', () => {
             uiSchema,
             formData
           });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should disable an ArrayField', () => {
           const disabled = [].map.call(
-            node.querySelectorAll('[type=text]'),
-            (node) => node.disabled
+            container.querySelectorAll('[type=text]'),
+            (container) => container.disabled
           );
           expect(disabled).eql([true, true]);
         });
 
         it('should disable the Add button', () => {
-          expect(node.querySelector('.array-item-add button').disabled).eql(true);
+          expect(container.querySelector('.array-item-add button').disabled).eql(true);
         });
 
         it('should disable the Delete button', () => {
-          expect(node.querySelector('.array-item-remove').disabled).eql(true);
+          expect(container.querySelector('.array-item-remove').disabled).eql(true);
         });
       });
 
       describe('ObjectField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -1901,13 +1901,13 @@ describe('uiSchema', () => {
           };
 
           let rendered = createFormComponent({ schema, uiSchema });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should disable an ObjectField', () => {
           const disabled = [].map.call(
-            node.querySelectorAll('[type=text]'),
-            (node) => node.disabled
+            container.querySelectorAll('[type=text]'),
+            (container) => container.disabled
           );
           expect(disabled).eql([true, true]);
         });
@@ -1916,8 +1916,8 @@ describe('uiSchema', () => {
 
     describe('Widgets', () => {
       function shouldBeDisabled(selector, schema, uiSchema) {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelector(selector).disabled).eql(true);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelector(selector).disabled).eql(true);
       }
 
       it('should disable a text widget', () => {
@@ -1931,7 +1931,7 @@ describe('uiSchema', () => {
       });
 
       it('should disabled a file widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'data-url'
@@ -1940,7 +1940,7 @@ describe('uiSchema', () => {
             'ui:disabled': true
           }
         });
-        expect(node.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
+        expect(container.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
       });
 
       it('should disable a textarea widget', () => {
@@ -2084,7 +2084,7 @@ describe('uiSchema', () => {
       });
 
       it('should disable an alternative date widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date'
@@ -2095,12 +2095,12 @@ describe('uiSchema', () => {
           }
         });
 
-        const disabled = [].map.call(node.querySelectorAll('select'), (node) => node.disabled);
+        const disabled = [].map.call(container.querySelectorAll('select'), (container) => container.disabled);
         expect(disabled).eql([true, true, true]);
       });
 
       it('should disable an alternative datetime widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date-time'
@@ -2111,7 +2111,7 @@ describe('uiSchema', () => {
           }
         });
 
-        const disabled = [].map.call(node.querySelectorAll('select'), (node) => node.disabled);
+        const disabled = [].map.call(container.querySelectorAll('select'), (container) => container.disabled);
         expect(disabled).eql([true, true, true, true, true, true]);
       });
     });
@@ -2120,7 +2120,7 @@ describe('uiSchema', () => {
   describe('Readonly', () => {
     describe('Fields', () => {
       describe('ArrayField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -2139,27 +2139,27 @@ describe('uiSchema', () => {
             uiSchema,
             formData
           });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should mark as readonly an ArrayField', () => {
-          const disabled = [].map.call(node.querySelectorAll('[type=text]'), (node) =>
-            node.hasAttribute('readonly')
+          const disabled = [].map.call(container.querySelectorAll('[type=text]'), (container) =>
+            container.hasAttribute('readonly')
           );
           expect(disabled).eql([true, true]);
         });
 
         it('should disable the Add button', () => {
-          expect(node.querySelector('.array-item-add button').disabled).eql(true);
+          expect(container.querySelector('.array-item-add button').disabled).eql(true);
         });
 
         it('should disable the Delete button', () => {
-          expect(node.querySelector('.array-item-remove').disabled).eql(true);
+          expect(container.querySelector('.array-item-remove').disabled).eql(true);
         });
       });
 
       describe('ObjectField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -2178,12 +2178,12 @@ describe('uiSchema', () => {
           };
 
           let rendered = createFormComponent({ schema, uiSchema });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should mark as readonly an ObjectField', () => {
-          const disabled = [].map.call(node.querySelectorAll('[type=text]'), (node) =>
-            node.hasAttribute('readonly')
+          const disabled = [].map.call(container.querySelectorAll('[type=text]'), (container) =>
+            container.hasAttribute('readonly')
           );
           expect(disabled).eql([true, true]);
         });
@@ -2192,12 +2192,12 @@ describe('uiSchema', () => {
 
     describe('Widgets', () => {
       function shouldBeReadonly(selector, schema, uiSchema) {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelector(selector).hasAttribute('readonly')).eql(true);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelector(selector).hasAttribute('readonly')).eql(true);
       }
       function shouldBeDisabled(selector, schema, uiSchema) {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelector(selector).disabled).eql(true);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelector(selector).disabled).eql(true);
       }
 
       it('should mark as readonly a text widget', () => {
@@ -2212,7 +2212,7 @@ describe('uiSchema', () => {
 
       it('should mark as readonly a file widget', () => {
         // We mark a file widget as readonly by disabling it.
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'data-url'
@@ -2221,7 +2221,7 @@ describe('uiSchema', () => {
             'ui:readonly': true
           }
         });
-        expect(node.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
+        expect(container.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
       });
 
       it('should mark as readonly a textarea widget', () => {
@@ -2353,7 +2353,7 @@ describe('uiSchema', () => {
       });
 
       it('should mark readonly as disabled on an alternative date widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date'
@@ -2364,14 +2364,14 @@ describe('uiSchema', () => {
           }
         });
 
-        const readonly = [].map.call(node.querySelectorAll('select'), (node) =>
-          node.hasAttribute('disabled')
+        const readonly = [].map.call(container.querySelectorAll('select'), (container) =>
+          container.hasAttribute('disabled')
         );
         expect(readonly).eql([true, true, true]);
       });
 
       it('should mark readonly as disabled on an alternative datetime widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date-time'
@@ -2382,8 +2382,8 @@ describe('uiSchema', () => {
           }
         });
 
-        const readonly = [].map.call(node.querySelectorAll('select'), (node) =>
-          node.hasAttribute('disabled')
+        const readonly = [].map.call(container.querySelectorAll('select'), (container) =>
+          container.hasAttribute('disabled')
         );
         expect(readonly).eql([true, true, true, true, true, true]);
       });
@@ -2393,7 +2393,7 @@ describe('uiSchema', () => {
   describe('Readonly in schema', () => {
     describe('Fields', () => {
       describe('ArrayField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -2407,27 +2407,27 @@ describe('uiSchema', () => {
           const formData = ['a', 'b'];
 
           let rendered = createFormComponent({ schema, uiSchema, formData });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should mark as readonly an ArrayField', () => {
-          const disabled = [].map.call(node.querySelectorAll('[type=text]'), (node) =>
-            node.hasAttribute('readonly')
+          const disabled = [].map.call(container.querySelectorAll('[type=text]'), (container) =>
+            container.hasAttribute('readonly')
           );
           expect(disabled).eql([true, true]);
         });
 
         it('should disable the Add button', () => {
-          expect(node.querySelector('.array-item-add button').disabled).eql(true);
+          expect(container.querySelector('.array-item-add button').disabled).eql(true);
         });
 
         it('should disable the Delete button', () => {
-          expect(node.querySelector('.array-item-remove').disabled).eql(true);
+          expect(container.querySelector('.array-item-remove').disabled).eql(true);
         });
       });
 
       describe('ObjectField', () => {
-        let node;
+        let container;
 
         beforeEach(() => {
           const schema = {
@@ -2445,12 +2445,12 @@ describe('uiSchema', () => {
           const uiSchema = {};
 
           let rendered = createFormComponent({ schema, uiSchema });
-          node = rendered.node;
+          container = rendered.container;
         });
 
         it('should mark as readonly an ObjectField', () => {
-          const disabled = [].map.call(node.querySelectorAll('[type=text]'), (node) =>
-            node.hasAttribute('readonly')
+          const disabled = [].map.call(container.querySelectorAll('[type=text]'), (container) =>
+            container.hasAttribute('readonly')
           );
           expect(disabled).eql([true, true]);
         });
@@ -2459,12 +2459,12 @@ describe('uiSchema', () => {
 
     describe('Widgets', () => {
       function shouldBeReadonly(selector, schema, uiSchema) {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelector(selector).hasAttribute('readonly')).eql(true);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelector(selector).hasAttribute('readonly')).eql(true);
       }
       function shouldBeDisabled(selector, schema, uiSchema) {
-        const { node } = createFormComponent({ schema, uiSchema });
-        expect(node.querySelector(selector).disabled).eql(true);
+        const { container } = createFormComponent({ schema, uiSchema });
+        expect(container.querySelector(selector).disabled).eql(true);
       }
 
       it('should mark as readonly a text widget', () => {
@@ -2480,7 +2480,7 @@ describe('uiSchema', () => {
 
       it('should mark as readonly a file widget', () => {
         // We mark a file widget as readonly by disabling it.
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'data-url',
@@ -2488,7 +2488,7 @@ describe('uiSchema', () => {
           },
           uiSchema: {}
         });
-        expect(node.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
+        expect(container.querySelector('input[type=file]').hasAttribute('disabled')).eql(true);
       });
 
       it('should mark as readonly a textarea widget', () => {
@@ -2615,7 +2615,7 @@ describe('uiSchema', () => {
       });
 
       it('should mark readonly as disabled on an alternative date widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date',
@@ -2626,14 +2626,14 @@ describe('uiSchema', () => {
           }
         });
 
-        const readonly = [].map.call(node.querySelectorAll('select'), (node) =>
-          node.hasAttribute('disabled')
+        const readonly = [].map.call(container.querySelectorAll('select'), (container) =>
+          container.hasAttribute('disabled')
         );
         expect(readonly).eql([true, true, true]);
       });
 
       it('should mark readonly as disabled on an alternative datetime widget', () => {
-        const { node } = createFormComponent({
+        const { container } = createFormComponent({
           schema: {
             type: 'string',
             format: 'date-time',
@@ -2644,8 +2644,8 @@ describe('uiSchema', () => {
           }
         });
 
-        const readonly = [].map.call(node.querySelectorAll('select'), (node) =>
-          node.hasAttribute('disabled')
+        const readonly = [].map.call(container.querySelectorAll('select'), (container) =>
+          container.hasAttribute('disabled')
         );
         expect(readonly).eql([true, true, true, true, true, true]);
       });

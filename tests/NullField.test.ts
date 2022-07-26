@@ -14,24 +14,24 @@ describe('NullField', () => {
 
   describe('No widget', () => {
     it('should render a null field', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'null'
         }
       });
 
-      expect(node.querySelectorAll('.field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field')).to.have.length.of(1);
     });
 
     it('should render a null field with a label', () => {
-      const { node } = createFormComponent({
+      const { container } = createFormComponent({
         schema: {
           type: 'null',
           title: 'foo'
         }
       });
 
-      expect(node.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('.field label').textContent).eql('foo');
     });
 
     it('should assign a default value', () => {
@@ -46,7 +46,7 @@ describe('NullField', () => {
     });
 
     it('should not overwrite existing data', () => {
-      const { node, onSubmit } = createFormComponent({
+      const { container, onSubmit } = createFormComponent({
         schema: {
           type: 'null'
         },
@@ -54,7 +54,7 @@ describe('NullField', () => {
         noValidate: true
       });
 
-      submitForm(node);
+      submitForm(container);
       sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: 3 });
     });
   });
