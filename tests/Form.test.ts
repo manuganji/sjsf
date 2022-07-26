@@ -9,7 +9,6 @@ import {
   createComponent,
   createFormComponent,
   createSandbox,
-  setProps,
   describeRepeated,
   submitForm
 } from './test_utils';
@@ -1055,6 +1054,7 @@ describeRepeated('Form common', (createFormComponent) => {
     let comp;
     let onChangeProp;
     let formProps;
+    let rerender;
 
     beforeEach(() => {
       onChangeProp = vi.fn();
@@ -1066,12 +1066,12 @@ describeRepeated('Form common', (createFormComponent) => {
         formData: 'some value',
         onChange: onChangeProp
       };
-      comp = createFormComponent(formProps).comp;
+      let { comp, rerender } = createFormComponent(formProps);
     });
 
     describe('when the form data is set to null', () => {
       beforeEach(() =>
-        setProps(comp, {
+        rerender({
           ...formProps,
           formData: null
         })
@@ -1099,7 +1099,7 @@ describeRepeated('Form common', (createFormComponent) => {
       };
 
       beforeEach(() =>
-        setProps(comp, {
+        rerender({
           ...formProps,
           schema: newSchema,
           formData: 'some value'
@@ -1118,7 +1118,7 @@ describeRepeated('Form common', (createFormComponent) => {
       };
 
       beforeEach(() =>
-        setProps(comp, {
+        rerender({
           ...formProps,
           schema: newSchema,
           formData: 'something else'
@@ -1137,7 +1137,7 @@ describeRepeated('Form common', (createFormComponent) => {
       };
 
       beforeEach(() =>
-        setProps(comp, {
+        rerender({
           ...formProps,
           schema: newSchema,
           formData: null
@@ -1206,7 +1206,7 @@ describeRepeated('Form common', (createFormComponent) => {
       it('should call submit handler with new formData prop value', () => {
         const { comp, node, onSubmit } = createFormComponent(formProps);
 
-        setProps(comp, {
+        rerender({
           ...formProps,
           onSubmit,
           formData: 'yo'
@@ -1220,7 +1220,7 @@ describeRepeated('Form common', (createFormComponent) => {
       it('should validate formData when the schema is updated', () => {
         const { comp, node, onError } = createFormComponent(formProps);
 
-        setProps(comp, {
+        rerender({
           ...formProps,
           onError,
           formData: 'yo',
@@ -1247,7 +1247,7 @@ describeRepeated('Form common', (createFormComponent) => {
         };
         const { comp, onSubmit, node } = createFormComponent(formProps);
 
-        setProps(comp, {
+        rerender({
           ...formProps,
           onSubmit,
           formData: { foo: 'yo' }
@@ -1270,7 +1270,7 @@ describeRepeated('Form common', (createFormComponent) => {
         };
         const { comp, node, onSubmit } = createFormComponent({ schema });
 
-        setProps(comp, { schema, onSubmit, formData: ['yo'] });
+        rerender({ schema, onSubmit, formData: ['yo'] });
 
         submitForm(node);
         sinon.assert.calledWithMatch(onSubmit.lastCall, {
@@ -2113,7 +2113,7 @@ describeRepeated('Form common', (createFormComponent) => {
         formData
       });
 
-      setProps(comp, {
+      rerender({
         onChange,
         schema: {
           type: 'object',
@@ -2140,7 +2140,7 @@ describeRepeated('Form common', (createFormComponent) => {
         formData
       });
 
-      setProps(comp, {
+      rerender({
         onChange,
         schema: {
           type: 'object',
@@ -2194,7 +2194,7 @@ describeRepeated('Form common', (createFormComponent) => {
         formData
       });
 
-      setProps(comp, {
+      rerender({
         onSubmit,
         schema: {
           type: 'object',
@@ -2236,7 +2236,7 @@ describeRepeated('Form common', (createFormComponent) => {
         schema,
         formData
       });
-      setProps(comp, {
+      rerender({
         onSubmit,
         schema: {
           type: 'object',
@@ -2452,7 +2452,7 @@ describeRepeated('Form common', (createFormComponent) => {
       submitForm(node);
       sinon.assert.notCalled(onError);
 
-      setProps(comp, {
+      rerender({
         ...formProps,
         onError,
         customFormats: {
@@ -2496,7 +2496,7 @@ describeRepeated('Form common', (createFormComponent) => {
         }
       ]);
 
-      setProps(comp, {
+      rerender({
         ...formProps,
         onError,
         additionalMetaSchemas: [require('ajv/lib/refs/json-schema-draft-04.json')]
@@ -2522,7 +2522,7 @@ describeRepeated('Form common', (createFormComponent) => {
         }
       ]);
 
-      setProps(comp, { ...formProps, onError });
+      rerender({ ...formProps, onError });
 
       submitForm(node);
       sinon.assert.calledWithMatch(onError.lastCall, [
@@ -3302,7 +3302,7 @@ describe('Form omitExtraData and liveOmit', () => {
         extraErrors
       });
 
-      setProps(comp, {
+      rerender({
         ...props,
         extraErrors: {}
       });
@@ -3334,7 +3334,7 @@ describe('Form omitExtraData and liveOmit', () => {
         extraErrors
       });
 
-      setProps(comp, {
+      rerender({
         ...props,
         extraErrors: {}
       });
@@ -3372,7 +3372,7 @@ describe('Form omitExtraData and liveOmit', () => {
     Simulate.submit(node, event);
     expect(node.querySelectorAll('.error-detail li')).to.have.length.of(1);
 
-    setProps(comp, {
+    rerender({
       ...props,
       extraErrors
     });

@@ -2,7 +2,7 @@ import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
 
 
-import { createFormComponent, createSandbox, setProps } from './test_utils';
+import { createFormComponent, createSandbox } from './test_utils';
 
 describe('oneOf', () => {
   let sandbox;
@@ -437,13 +437,13 @@ describe('oneOf', () => {
       }
     };
 
-    const { comp, node } = createFormComponent({
+    const { comp, node, rerender } = createFormComponent({
       schema
     });
 
     expect(node.querySelector('select').value).eql('0');
 
-    setProps(comp, {
+    rerender({
       schema,
       formData: {
         userId: 'foobarbaz'

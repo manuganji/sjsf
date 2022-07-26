@@ -1,20 +1,35 @@
 /* Utils for tests. */
 
-import { SpyInstance, vi, describe } from 'vitest'
-import { renderIntoDocument, act, Simulate } from 'react-dom/test-utils';
-import { findDOMNode, render } from 'react-dom';
-
+import { SpyInstance, vi, describe } from 'vitest';
+import { fireEvent, render, act } from '@testing-library/svelte';
+import type { RenderResult } from '@testing-library/svelte';
 import Form from '../src/lib';
+import type { SvelteComponent } from 'svelte/types/runtime';
 
-export function createComponent(Component, props) {
+export function createComponent(
+  Component: SvelteComponent,
+  props: any
+): {
+  comp: SvelteComponent;
+  node: RenderResult['container'];
+  onChange?: SpyInstance;
+  onSubmit?: SpyInstance;
+  onError?: SpyInstance;
+  rerender: (props: any) => void;
+  unmount: () => void;
+} {
   const onChange = vi.fn();
   const onError = vi.fn();
   const onSubmit = vi.fn();
-  const comp = renderIntoDocument(
-    <Component onSubmit={onSubmit} onError={onError} onChange={onChange} {...props} />
-  );
-  const node = findDOMNode(comp);
-  return { comp, node, onChange, onError, onSubmit };
+
+  const {
+    component,
+    container,
+    unmount,
+    rerender // @ts-ignore
+  }: RenderResult = render(Component, { onSubmit, onError, onChange, ...props });
+
+  return { comp: component, node: container, onChange, onError, onSubmit, rerender, unmount };
 }
 
 export function createFormComponent(props) {
@@ -26,10 +41,10 @@ export function createSandbox() {
   return sandbox;
 }
 
-export function setProps(comp, newProps) {
-  const node = findDOMNode(comp);
-  render(React.createElement(comp.constructor, newProps), node.parentNode);
-}
+// export function setProps(comp: SvelteComponent, newProps) {
+//   const node = findDOMNode(comp);
+//   render(React.createElement(comp.constructor, newProps), node.parentNode);
+// }
 
 /* Run a group of tests with different combinations of omitExtraData and liveOmit as form props.
  */
@@ -47,6 +62,6 @@ export function describeRepeated(title, fn) {
 
 export function submitForm(node) {
   act(() => {
-    Simulate.submit(node);
+    fireEvent.submit(node);
   });
 }

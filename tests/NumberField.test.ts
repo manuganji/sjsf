@@ -1,7 +1,7 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { Simulate } from 'react-dom/test-utils';
 
-import { createFormComponent, createSandbox, setProps, submitForm } from './test_utils';
+import { createFormComponent, createSandbox, submitForm } from './test_utils';
 
 describe('NumberField', () => {
   let sandbox;
@@ -299,7 +299,7 @@ describe('NumberField', () => {
           type: 'number'
         };
 
-        const { comp, node } = createFormComponent({
+        const { comp, node, rerender } = createFormComponent({
           schema,
           uiSchema,
           formData: 2.03
@@ -309,7 +309,7 @@ describe('NumberField', () => {
 
         expect($input.value).eql('2.03');
 
-        setProps(comp, {
+        rerender({
           schema,
           formData: 203
         });
