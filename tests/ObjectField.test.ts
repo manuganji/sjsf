@@ -1,7 +1,7 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
 
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
+import { fireEvent } from '@testing-library/svelte';
 
 describe('ObjectField', () => {
   let sandbox;
@@ -39,14 +39,14 @@ describe('ObjectField', () => {
       const { container } = createFormComponent({ schema });
 
       const fieldset = container.querySelectorAll('fieldset');
-      expect(fieldset).to.have.length.of(1);
+      expect(fieldset).toHaveLength((1));
       expect(fieldset[0].id).eql('root');
     });
 
     it('should render a fieldset legend', () => {
       const { container } = createFormComponent({ schema });
 
-      const legend = container.querySelector('fieldset > legend');
+      const legend = container.querySelector('fieldset > legend')!;
 
       expect(legend.textContent).eql('my object');
       expect(legend.id).eql('root__title');
@@ -71,7 +71,7 @@ describe('ObjectField', () => {
           TitleField: CustomTitleField
         }
       });
-      expect(container.querySelector('fieldset > #custom').textContent).to.eql('my object');
+      expect(container.querySelector('fieldset > #custom')!.textContent).to.eql('my object');
     });
 
     it('should render a customized description', () => {
@@ -81,40 +81,40 @@ describe('ObjectField', () => {
         schema,
         fields: { DescriptionField: CustomDescriptionField }
       });
-      expect(container.querySelector('fieldset > #custom').textContent).to.eql('my description');
+      expect(container.querySelector('fieldset > #custom')!.textContent).to.eql('my description');
     });
 
     it('should render a default property label', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelector('.field-boolean label').textContent).eql('bar');
+      expect(container.querySelector('.field-boolean label')!.textContent).eql('bar');
     });
 
     it('should render a string property', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('.field input[type=text]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field input[type=text]')).toHaveLength((1));
     });
 
     it('should render a boolean property', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('.field input[type=checkbox]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field input[type=checkbox]')).toHaveLength((1));
     });
 
     it('should handle a default object value', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelector('.field input[type=text]').value).eql('hey');
-      expect(container.querySelector('.field input[type=checkbox]').checked).eql(true);
+      expect(container.querySelector('.field input[type=text]')!.value).eql('hey');
+      expect(container.querySelector('.field input[type=checkbox]')!.checked).eql(true);
     });
 
     it('should handle required values', () => {
       const { container } = createFormComponent({ schema });
 
       // Required field is <input type="text" required="">
-      expect(container.querySelector('input[type=text]').getAttribute('required')).eql('');
-      expect(container.querySelector('.field-string label').textContent).eql('Foo*');
+      expect(container.querySelector('input[type=text]')!.getAttribute('required')).eql('');
+      expect(container.querySelector('.field-string label')!.textContent).eql('Foo*');
     });
 
     it('should fill fields with form data', () => {
@@ -126,28 +126,28 @@ describe('ObjectField', () => {
         }
       });
 
-      expect(container.querySelector('.field input[type=text]').value).eql('hey');
-      expect(container.querySelector('.field input[type=checkbox]').checked).eql(true);
+      expect(container.querySelector('.field input[type=text]')!.value).eql('hey');
+      expect(container.querySelector('.field input[type=checkbox]')!.checked).eql(true);
     });
 
     it('should handle object fields change events', () => {
       const { container, onChange } = createFormComponent({ schema });
 
-      Simulate.change(container.querySelector('input[type=text]'), {
+      fireEvent.change(container.querySelector('input[type=text]')!, {
         target: { value: 'changed' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { foo: 'changed' }
       });
     });
 
     it('should handle object fields with blur events', () => {
-      const onBlur = sandbox.spy();
+      const onBlur = vi.fn();
       const { container } = createFormComponent({ schema, onBlur });
 
-      const input = container.querySelector('input[type=text]');
-      Simulate.blur(input, {
+      const input = container.querySelector('input[type=text]')!;
+      fireEvent.blur(input, {
         target: { value: 'changed' }
       });
 
@@ -155,11 +155,11 @@ describe('ObjectField', () => {
     });
 
     it('should handle object fields with focus events', () => {
-      const onFocus = sandbox.spy();
+      const onFocus = vi.fn();
       const { container } = createFormComponent({ schema, onFocus });
 
-      const input = container.querySelector('input[type=text]');
-      Simulate.focus(input, {
+      const input = container.querySelector('input[type=text]')!;
+      fireEvent.focus(input, {
         target: { value: 'changed' }
       });
 
@@ -169,8 +169,8 @@ describe('ObjectField', () => {
     it('should render the widget with the expected id', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelector('input[type=text]').id).eql('root_foo');
-      expect(container.querySelector('input[type=checkbox]').id).eql('root_bar');
+      expect(container.querySelector('input[type=text]')!.id).eql('root_foo');
+      expect(container.querySelector('input[type=checkbox]')!.id).eql('root_bar');
     });
   });
 
@@ -230,7 +230,7 @@ describe('ObjectField', () => {
         }
       });
 
-      expect(container.querySelector('.config-error').textContent).to.match(
+      expect(container.querySelector('.config-error')!.textContent).to.match(
         /does not contain properties 'foo', 'qux'/
       );
     });
@@ -243,7 +243,7 @@ describe('ObjectField', () => {
         }
       });
 
-      expect(container.querySelector('.config-error').textContent).to.match(
+      expect(container.querySelector('.config-error')!.textContent).to.match(
         /contains more than one wildcard/
       );
     });
@@ -378,7 +378,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((1));
     });
 
     it('should apply uiSchema to additionalProperties', () => {
@@ -410,16 +410,16 @@ describe('ObjectField', () => {
       });
 
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: { nonschema: 1 }
       });
 
-      sinon.assert.notCalled(onError);
+      expect(onError).not.toHaveBeenCalled();
     });
 
     it('should throw a validation error if additionalProperties is false', () => {
       const { container, onSubmit, onError } = createFormComponent({
-        schema: {
+        schema: !{
           ...schema,
           additionalProperties: false,
           properties: { second: { type: 'string' } }
@@ -427,8 +427,8 @@ describe('ObjectField', () => {
         formData: { nonschema: 1 }
       });
       submitForm(container);
-      sinon.assert.notCalled(onSubmit);
-      sinon.assert.calledWithMatch(onError.lastCall, [
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(onError.mock.lastCall).toEqual([
         {
           message: 'is an invalid additional property',
           name: 'additionalProperties',
@@ -437,7 +437,7 @@ describe('ObjectField', () => {
           schemaPath: '#/additionalProperties',
           stack: "['nonschema'] is an invalid additional property"
         }
-      ]);
+      ])!;
     });
 
     it('should still obey properties if additionalProperties is defined', () => {
@@ -452,7 +452,7 @@ describe('ObjectField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((1));
     });
 
     it('should render a label for the additional property key', () => {
@@ -461,7 +461,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelector("[for='root_first-key']").textContent).eql('first Key');
+      expect(container.querySelector("[for='root_first-key']")!.textContent).eql('first Key');
     });
 
     it('should render a label for the additional property key if additionalProperties is true', () => {
@@ -470,7 +470,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelector("[for='root_first-key']").textContent).eql('first Key');
+      expect(container.querySelector("[for='root_first-key']")!.textContent).eql('first Key');
     });
 
     it('should not render a label for the additional property key if additionalProperties is false', () => {
@@ -488,7 +488,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelector('#root_first-key').value).eql('first');
+      expect(container.querySelector('#root_first-key')!.value).eql('first');
     });
 
     it('should render a label for the additional property value', () => {
@@ -497,7 +497,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelector("[for='root_first']").textContent).eql('first');
+      expect(container.querySelector("[for='root_first']")!.textContent).eql('first');
     });
 
     it('should render a text input for the additional property value', () => {
@@ -506,7 +506,7 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      expect(container.querySelector('#root_first').value).eql('1');
+      expect(container.querySelector('#root_first')!.value).eql('1');
     });
 
     it('should rename formData key if key input is renamed', () => {
@@ -515,12 +515,12 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      const textcontainer = container.querySelector('#root_first-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_first-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'newFirst' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { newFirst: 1, first: undefined }
       });
     });
@@ -529,7 +529,7 @@ describe('ObjectField', () => {
       const { container, onChange } = createFormComponent({
         schema: {
           type: 'object',
-          additionalProperties: {
+          additionalProperties: !{
             title: 'Custom title',
             type: 'string'
           }
@@ -537,21 +537,21 @@ describe('ObjectField', () => {
         formData: { 'Custom title': 1 }
       });
 
-      const textcontainer = container.querySelector('#root_Custom\\ title-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_Custom\\ title-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'Renamed custom title' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { 'Renamed custom title': 1 }
       });
 
-      const keyInput = container.querySelector('#root_Renamed\\ custom\\ title-key');
+      const keyInput = container.querySelector('#root_Renamed\\ custom\\ title-key')!;
       expect(keyInput.value).eql('Renamed custom title');
 
-      const keyInputLabel = container.querySelector('label[for="root_Renamed\\ custom\\ title-key"]');
+      const keyInputLabel = container.querySelector('label[for="root_Renamed\\ custom\\ title-key"]')!;
       expect(keyInputLabel.textContent).eql('Renamed custom title Key');
-    });
+    })!;
 
     it('should retain object title when renaming key', () => {
       const { container } = createFormComponent({
@@ -565,12 +565,12 @@ describe('ObjectField', () => {
         formData: { 'Custom title': 1 }
       });
 
-      const textcontainer = container.querySelector('#root_Custom\\ title-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_Custom\\ title-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'Renamed custom title' }
       });
 
-      const title = container.querySelector('#root__title');
+      const title = container.querySelector('#root__title')!;
       expect(title.textContent).eql('Object title');
     });
 
@@ -580,21 +580,21 @@ describe('ObjectField', () => {
         formData: { first: 1, second: 2, third: 3 }
       });
 
-      const textcontainer = container.querySelector('#root_second-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_second-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'newSecond' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { first: 1, newSecond: 2, third: 3 }
       });
-
-      expect(Object.keys(onChange.lastCall.args[0].formData)).eql(['first', 'newSecond', 'third']);
+      
+      expect(Object.keys(onChange.mock.lastCall!['formData'])).eql(['first', 'newSecond', 'third']);
     });
 
     it('should attach suffix to formData key if new key already exists when key input is renamed', () => {
       const formData = {
-        first: 1,
+        first: 1!,
         second: 2
       };
       const { container, onChange } = createFormComponent({
@@ -602,12 +602,12 @@ describe('ObjectField', () => {
         formData
       });
 
-      const textcontainer = container.querySelector('#root_first-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_first-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'second' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { second: 2, 'second-1': 1 }
       });
     });
@@ -616,15 +616,15 @@ describe('ObjectField', () => {
       const formData = {
         first: 1
       };
-      const { container, onChange } = createFormComponent({
+      const { container, onChange } = createFormComponent(!{
         schema,
         formData
       });
 
-      const textcontainer = container.querySelector('#root_first-key');
-      Simulate.blur(textcontainer);
+      const textcontainer = container.querySelector('#root_first-key')!;
+      fireEvent.blur(textcontainer);
 
-      sinon.assert.notCalled(onChange);
+      expect(onChange).not.toHaveBeenCalled();
     });
 
     it('should continue incrementing suffix to formData key until that key name is unique after a key input collision', () => {
@@ -643,12 +643,12 @@ describe('ObjectField', () => {
         formData
       });
 
-      const textcontainer = container.querySelector('#root_first-key');
-      Simulate.blur(textcontainer, {
+      const textcontainer = container.querySelector('#root_first-key')!;
+      fireEvent.blur(textcontainer, {
         target: { value: 'second' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: {
           second: 2,
           'second-1': 2,
@@ -680,9 +680,9 @@ describe('ObjectField', () => {
     it('should add a new property when clicking the expand button', () => {
       const { container, onChange } = createFormComponent({ schema });
 
-      Simulate.click(container.querySelector('.object-property-expand button'));
+      fireEvent.click(container.querySelector('.object-property-expand button')!);
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: {
           newKey: 'New Value'
         }
@@ -691,12 +691,12 @@ describe('ObjectField', () => {
 
     it("should add a new property with suffix when clicking the expand button and 'newKey' already exists", () => {
       const { container, onChange } = createFormComponent({
-        schema,
+        schema!,
         formData: { newKey: 1 }
       });
 
-      Simulate.click(container.querySelector('.object-property-expand button'));
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      fireEvent.click(container.querySelector('.object-property-expand button')!);
+      expect(onChange.mock.lastCall).toEqual({
         formData: {
           'newKey-1': 'New Value'
         }
@@ -705,7 +705,7 @@ describe('ObjectField', () => {
 
     it('should not provide an expand button if length equals maxProperties', () => {
       const { container } = createFormComponent({
-        schema: { maxProperties: 1, ...schema },
+        schema: { maxProperties: 1, ...schema }!,
         formData: { first: 1 }
       });
 
@@ -766,7 +766,7 @@ describe('ObjectField', () => {
         )
       ).eql(null);
 
-      Simulate.click(container.querySelector('.object-property-expand button'));
+      fireEvent.click(container.querySelector('.object-property-expand button')!);
 
       expect(container.querySelector('.form-group > .row > .form-additional + .col-xs-2 > .btn-danger'))
         .to.not.be.null;
@@ -777,9 +777,9 @@ describe('ObjectField', () => {
         schema,
         formData: { first: 1 }
       });
-      expect(container.querySelector('#root_first-key').value).to.eql('first');
-      Simulate.click(
-        container.querySelector('.form-group > .row > .form-additional + .col-xs-2 > .btn-danger')
+      expect(container.querySelector('#root_first-key')!.value).to.eql('first');
+      fireEvent.click(
+        container.querySelector('.form-group > .row > .form-additional + .col-xs-2 > .btn-danger')!
       );
       expect(container.querySelector('#root_first-key')).to.not.exist;
     });
@@ -791,7 +791,7 @@ describe('ObjectField', () => {
       });
       const selector = '.form-group > .row > .form-additional + .col-xs-2 > .btn-danger';
       expect(container.querySelectorAll(selector).length).to.eql(3);
-      Simulate.click(container.querySelectorAll(selector)[1]);
+      fireEvent.click(container.querySelectorAll(selector)[1]);
       expect(container.querySelector('#root_second-key')).to.not.exist;
       expect(container.querySelectorAll(selector).length).to.eql(2);
     });
@@ -802,11 +802,11 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      Simulate.change(container.querySelector('#root_first'), {
+      fireEvent.change(container.querySelector('#root_first')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { first: '' }
       });
     });
@@ -820,11 +820,11 @@ describe('ObjectField', () => {
         formData: { first: true }
       });
 
-      Simulate.change(container.querySelector('#root_first'), {
+      fireEvent.change(container.querySelector('#root_first')!, {
         target: { checked: false }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { first: false }
       });
     });
@@ -838,11 +838,11 @@ describe('ObjectField', () => {
         formData: { first: 1 }
       });
 
-      Simulate.change(container.querySelector('#root_first'), {
+      fireEvent.change(container.querySelector('#root_first')!, {
         target: { value: 0 }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { first: 0 }
       });
     });
@@ -851,13 +851,13 @@ describe('ObjectField', () => {
       const { container, onChange } = createFormComponent({
         schema,
         formData: { first: 'str' }
-      });
+      })!;
 
-      Simulate.change(container.querySelector('#root_first'), {
+      fireEvent.change(container.querySelector('#root_first')!, {
         target: { value: null }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: { first: null }
       });
     });

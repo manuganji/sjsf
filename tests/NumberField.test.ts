@@ -1,7 +1,7 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
 
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
+import { fireEvent } from '@testing-library/dom';
 
 describe('NumberField', () => {
   let sandbox;
@@ -22,8 +22,7 @@ describe('NumberField', () => {
           multipleOf: 5
         }
       });
-
-      expect(container.querySelector('input').step).to.eql('5');
+      expect(container.querySelector('input')!.step).to.eql('5');
     });
 
     it('should use min to represent the minimum keyword', () => {
@@ -34,7 +33,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('input').min).to.eql('0');
+      expect(container.querySelector('input')!.min).to.eql('0');
     });
 
     it('should use max to represent the maximum keyword', () => {
@@ -45,7 +44,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('input').max).to.eql('100');
+      expect(container.querySelector('input')!.max).to.eql('100');
     });
 
     it('should use step to represent the multipleOf keyword', () => {
@@ -56,7 +55,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('input').step).to.eql('5');
+      expect(container.querySelector('input')!.step).to.eql('5');
     });
 
     it('should use min to represent the minimum keyword', () => {
@@ -67,7 +66,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('input').min).to.eql('0');
+      expect(container.querySelector('input')!.min).to.eql('0');
     });
 
     it('should use max to represent the maximum keyword', () => {
@@ -78,7 +77,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('input').max).to.eql('100');
+      expect(container.querySelector('input')!.max).to.eql('100');
     });
   });
   describe('Number and text widget', () => {
@@ -100,7 +99,7 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(container.querySelector('.field label').textContent).eql('foo');
+        expect(container.querySelector('.field label')!.textContent).eql('foo');
       });
 
       it('should render a string field with a description', () => {
@@ -112,7 +111,7 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(container.querySelector('.field-description').textContent).eql('bar');
+        expect(container.querySelector('.field-description')!.textContent).eql('bar');
       });
 
       it('formData should default to undefined', () => {
@@ -123,7 +122,7 @@ describe('NumberField', () => {
         });
 
         submitForm(container);
-        sinon.assert.calledWithMatch(onSubmit.lastCall, {
+        expect(onSubmit.mock.lastCall).toEqual({
           formData: undefined
         });
       });
@@ -137,7 +136,7 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(container.querySelector('.field input').value).eql('2');
+        expect(container.querySelector('.field input')!.value).eql('2');
       });
 
       it('should handle a change event', () => {
@@ -148,17 +147,17 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '2' }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: 2
         });
       });
 
       it('should handle a blur event', () => {
-        const onBlur = sandbox.spy();
+        const onBlur = vi.fn();
         const { container } = createFormComponent({
           schema: {
             type: 'number'
@@ -167,8 +166,8 @@ describe('NumberField', () => {
           onBlur
         });
 
-        const input = container.querySelector('input');
-        Simulate.blur(input, {
+        const input = container.querySelector('input')!;
+        fireEvent.blur(input, {
           target: { value: '2' }
         });
 
@@ -176,7 +175,7 @@ describe('NumberField', () => {
       });
 
       it('should handle a focus event', () => {
-        const onFocus = sandbox.spy();
+        const onFocus = vi.fn();
         const { container } = createFormComponent({
           schema: {
             type: 'number'
@@ -185,8 +184,8 @@ describe('NumberField', () => {
           onFocus
         });
 
-        const input = container.querySelector('input');
-        Simulate.focus(input, {
+        const input = container.querySelector('input')!;
+        fireEvent.focus(input, {
           target: { value: '2' }
         });
 
@@ -202,7 +201,7 @@ describe('NumberField', () => {
           formData: 2
         });
 
-        expect(container.querySelector('.field input').value).eql('2');
+        expect(container.querySelector('.field input')!.value).eql('2');
       });
 
       describe('when inputting a number that ends with a dot and/or zero it should normalize it, without changing the input value', () => {
@@ -213,7 +212,7 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        const $input = container.querySelector('input');
+        const $input = container.querySelector('input')!;
 
         const tests = [
           {
@@ -260,11 +259,11 @@ describe('NumberField', () => {
 
         tests.forEach((test) => {
           it(`should work with an input value of ${test.input}`, () => {
-            Simulate.change($input, {
+            fireEvent.change($input, {
               target: { value: test.input }
             });
 
-            sinon.assert.calledWithMatch(onChange.lastCall, {
+            expect(onChange.mock.lastCall).toEqual({
               formData: test.output
             });
             // "2." is not really a valid number in a input field of type number
@@ -282,13 +281,13 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        const $input = container.querySelector('input');
+        const $input = container.querySelector('input')!;
 
-        Simulate.change($input, {
+        fireEvent.change($input, {
           target: { value: '.00' }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: 0
         });
         expect($input.value).eql('.00');
@@ -299,13 +298,17 @@ describe('NumberField', () => {
           type: 'number'
         };
 
-        const { component: comp, container: container, rerender } = createFormComponent({
+        const {
+          component: comp,
+          container: container,
+          rerender
+        } = createFormComponent({
           schema,
           uiSchema,
           formData: 2.03
         });
 
-        const $input = container.querySelector('input');
+        const $input = container.querySelector('input')!;
 
         expect($input.value).eql('2.03');
 
@@ -325,7 +328,7 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        expect(container.querySelector('input').id).eql('root');
+        expect(container.querySelector('input')!.id).eql('root');
       });
 
       it('should render with trailing zeroes', () => {
@@ -336,27 +339,27 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '2.' }
         });
         // "2." is not really a valid number in a input field of type number
         // so we need to use getAttribute("value") instead since .value outputs the empty string
-        expect(container.querySelector('.field input').getAttribute('value')).eql('2.');
+        expect(container.querySelector('.field input')!.getAttribute('value')).eql('2.');
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '2.0' }
         });
-        expect(container.querySelector('.field input').value).eql('2.0');
+        expect(container.querySelector('.field input')!.value).eql('2.0');
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '2.00' }
         });
-        expect(container.querySelector('.field input').value).eql('2.00');
+        expect(container.querySelector('.field input')!.value).eql('2.00');
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '2.000' }
         });
-        expect(container.querySelector('.field input').value).eql('2.000');
+        expect(container.querySelector('.field input')!.value).eql('2.000');
       });
 
       it('should allow a zero to be input', () => {
@@ -367,10 +370,10 @@ describe('NumberField', () => {
           uiSchema
         });
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '0' }
         });
-        expect(container.querySelector('.field input').value).eql('0');
+        expect(container.querySelector('.field input')!.value).eql('0');
       });
 
       it('should render customized StringField', () => {
@@ -400,7 +403,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
     });
 
     it('should infer the value from an enum on change', () => {
@@ -412,15 +415,15 @@ describe('NumberField', () => {
         onChange: spy
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
-      const $select = container.querySelector('.field select');
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
+      const $select = container.querySelector('.field select')!;
       expect($select.value).eql('');
 
-      Simulate.change(container.querySelector('.field select'), {
+      fireEvent.change(container.querySelector('.field select')!, {
         target: { value: '1' }
       });
       expect($select.value).eql('1');
-      expect(spy.lastCall.args[0].formData).eql(1);
+      expect(spy.mock.lastCall!['formData']).eql(1);
     });
 
     it('should render a string field with a label', () => {
@@ -432,7 +435,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('.field label')!.textContent).eql('foo');
     });
 
     it('should assign a default value', () => {
@@ -445,7 +448,7 @@ describe('NumberField', () => {
         noValidate: true
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, { formData: 1 });
+      expect(onChange.mock.lastCall).toEqual({ formData: 1 });
     });
 
     it('should handle a change event', () => {
@@ -456,11 +459,11 @@ describe('NumberField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: '2' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, { formData: 2 });
+      expect(onChange.mock.lastCall).toEqual({ formData: 2 });
     });
 
     it('should fill field with data', () => {
@@ -472,7 +475,7 @@ describe('NumberField', () => {
         formData: 2
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: 2 });
+      expect(onSubmit.mock.lastCall).toEqual({ formData: 2 });
     });
 
     it('should render the widget with the expected id', () => {
@@ -483,7 +486,7 @@ describe('NumberField', () => {
         }
       });
 
-      expect(container.querySelector('select').id).eql('root');
+      expect(container.querySelector('select')!.id).eql('root');
     });
 
     it('should render a select element with a blank option, when default value is not set.', () => {

@@ -1,4 +1,4 @@
-import { Simulate } from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/svelte';
 import { vi, describe, beforeEach, afterEach, it, expect } from 'vitest';
 
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
@@ -23,7 +23,7 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field input[type=checkbox]')).to.have.length.of(1);
+    expect(container.querySelectorAll('.field input[type=checkbox]')).toHaveLength((1));
   });
 
   it('should render a boolean field with the expected id', () => {
@@ -165,7 +165,7 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field label')).to.have.length.of(1);
+    expect(container.querySelectorAll('.field label')).toHaveLength((1));
   });
 
   it('should render a description', () => {
@@ -240,7 +240,7 @@ describe('BooleanField', () => {
       noValidate: true
     });
     submitForm(container);
-    sinon.assert.calledWithMatch(onSubmit.lastCall, {
+    expect(onSubmit.mock.lastCall).toEqual({
       formData: undefined
     });
   });
@@ -253,10 +253,10 @@ describe('BooleanField', () => {
       }
     });
 
-    Simulate.change(container.querySelector('input'), {
+    fireEvent.change(container.querySelector('input')!, {
       target: { checked: true }
     });
-    sinon.assert.calledWithMatch(onChange.lastCall, { formData: true });
+    expect(onChange.mock.lastCall).toEqual({ formData: true });
   });
 
   it('should fill field with data', () => {
@@ -395,11 +395,11 @@ describe('BooleanField', () => {
       }
     });
 
-    expect(container.querySelectorAll('.radio-inline')).to.have.length.of(2);
+    expect(container.querySelectorAll('.radio-inline')).toHaveLength((2));
   });
 
   it('should handle a focus event for radio widgets', () => {
-    const onFocus = sandbox.spy();
+    const onFocus = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -412,7 +412,7 @@ describe('BooleanField', () => {
     });
 
     const element = container.querySelector('.field-radio-group');
-    Simulate.focus(container.querySelector('input'), {
+    fireEvent.focus(container.querySelector('input')!, {
       target: {
         value: false
       }
@@ -421,7 +421,7 @@ describe('BooleanField', () => {
   });
 
   it('should handle a blur event for radio widgets', () => {
-    const onBlur = sandbox.spy();
+    const onBlur = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -434,7 +434,7 @@ describe('BooleanField', () => {
     });
 
     const element = container.querySelector('.field-radio-group');
-    Simulate.blur(container.querySelector('input'), {
+    fireEvent.blur(container.querySelector('input')!, {
       target: {
         value: false
       }
@@ -460,7 +460,7 @@ describe('BooleanField', () => {
   });
 
   it('should handle a focus event with checkbox', () => {
-    const onFocus = sandbox.spy();
+    const onFocus = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -472,8 +472,8 @@ describe('BooleanField', () => {
       onFocus
     });
 
-    const element = container.querySelector('select');
-    Simulate.focus(element, {
+    const element = container.querySelector('select')!;
+    fireEvent.focus(element, {
       target: {
         value: false
       }
@@ -482,7 +482,7 @@ describe('BooleanField', () => {
   });
 
   it('should handle a blur event with select', () => {
-    const onBlur = sandbox.spy();
+    const onBlur = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -494,8 +494,8 @@ describe('BooleanField', () => {
       onBlur
     });
 
-    const element = container.querySelector('select');
-    Simulate.blur(element, {
+    const element = container.querySelector('select')!;
+    fireEvent.blur(element, {
       target: {
         value: false
       }
@@ -527,7 +527,7 @@ describe('BooleanField', () => {
   });
 
   it('should handle a focus event with checkbox', () => {
-    const onFocus = sandbox.spy();
+    const onFocus = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -539,8 +539,8 @@ describe('BooleanField', () => {
       onFocus
     });
 
-    const element = container.querySelector('input');
-    Simulate.focus(element, {
+    const element = container.querySelector('input')!;
+    fireEvent.focus(element, {
       target: {
         checked: false
       }
@@ -549,7 +549,7 @@ describe('BooleanField', () => {
   });
 
   it('should handle a blur event with checkbox', () => {
-    const onBlur = sandbox.spy();
+    const onBlur = vi.fn();
     const { container } = createFormComponent({
       schema: {
         type: 'boolean',
@@ -561,8 +561,8 @@ describe('BooleanField', () => {
       onBlur
     });
 
-    const element = container.querySelector('input');
-    Simulate.blur(element, {
+    const element = container.querySelector('input')!;
+    fireEvent.blur(element, {
       target: {
         checked: false
       }
@@ -628,7 +628,7 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
     });
 
     it('should infer the value from an enum on change', () => {
@@ -640,15 +640,15 @@ describe('BooleanField', () => {
         onChange: spy
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
-      const $select = container.querySelector('.field select');
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
+      const $select = container.querySelector('.field select')!;
       expect($select.value).eql('');
 
-      Simulate.change($select, {
+      fireEvent.change($select, {
         target: { value: 'true' }
       });
       expect($select.value).eql('true');
-      expect(spy.lastCall.args[0].formData).eql(true);
+      expect(spy.mock.lastCall!['formData']).eql(true);
     });
 
     it('should render a string field with a label', () => {
@@ -659,7 +659,7 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(container.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('.field label')!.textContent).eql('foo');
     });
 
     it('should assign a default value', () => {
@@ -669,7 +669,7 @@ describe('BooleanField', () => {
           default: true
         }
       });
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: true
       });
     });
@@ -681,11 +681,11 @@ describe('BooleanField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: 'false' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: false
       });
     });
@@ -697,7 +697,7 @@ describe('BooleanField', () => {
         }
       });
 
-      expect(container.querySelector('select').id).eql('root');
+      expect(container.querySelector('select')!.id).eql('root');
     });
   });
 });

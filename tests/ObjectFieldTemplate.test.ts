@@ -94,19 +94,19 @@ describe('ObjectFieldTemplate', () => {
 
   function sharedIts() {
     it('should render one root element', () => {
-      expect(container.querySelectorAll('.root')).to.have.length.of(1);
+      expect(container.querySelectorAll('.root')).toHaveLength((1));
     });
 
     it('should render one title', () => {
-      expect(container.querySelectorAll('.title-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.title-field')).toHaveLength((1));
     });
 
     it('should render one description', () => {
-      expect(container.querySelectorAll('.description-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.description-field')).toHaveLength((1));
     });
 
     it('should render two property containers', () => {
-      expect(container.querySelectorAll('.property')).to.have.length.of(2);
+      expect(container.querySelectorAll('.property')).toHaveLength((2));
     });
   }
 });

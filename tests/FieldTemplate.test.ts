@@ -38,7 +38,7 @@ describe('FieldTemplate', () => {
           uiSchema: { 'ui:disabled': true },
           FieldTemplate
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((1));
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
@@ -47,7 +47,7 @@ describe('FieldTemplate', () => {
           uiSchema: { 'ui:disabled': false },
           FieldTemplate
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((0));
       });
     });
     describe('with template configured in ui:FieldTemplate', () => {
@@ -56,7 +56,7 @@ describe('FieldTemplate', () => {
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': true, 'ui:FieldTemplate': FieldTemplate }
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((1));
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
@@ -64,7 +64,7 @@ describe('FieldTemplate', () => {
           schema: { type: 'string' },
           uiSchema: { 'ui:disabled': false, 'ui:FieldTemplate': FieldTemplate }
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((0));
       });
     });
     describe('with template configured globally being overriden in ui:FieldTemplate', () => {
@@ -75,7 +75,7 @@ describe('FieldTemplate', () => {
           // Empty field template to prove that overides work
           FieldTemplate: () => <div />
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(1);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((1));
       });
 
       it('should render with disabled when ui:disabled is falsey', () => {
@@ -85,7 +85,7 @@ describe('FieldTemplate', () => {
           // Empty field template to prove that overides work
           FieldTemplate: () => <div />
         });
-        expect(container.querySelectorAll('.disabled')).to.have.length.of(0);
+        expect(container.querySelectorAll('.disabled')).toHaveLength((0));
       });
     });
   });
@@ -110,7 +110,7 @@ describe('FieldTemplate', () => {
         FieldTemplate
       });
 
-      expect(container.querySelectorAll('#root-schema')).to.have.length.of(1);
+      expect(container.querySelectorAll('#root-schema')).toHaveLength((1));
       expect(container.querySelectorAll('#root-schema')[0].innerHTML).to.equal(JSON.stringify(schema));
     });
   });

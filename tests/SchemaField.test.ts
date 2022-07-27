@@ -1,5 +1,5 @@
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/dom';
 
 import SchemaField from '../src/lib/components/fields/SchemaField';
 import TitleField from '../src/lib/components/fields/TitleField';
@@ -121,7 +121,7 @@ describe('SchemaField', () => {
         fields
       });
 
-      expect(container.querySelectorAll('#custom > .field input[type=text]')).to.have.length.of(1);
+      expect(container.querySelectorAll('#custom > .field input[type=text]')).toHaveLength((1));
     });
   });
 
@@ -149,9 +149,9 @@ describe('SchemaField', () => {
 
       const { container } = createFormComponent({ schema, uiSchema });
 
-      expect(container.querySelectorAll('#custom')).to.have.length.of(1);
+      expect(container.querySelectorAll('#custom')).toHaveLength((1));
 
-      expect(container.querySelectorAll('label')).to.have.length.of(0);
+      expect(container.querySelectorAll('label')).toHaveLength((0));
     });
 
     it('should use provided direct custom component for specific property', () => {
@@ -161,11 +161,11 @@ describe('SchemaField', () => {
 
       const { container } = createFormComponent({ schema, uiSchema });
 
-      expect(container.querySelectorAll('#custom')).to.have.length.of(1);
+      expect(container.querySelectorAll('#custom')).toHaveLength((1));
 
-      expect(container.querySelectorAll('input')).to.have.length.of(1);
+      expect(container.querySelectorAll('input')).toHaveLength((1));
 
-      expect(container.querySelectorAll('label')).to.have.length.of(1);
+      expect(container.querySelectorAll('label')).toHaveLength((1));
     });
 
     it('should provide custom field the expected fields', () => {
@@ -195,7 +195,7 @@ describe('SchemaField', () => {
 
       const { container } = createFormComponent({ schema, uiSchema, fields });
 
-      expect(container.querySelectorAll('#custom')).to.have.length.of(1);
+      expect(container.querySelectorAll('#custom')).toHaveLength((1));
     });
 
     it('should handle referenced schema definitions', () => {
@@ -216,7 +216,7 @@ describe('SchemaField', () => {
 
       const { container } = createFormComponent({ schema, uiSchema, fields });
 
-      expect(container.querySelectorAll('#custom')).to.have.length.of(1);
+      expect(container.querySelectorAll('#custom')).toHaveLength((1));
     });
 
     it('should not pass classNames to child component', () => {
@@ -235,7 +235,7 @@ describe('SchemaField', () => {
 
       const { container } = createFormComponent({ schema, uiSchema, fields });
 
-      expect(container.querySelectorAll('.foo')).to.have.length.of(1);
+      expect(container.querySelectorAll('.foo')).toHaveLength((1));
     });
   });
 
@@ -249,7 +249,7 @@ describe('SchemaField', () => {
 
     it('should render label by default', () => {
       const { container } = createFormComponent({ schema });
-      expect(container.querySelectorAll('label')).to.have.length.of(1);
+      expect(container.querySelectorAll('label')).toHaveLength((1));
     });
 
     it('should render label if ui:options label is set to true', () => {
@@ -258,7 +258,7 @@ describe('SchemaField', () => {
       };
 
       const { container } = createFormComponent({ schema, uiSchema });
-      expect(container.querySelectorAll('label')).to.have.length.of(1);
+      expect(container.querySelectorAll('label')).toHaveLength((1));
     });
 
     it('should not render label if ui:options label is set to false', () => {
@@ -267,7 +267,7 @@ describe('SchemaField', () => {
       };
 
       const { container } = createFormComponent({ schema, uiSchema });
-      expect(container.querySelectorAll('label')).to.have.length.of(0);
+      expect(container.querySelectorAll('label')).toHaveLength((0));
     });
 
     it('should render label even when type object is missing', () => {
@@ -278,7 +278,7 @@ describe('SchemaField', () => {
         }
       };
       const { container } = createFormComponent({ schema });
-      expect(container.querySelectorAll('label')).to.have.length.of(1);
+      expect(container.querySelectorAll('label')).toHaveLength((1));
     });
   });
 
@@ -294,7 +294,7 @@ describe('SchemaField', () => {
     it('should render description if available from the schema', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('#root_foo__description')).to.have.length.of(1);
+      expect(container.querySelectorAll('#root_foo__description')).toHaveLength((1));
     });
 
     it('should render description if available from a referenced schema', () => {
@@ -317,14 +317,14 @@ describe('SchemaField', () => {
       });
 
       const matches = container.querySelectorAll('#root_foo__description');
-      expect(matches).to.have.length.of(1);
+      expect(matches).toHaveLength((1));
       expect(matches[0].textContent).to.equal('A Foo field');
     });
 
     it('should not render description if not available from schema', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('#root_bar__description')).to.have.length.of(0);
+      expect(container.querySelectorAll('#root_bar__description')).toHaveLength((0));
     });
 
     it('should render a customized description field', () => {
@@ -368,12 +368,12 @@ describe('SchemaField', () => {
         uiSchema,
         validate
       });
-      Simulate.submit(container);
+      fireEvent.submit(container);
 
       const matches = container.querySelectorAll(
         'form > .form-group > div > .error-detail .text-danger'
       );
-      expect(matches).to.have.length.of(1);
+      expect(matches).toHaveLength((1));
       expect(matches[0].textContent).to.eql('container');
     });
 
@@ -383,10 +383,10 @@ describe('SchemaField', () => {
         uiSchema,
         validate
       });
-      Simulate.submit(container);
+      fireEvent.submit(container);
 
       const matches = container.querySelectorAll('form .form-group .form-group .text-danger');
-      expect(matches).to.have.length.of(1);
+      expect(matches).toHaveLength((1));
       expect(matches[0].textContent).to.contain('test');
     });
 
@@ -402,10 +402,10 @@ describe('SchemaField', () => {
           validate,
           widgets: { BaseInput: customStringWidget }
         });
-        Simulate.submit(container);
+        fireEvent.submit(container);
 
         const matches = container.querySelectorAll('.custom-text-widget');
-        expect(matches).to.have.length.of(1);
+        expect(matches).toHaveLength((1));
         expect(matches[0].textContent).to.eql('test');
       });
     });
@@ -422,12 +422,12 @@ describe('SchemaField', () => {
           uiSchema: hideUiSchema,
           validate
         });
-        Simulate.submit(container);
+        fireEvent.submit(container);
 
         const matches = container.querySelectorAll(
           'form > .form-group > div > .error-detail .text-danger'
         );
-        expect(matches).to.have.length.of(0);
+        expect(matches).toHaveLength((0));
       });
 
       it('should not show default errors in child component', () => {
@@ -436,10 +436,10 @@ describe('SchemaField', () => {
           uiSchema: hideUiSchema,
           validate
         });
-        Simulate.submit(container);
+        fireEvent.submit(container);
 
         const matches = container.querySelectorAll('form .form-group .form-group .text-danger');
-        expect(matches).to.have.length.of(0);
+        expect(matches).toHaveLength((0));
       });
 
       describe('Custom error rendering', () => {
@@ -454,10 +454,10 @@ describe('SchemaField', () => {
             validate,
             widgets: { BaseInput: customStringWidget }
           });
-          Simulate.submit(container);
+          fireEvent.submit(container);
 
           const matches = container.querySelectorAll('.custom-text-widget');
-          expect(matches).to.have.length.of(1);
+          expect(matches).toHaveLength((1));
           expect(matches[0].textContent).to.eql('test');
         });
       });
@@ -478,12 +478,12 @@ describe('SchemaField', () => {
           uiSchema: hideUiSchema,
           validate
         });
-        Simulate.submit(container);
+        fireEvent.submit(container);
 
         const matches = container.querySelectorAll(
           'form > .form-group > div > .error-detail .text-danger'
         );
-        expect(matches).to.have.length.of(0);
+        expect(matches).toHaveLength((0));
       });
 
       it('should show errors on child component', () => {
@@ -492,10 +492,10 @@ describe('SchemaField', () => {
           uiSchema: hideUiSchema,
           validate
         });
-        Simulate.submit(container);
+        fireEvent.submit(container);
 
         const matches = container.querySelectorAll('form .form-group .form-group .text-danger');
-        expect(matches).to.have.length.of(1);
+        expect(matches).toHaveLength((1));
         expect(matches[0].textContent).to.contain('test');
       });
     });

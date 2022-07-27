@@ -27,7 +27,7 @@ describe('allOf', () => {
       schema
     });
 
-    expect(container.querySelectorAll('input')).to.have.length.of(1);
+    expect(container.querySelectorAll('input')).toHaveLength((1));
   });
 
   it('should be able to handle incompatible types and not crash', () => {
@@ -44,6 +44,6 @@ describe('allOf', () => {
       schema
     });
 
-    expect(container.querySelectorAll('input')).to.have.length.of(0);
+    expect(container.querySelectorAll('input')).toHaveLength((0));
   });
 });

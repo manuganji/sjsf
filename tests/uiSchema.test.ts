@@ -1,6 +1,6 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import { render } from 'react-dom';
-import { Simulate } from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/dom';
 import SelectWidget from '../src/components/widgets/SelectWidget';
 import RadioWidget from '../src/components/widgets/RadioWidget';
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
@@ -73,7 +73,7 @@ describe('uiSchema', () => {
       it('should render a root custom widget', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('.custom')).to.have.length.of(1);
+        expect(container.querySelectorAll('.custom')).toHaveLength((1));
       });
     });
 
@@ -307,7 +307,7 @@ describe('uiSchema', () => {
           widgets
         });
 
-        expect(container.querySelectorAll('.custom')).to.have.length.of(1);
+        expect(container.querySelectorAll('.custom')).toHaveLength((1));
       });
     });
 
@@ -339,7 +339,7 @@ describe('uiSchema', () => {
         it('should render a custom widget with options', () => {
           const { container } = createFormComponent({ schema, uiSchema });
 
-          expect(container.querySelectorAll('.custom')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom')).toHaveLength((1));
         });
       });
 
@@ -364,7 +364,7 @@ describe('uiSchema', () => {
             widgets
           });
 
-          expect(container.querySelectorAll('.custom')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom')).toHaveLength((1));
         });
       });
     });
@@ -403,7 +403,7 @@ describe('uiSchema', () => {
 
       it('should merge enumOptions with custom options', () => {
         const { container } = createFormComponent({ schema, uiSchema });
-        expect(container.querySelectorAll('.custom option')).to.have.length.of(2);
+        expect(container.querySelectorAll('.custom option')).toHaveLength((2));
       });
     });
 
@@ -429,7 +429,7 @@ describe('uiSchema', () => {
       it('should have atleast one option disabled', () => {
         const { container } = createFormComponent({ schema, uiSchema });
         const disabledOptionsLen = uiSchema.field['ui:enumDisabled'].length;
-        expect(container.querySelectorAll('option:disabled')).to.have.length.of(disabledOptionsLen);
+        expect(container.querySelectorAll('option:disabled')).toHaveLength((disabledOptionsLen));
         expect(container.querySelectorAll('option:enabled')).to.have.length.of(
           // Two options, one disabled, plus the placeholder
           2 - disabledOptionsLen + 1
@@ -459,7 +459,7 @@ describe('uiSchema', () => {
       it('should have atleast one radio option disabled', () => {
         const { container } = createFormComponent({ schema, uiSchema });
         const disabledOptionsLen = uiSchema.field['ui:enumDisabled'].length;
-        expect(container.querySelectorAll('input:disabled')).to.have.length.of(disabledOptionsLen);
+        expect(container.querySelectorAll('input:disabled')).toHaveLength((disabledOptionsLen));
         expect(container.querySelectorAll('input:enabled')).to.have.length.of(
           // Two options, one disabled, plus the placeholder
           2 - disabledOptionsLen
@@ -830,7 +830,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('input[type=file]')).to.have.length.of(1);
+        expect(container.querySelectorAll('input[type=file]')).toHaveLength((1));
       });
     });
 
@@ -845,7 +845,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('textarea')).to.have.length.of(1);
+        expect(container.querySelectorAll('textarea')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -857,7 +857,7 @@ describe('uiSchema', () => {
           }
         });
 
-        expect(container.querySelector('textarea').value).eql('a');
+        expect(container.querySelector('textarea')!.value).eql('a');
       });
 
       it('should call onChange handler when text is updated', () => {
@@ -869,13 +869,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('textarea'), {
+        fireEvent.change(container.querySelector('textarea')!, {
           target: {
             value: 'b'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 'b' }
         });
       });
@@ -883,7 +883,7 @@ describe('uiSchema', () => {
       it('should set a placeholder value', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelector('textarea').placeholder).eql('sample');
+        expect(container.querySelector('textarea')!.placeholder).eql('sample');
       });
     });
 
@@ -898,7 +898,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=password]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=password]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -922,13 +922,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=password]'), {
+        fireEvent.change(container.querySelector('[type=password]')!, {
           target: {
             value: 'b'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 'b' }
         });
       });
@@ -950,7 +950,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=color]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=color]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -974,12 +974,12 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=color]'), {
+        fireEvent.change(container.querySelector('[type=color]')!, {
           target: {
             value: '#001122'
           }
         });
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: '#001122' }
         });
       });
@@ -995,7 +995,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1021,7 +1021,7 @@ describe('uiSchema', () => {
 
         submitForm(container);
 
-        sinon.assert.calledWithMatch(onSubmit.lastCall, {
+        expect(onSubmit.mock.lastCall).toEqual({
           formData: { foo: 'a' }
         });
       });
@@ -1049,7 +1049,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')).toHaveLength((2));
       });
 
       it('should support formData', () => {
@@ -1073,13 +1073,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
+        fireEvent.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 'b' }
         });
       });
@@ -1109,7 +1109,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=number]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=number]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1133,13 +1133,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=number]'), {
+        fireEvent.change(container.querySelector('[type=number]')!, {
           target: {
             value: '6.28'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 6.28 }
         });
       });
@@ -1192,7 +1192,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=range]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=range]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1216,13 +1216,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=range]'), {
+        fireEvent.change(container.querySelector('[type=range]')!, {
           target: {
             value: '6.28'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 6.28 }
         });
       });
@@ -1285,7 +1285,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(3);
+        expect(container.querySelectorAll('[type=radio]')).toHaveLength((3));
       });
 
       it('should support formData', () => {
@@ -1309,13 +1309,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelectorAll('[type=radio]')[2], {
+        fireEvent.change(container.querySelectorAll('[type=radio]')[2], {
           target: {
             checked: true
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 1.4142 }
         });
       });
@@ -1331,7 +1331,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1357,7 +1357,7 @@ describe('uiSchema', () => {
 
         submitForm(container);
 
-        sinon.assert.calledWithMatch(onSubmit.lastCall, {
+        expect(onSubmit.mock.lastCall).toEqual({
           formData: { foo: 42 }
         });
       });
@@ -1384,7 +1384,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=number]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=number]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1408,13 +1408,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=number]'), {
+        fireEvent.change(container.querySelector('[type=number]')!, {
           target: {
             value: '6'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 6 }
         });
       });
@@ -1430,7 +1430,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=range]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=range]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1454,13 +1454,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('[type=range]'), {
+        fireEvent.change(container.querySelector('[type=range]')!, {
           target: {
             value: '6'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 6 }
         });
       });
@@ -1486,7 +1486,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')).toHaveLength((2));
       });
 
       it('should support formData', () => {
@@ -1510,13 +1510,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
+        fireEvent.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: 2 }
         });
       });
@@ -1532,7 +1532,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1558,7 +1558,7 @@ describe('uiSchema', () => {
 
         submitForm(container);
 
-        sinon.assert.calledWithMatch(onSubmit.lastCall, {
+        expect(onSubmit.mock.lastCall).toEqual({
           formData: { foo: 42 }
         });
       });
@@ -1585,7 +1585,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=radio]')).to.have.length.of(2);
+        expect(container.querySelectorAll('[type=radio]')).toHaveLength((2));
         expect(container.querySelectorAll('[type=radio]')[0]).not.eql(null);
         expect(container.querySelectorAll('[type=radio]')[1]).not.eql(null);
       });
@@ -1621,13 +1621,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelectorAll('[type=radio]')[1], {
+        fireEvent.change(container.querySelectorAll('[type=radio]')[1], {
           target: {
             checked: true
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: false }
         });
       });
@@ -1641,13 +1641,13 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelectorAll('[type=radio]')[0], {
+        fireEvent.change(container.querySelectorAll('[type=radio]')[0], {
           target: {
             checked: true
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: true }
         });
       });
@@ -1663,7 +1663,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('select option')).to.have.length.of(3);
+        expect(container.querySelectorAll('select option')).toHaveLength((3));
       });
 
       it('should render boolean option labels', () => {
@@ -1682,14 +1682,14 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('select'), {
+        fireEvent.change(container.querySelector('select')!, {
           // DOM option change events always return strings
           target: {
             value: 'true'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: true }
         });
       });
@@ -1703,14 +1703,14 @@ describe('uiSchema', () => {
           }
         });
 
-        Simulate.change(container.querySelector('select'), {
+        fireEvent.change(container.querySelector('select')!, {
           // DOM option change events always return strings
           target: {
             value: 'false'
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: { foo: false }
         });
       });
@@ -1726,7 +1726,7 @@ describe('uiSchema', () => {
       it('should accept a uiSchema object', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=hidden]')).to.have.length.of(1);
+        expect(container.querySelectorAll('[type=hidden]')).toHaveLength((1));
       });
 
       it('should support formData', () => {
@@ -1752,7 +1752,7 @@ describe('uiSchema', () => {
 
         submitForm(container);
 
-        sinon.assert.calledWithMatch(onSubmit.lastCall, {
+        expect(onSubmit.mock.lastCall).toEqual({
           formData: { foo: true }
         });
       });

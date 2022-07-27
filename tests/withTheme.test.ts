@@ -46,7 +46,7 @@ describe('withTheme', () => {
         schema,
         uiSchema
       });
-      expect(container.querySelectorAll('.string-field')).to.have.length.of(2);
+      expect(container.querySelectorAll('.string-field')).toHaveLength((2));
     });
 
     it('should use withTheme field and the user defined field', () => {
@@ -77,8 +77,8 @@ describe('withTheme', () => {
         uiSchema,
         fields: userFields
       });
-      expect(container.querySelectorAll('.string-field')).to.have.length.of(1);
-      expect(container.querySelectorAll('.number-field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.string-field')).toHaveLength((1));
+      expect(container.querySelectorAll('.number-field')).toHaveLength((1));
     });
 
     it('should use only the user defined field', () => {
@@ -109,8 +109,8 @@ describe('withTheme', () => {
         uiSchema,
         fields: userFields
       });
-      expect(container.querySelectorAll('.string-field')).to.have.length.of(0);
-      expect(container.querySelectorAll('.form-control')).to.have.length.of(2);
+      expect(container.querySelectorAll('.string-field')).toHaveLength((0));
+      expect(container.querySelectorAll('.form-control')).toHaveLength((2));
     });
   });
 
@@ -127,7 +127,7 @@ describe('withTheme', () => {
         schema,
         uiSchema
       });
-      expect(container.querySelectorAll('#test')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test')).toHaveLength((1));
     });
 
     it('should use the withTheme widget as well as user defined widget', () => {
@@ -155,8 +155,8 @@ describe('withTheme', () => {
         uiSchema,
         widgets: userWidgets
       });
-      expect(container.querySelectorAll('#test-theme-widget')).to.have.length.of(1);
-      expect(container.querySelectorAll('#test-user-widget')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test-theme-widget')).toHaveLength((1));
+      expect(container.querySelectorAll('#test-user-widget')).toHaveLength((1));
     });
 
     it('should use only the user defined widget', () => {
@@ -180,8 +180,8 @@ describe('withTheme', () => {
         uiSchema,
         widgets: userWidgets
       });
-      expect(container.querySelectorAll('#test-theme-widget')).to.have.length.of(0);
-      expect(container.querySelectorAll('#test-user-widget')).to.have.length.of(1);
+      expect(container.querySelectorAll('#test-theme-widget')).toHaveLength((0));
+      expect(container.querySelectorAll('#test-user-widget')).toHaveLength((1));
     });
   });
 
@@ -208,7 +208,7 @@ describe('withTheme', () => {
         schema,
         uiSchema
       });
-      expect(container.querySelectorAll('.with-theme-field-template')).to.have.length.of(1);
+      expect(container.querySelectorAll('.with-theme-field-template')).toHaveLength((1));
     });
 
     it('should use only the user defined template', () => {
@@ -231,8 +231,8 @@ describe('withTheme', () => {
         schema,
         ...userTemplates
       });
-      expect(container.querySelectorAll('.with-theme-field-template')).to.have.length.of(0);
-      expect(container.querySelectorAll('.user-field-template')).to.have.length.of(1);
+      expect(container.querySelectorAll('.with-theme-field-template')).toHaveLength((0));
+      expect(container.querySelectorAll('.user-field-template')).toHaveLength((1));
     });
 
     it('should forward the ref', () => {

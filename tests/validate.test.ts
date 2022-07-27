@@ -1,5 +1,5 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/dom';
 
 import validateFormData, { isValid, toErrorList, withIdRefPrefix } from '../src/validate';
 import { createFormComponent, submitForm } from './test_utils';
@@ -113,15 +113,15 @@ describe('Validation', () => {
       });
 
       it('should return an error list', () => {
-        expect(errors).to.have.length.of(2);
+        expect(errors).toHaveLength((2));
         expect(errors[0].message).eql('should be string');
         expect(errors[1].message).eql('should be string');
       });
 
       it('should return an errorSchema', () => {
-        expect(errorSchema.foo.__errors).to.have.length.of(1);
+        expect(errorSchema.foo.__errors).toHaveLength((1));
         expect(errorSchema.foo.__errors[0]).eql('should be string');
-        expect(errorSchema[illFormedKey].__errors).to.have.length.of(1);
+        expect(errorSchema[illFormedKey].__errors).toHaveLength((1));
         expect(errorSchema[illFormedKey].__errors[0]).eql('should be string');
       });
     });
@@ -147,7 +147,7 @@ describe('Validation', () => {
       });
 
       it('should not return an error', () => {
-        expect(errors).to.have.length.of(0);
+        expect(errors).toHaveLength((0));
       });
     });
 
@@ -275,12 +275,12 @@ describe('Validation', () => {
       });
 
       it('should return an error list', () => {
-        expect(errors).to.have.length.of(1);
+        expect(errors).toHaveLength((1));
         expect(errors[0].stack).eql("pass2: passwords don't match.");
       });
 
       it('should return an errorSchema', () => {
-        expect(errorSchema.pass2.__errors).to.have.length.of(1);
+        expect(errorSchema.pass2.__errors).toHaveLength((1));
         expect(errorSchema.pass2.__errors[0]).eql("passwords don't match.");
       });
     });
@@ -299,7 +299,7 @@ describe('Validation', () => {
           dataUrlWithName: 'data:text/plain;name=file1.txt;base64,x='
         };
         const result = validateFormData(formData, schema);
-        expect(result.errors).to.have.length.of(0);
+        expect(result.errors).toHaveLength((0));
       });
 
       it('Data-Url without name is accepted', () => {
@@ -307,7 +307,7 @@ describe('Validation', () => {
           dataUrlWithoutName: 'data:text/plain;base64,x='
         };
         const result = validateFormData(formData, schema);
-        expect(result.errors).to.have.length.of(0);
+        expect(result.errors).toHaveLength((0));
       });
     });
 
@@ -331,7 +331,7 @@ describe('Validation', () => {
       });
 
       it('should return an error list', () => {
-        expect(errors).to.have.length.of(1);
+        expect(errors).toHaveLength((1));
         expect(errors[0].name).eql('type');
         expect(errors[0].property).eql(".properties['foo'].required");
         expect(errors[0].schemaPath).eql('#/definitions/stringArray/type'); // TODO: This schema path is wrong due to a bug in ajv; change this test when https://github.com/ajv-validator/ajv/issues/512 is fixed.
@@ -339,7 +339,7 @@ describe('Validation', () => {
       });
 
       it('should return an errorSchema', () => {
-        expect(errorSchema.properties.foo.required.__errors).to.have.length.of(1);
+        expect(errorSchema.properties.foo.required.__errors).toHaveLength((1));
         expect(errorSchema.properties.foo.required.__errors[0]).eql('should be array');
       });
     });
@@ -402,16 +402,7 @@ describe('Validation', () => {
   });
 
   describe('Form integration', () => {
-    let sandbox;
-
-    beforeEach(() => {
-      sandbox = sinon.createSandbox();
-    });
-
-    afterEach(() => {
-      sandbox.restore();
-    });
-
+    
     describe('JSONSchema validation', () => {
       describe('Required fields', () => {
         const schema = {
@@ -437,7 +428,7 @@ describe('Validation', () => {
         });
 
         it('should trigger onError call', () => {
-          sinon.assert.calledWithMatch(onError.lastCall, [
+          expect(onError.mock.lastCall).toEqual([
             {
               message: 'is a required property',
               name: 'required',
@@ -450,7 +441,7 @@ describe('Validation', () => {
         });
 
         it('should render errors', () => {
-          expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
+          expect(container.querySelectorAll('.errors li')).toHaveLength((1));
           expect(container.querySelector('.errors li').textContent).eql('.foo is a required property');
         });
       });
@@ -470,7 +461,7 @@ describe('Validation', () => {
         let container, onError;
 
         beforeEach(() => {
-          onError = sandbox.spy();
+          onError = vi.fn();
           const compInfo = createFormComponent({
             schema,
             formData: {
@@ -484,14 +475,14 @@ describe('Validation', () => {
         });
 
         it('should render errors', () => {
-          expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
+          expect(container.querySelectorAll('.errors li')).toHaveLength((1));
           expect(container.querySelector('.errors li').textContent).eql(
             '.foo should NOT be shorter than 10 characters'
           );
         });
 
         it('should trigger the onError handler', () => {
-          sinon.assert.calledWithMatch(onError.lastCall, [
+          expect(onError.mock.lastCall).toEqual([
             {
               message: 'should NOT be shorter than 10 characters',
               name: 'minLength',
@@ -524,7 +515,7 @@ describe('Validation', () => {
         });
 
         submitForm(container);
-        sinon.assert.calledWithMatch(onError.lastCall, [{ stack: 'root: Invalid' }]);
+        expect(onError.mock.lastCall).toEqual([{ stack: 'root: Invalid' }]);
       });
 
       it('should live validate a simple string value when liveValidate is set to true', () => {
@@ -544,11 +535,11 @@ describe('Validation', () => {
           formData,
           liveValidate: true
         });
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '1234' }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           errorSchema: { __errors: ['Invalid'] },
           errors: [{ stack: 'root: Invalid' }],
           formData: '1234'
@@ -558,7 +549,7 @@ describe('Validation', () => {
       it('should submit form on valid data', () => {
         const schema = { type: 'string' };
         const formData = 'hello';
-        const onSubmit = sandbox.spy();
+        const onSubmit = vi.fn();
 
         function validate(formData, errors) {
           if (formData !== 'hello') {
@@ -575,15 +566,14 @@ describe('Validation', () => {
         });
 
         submitForm(container);
-
-        sinon.assert.called(onSubmit);
+        expect(onSubmit).toHaveBeenCalled();
       });
 
       it('should prevent form submission on invalid data', () => {
         const schema = { type: 'string' };
         const formData = 'a';
-        const onSubmit = sandbox.spy();
-        const onError = sandbox.spy();
+        const onSubmit = vi.fn();
+        const onError = vi.fn();
 
         function validate(formData, errors) {
           if (formData !== 'hello') {
@@ -602,8 +592,8 @@ describe('Validation', () => {
 
         submitForm(container);
 
-        sinon.assert.notCalled(onSubmit);
-        sinon.assert.called(onError);
+        expect(onSubmit).not.toHaveBeenCalled();
+        expect(onError).toHaveBeenCalled();
       });
 
       it('should validate a simple object', () => {
@@ -631,7 +621,7 @@ describe('Validation', () => {
           formData
         });
         submitForm(container);
-        sinon.assert.calledWithMatch(onError.lastCall, [
+        expect(onError.mock.lastCall).toEqual([
           { stack: 'pass2: should NOT be shorter than 3 characters' },
           { stack: "pass2: Passwords don't match" }
         ]);
@@ -670,7 +660,7 @@ describe('Validation', () => {
         });
 
         submitForm(container);
-        sinon.assert.calledWithMatch(onError.lastCall, [{ stack: "pass2: Passwords don't match" }]);
+        expect(onError.mock.lastCall).toEqual([{ stack: "pass2: Passwords don't match" }]);
       });
 
       it('should validate a simple array', () => {
@@ -696,7 +686,7 @@ describe('Validation', () => {
           formData
         });
         submitForm(container);
-        sinon.assert.calledWithMatch(onError.lastCall, [{ stack: 'root: Forbidden value: bbb' }]);
+        expect(onError.mock.lastCall).toEqual([{ stack: 'root: Forbidden value: bbb' }]);
       });
     });
 
@@ -727,11 +717,11 @@ describe('Validation', () => {
         });
 
         it('should not render error list if showErrorList prop true', () => {
-          expect(container.querySelectorAll('.errors li')).to.have.length.of(0);
+          expect(container.querySelectorAll('.errors li')).toHaveLength((0));
         });
 
         it('should trigger onError call', () => {
-          sinon.assert.calledWithMatch(onError.lastCall, [
+          expect(onError.mock.lastCall).toEqual([
             {
               message: 'is a required property',
               name: 'required',
@@ -782,15 +772,15 @@ describe('Validation', () => {
           ErrorList: CustomErrorList,
           formContext: { className: 'foo' }
         });
-        expect(container.querySelectorAll('.CustomErrorList')).to.have.length.of(1);
+        expect(container.querySelectorAll('.CustomErrorList')).toHaveLength((1));
         expect(container.querySelector('.CustomErrorList').textContent).eql('1 custom');
-        expect(container.querySelectorAll('.ErrorSchema')).to.have.length.of(1);
+        expect(container.querySelectorAll('.ErrorSchema')).toHaveLength((1));
         expect(container.querySelector('.ErrorSchema').textContent).eql('should be string');
-        expect(container.querySelectorAll('.Schema')).to.have.length.of(1);
+        expect(container.querySelectorAll('.Schema')).toHaveLength((1));
         expect(container.querySelector('.Schema').textContent).eql('string');
-        expect(container.querySelectorAll('.UiSchema')).to.have.length.of(1);
+        expect(container.querySelectorAll('.UiSchema')).toHaveLength((1));
         expect(container.querySelector('.UiSchema').textContent).eql('bar');
-        expect(container.querySelectorAll('.foo')).to.have.length.of(1);
+        expect(container.querySelectorAll('.foo')).toHaveLength((1));
       });
     });
     describe('Custom meta schema', () => {
@@ -828,8 +818,8 @@ describe('Validation', () => {
         submitForm(container);
       });
       it('should be used to validate schema', () => {
-        expect(container.querySelectorAll('.errors li')).to.have.length.of(1);
-        sinon.assert.calledWithMatch(onError.lastCall, [
+        expect(container.querySelectorAll('.errors li')).toHaveLength((1));
+        expect(onError.mock.lastCall).toEqual([
           {
             message: 'should match pattern "\\d+"',
             name: 'pattern',
@@ -841,11 +831,11 @@ describe('Validation', () => {
         ]);
         onError.resetHistory();
 
-        Simulate.change(container.querySelector('input'), {
+        fireEvent.change(container.querySelector('input')!, {
           target: { value: '1234' }
         });
-        expect(container.querySelectorAll('.errors li')).to.have.length.of(0);
-        sinon.assert.notCalled(onError);
+        expect(container.querySelectorAll('.errors li')).toHaveLength((0));
+        expect(onError).not.toHaveBeenCalled();
       });
     });
   });

@@ -25,7 +25,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field input[type=text]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field input[type=text]')).toHaveLength((1));
     });
 
     it('should render a string field with a label', () => {
@@ -59,7 +59,7 @@ describe('StringField', () => {
       });
 
       expect(container.querySelector('.field input').value).eql('plop');
-      expect(container.querySelectorAll('.field datalist > option')).to.have.length.of(0);
+      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((0));
     });
 
     it('should render a string field with examples', () => {
@@ -70,7 +70,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field datalist > option')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
       const datalistId = container.querySelector('.field datalist').id;
       expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
     });
@@ -83,7 +83,7 @@ describe('StringField', () => {
           examples: ['Chrome', 'Vivaldi']
         }
       });
-      expect(container.querySelectorAll('.field datalist > option')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
       const datalistId = container.querySelector('.field datalist').id;
       expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
     });
@@ -96,7 +96,7 @@ describe('StringField', () => {
           examples: ['Firefox', 'Chrome', 'Vivaldi']
         }
       });
-      expect(container.querySelectorAll('.field datalist > option')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
       const datalistId = container.querySelector('.field datalist').id;
       expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
     });
@@ -108,7 +108,7 @@ describe('StringField', () => {
       });
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: undefined
       });
     });
@@ -120,25 +120,25 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('input'), {
+      fireEvent.change(container.querySelector('input')!, {
         target: { value: 'yo' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'yo'
       });
     });
 
     it('should handle a blur event', () => {
-      const onBlur = sandbox.spy();
+      const onBlur = vi.fn();
       const { container } = createFormComponent({
         schema: {
           type: 'string'
         },
         onBlur
       });
-      const input = container.querySelector('input');
-      Simulate.blur(input, {
+      const input = container.querySelector('input')!;
+      fireEvent.blur(input, {
         target: { value: 'yo' }
       });
 
@@ -146,15 +146,15 @@ describe('StringField', () => {
     });
 
     it('should handle a focus event', () => {
-      const onFocus = sandbox.spy();
+      const onFocus = vi.fn();
       const { container } = createFormComponent({
         schema: {
           type: 'string'
         },
         onFocus
       });
-      const input = container.querySelector('input');
-      Simulate.focus(input, {
+      const input = container.querySelector('input')!;
+      fireEvent.focus(input, {
         target: { value: 'yo' }
       });
 
@@ -167,11 +167,11 @@ describe('StringField', () => {
         formData: 'x'
       });
 
-      Simulate.change(container.querySelector('input'), {
+      fireEvent.change(container.querySelector('input')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, { formData: undefined });
+      expect(onChange.mock.lastCall).toEqual({ formData: undefined });
     });
 
     it('should handle an empty string change event with custom ui:emptyValue', () => {
@@ -181,11 +181,11 @@ describe('StringField', () => {
         formData: 'x'
       });
 
-      Simulate.change(container.querySelector('input'), {
+      fireEvent.change(container.querySelector('input')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'default'
       });
     });
@@ -198,11 +198,11 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('input'), {
+      fireEvent.change(container.querySelector('input')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: undefined
       });
     });
@@ -248,7 +248,7 @@ describe('StringField', () => {
         formData: undefined
       });
 
-      expect(container.querySelector('input').getAttribute('autocomplete')).eql('family-name');
+      expect(container.querySelector('input')!.getAttribute('autocomplete')).eql('family-name');
     });
   });
 
@@ -261,7 +261,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
     });
 
     it('should render a string field for an enum without a type', () => {
@@ -271,7 +271,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field select')).toHaveLength((1));
     });
 
     it('should render a string field with a label', () => {
@@ -324,7 +324,7 @@ describe('StringField', () => {
 
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: 'bar'
       });
     });
@@ -337,10 +337,10 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: 'foo' }
       });
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'foo'
       });
     });
@@ -353,11 +353,11 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: undefined
       });
     });
@@ -370,11 +370,11 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: 'foo' }
       });
 
-      expect(container.querySelector('select').value).eql('foo');
+      expect(container.querySelector('select')!.value).eql('foo');
     });
 
     it('should reflect undefined value into the dom as empty option', () => {
@@ -385,11 +385,11 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('select'), {
+      fireEvent.change(container.querySelector('select')!, {
         target: { value: '' }
       });
 
-      expect(container.querySelector('select').value).eql('');
+      expect(container.querySelector('select')!.value).eql('');
     });
 
     it('should fill field with data', () => {
@@ -402,7 +402,7 @@ describe('StringField', () => {
       });
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: 'bar'
       });
     });
@@ -415,7 +415,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelector('select').id).eql('root');
+      expect(container.querySelector('select')!.id).eql('root');
     });
 
     it('should render customized SelectWidget', () => {
@@ -504,11 +504,11 @@ describe('StringField', () => {
         formData: 'x'
       });
 
-      Simulate.change(container.querySelector('textarea'), {
+      fireEvent.change(container.querySelector('textarea')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: undefined
       });
     });
@@ -523,11 +523,11 @@ describe('StringField', () => {
         formData: 'x'
       });
 
-      Simulate.change(container.querySelector('textarea'), {
+      fireEvent.change(container.querySelector('textarea')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'default'
       });
     });
@@ -542,7 +542,7 @@ describe('StringField', () => {
         formData: 'x'
       });
 
-      expect(container.querySelector('textarea').getAttribute('rows')).eql('20');
+      expect(container.querySelector('textarea')!.getAttribute('rows')).eql('20');
     });
   });
 
@@ -555,7 +555,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=datetime-local]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=datetime-local]')).toHaveLength((1));
     });
 
     it('should assign a default value', () => {
@@ -568,7 +568,7 @@ describe('StringField', () => {
         }
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -583,7 +583,7 @@ describe('StringField', () => {
 
       const newDatetime = new Date().toJSON();
 
-      Simulate.change(container.querySelector('[type=datetime-local]'), {
+      fireEvent.change(container.querySelector('[type=datetime-local]')!, {
         target: { value: newDatetime }
       });
 
@@ -600,7 +600,7 @@ describe('StringField', () => {
         formData: datetime
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -625,11 +625,11 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=datetime-local]'), {
+      fireEvent.change(container.querySelector('[type=datetime-local]')!, {
         target: { value: 'invalid' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { __errors: ['should be string'] },
         errors: [
           {
@@ -685,7 +685,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field [type=date]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=date]')).toHaveLength((1));
     });
 
     it('should assign a default value', () => {
@@ -700,7 +700,7 @@ describe('StringField', () => {
         noValidate: true
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -716,7 +716,7 @@ describe('StringField', () => {
 
       const newDatetime = '2012-12-12';
 
-      Simulate.change(container.querySelector('[type=date]'), {
+      fireEvent.change(container.querySelector('[type=date]')!, {
         target: { value: newDatetime }
       });
 
@@ -736,7 +736,7 @@ describe('StringField', () => {
         noValidate: true
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -763,13 +763,13 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=date]'), {
+      fireEvent.change(container.querySelector('[type=date]')!, {
         target: { value: '2012-12-12' }
       });
 
-      sinon.assert.notCalled(onError);
+      expect(onError).not.toHaveBeenCalled();
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: '2012-12-12'
       });
     });
@@ -784,11 +784,11 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=date]'), {
+      fireEvent.change(container.querySelector('[type=date]')!, {
         target: { value: 'invalid' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { __errors: ['should match format "date"'] },
         errors: [
           {
@@ -844,7 +844,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(6);
+      expect(container.querySelectorAll('.field select')).toHaveLength((6));
     });
 
     it('should render a string field with a main label', () => {
@@ -871,7 +871,7 @@ describe('StringField', () => {
         uiSchema
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -886,26 +886,26 @@ describe('StringField', () => {
       });
 
       act(() => {
-        Simulate.change(container.querySelector('#root_year'), {
+        fireEvent.change(container.querySelector('#root_year')!, {
           target: { value: 2012 }
         });
-        Simulate.change(container.querySelector('#root_month'), {
+        fireEvent.change(container.querySelector('#root_month')!, {
           target: { value: 10 }
         });
-        Simulate.change(container.querySelector('#root_day'), {
+        fireEvent.change(container.querySelector('#root_day')!, {
           target: { value: 2 }
         });
-        Simulate.change(container.querySelector('#root_hour'), {
+        fireEvent.change(container.querySelector('#root_hour')!, {
           target: { value: 1 }
         });
-        Simulate.change(container.querySelector('#root_minute'), {
+        fireEvent.change(container.querySelector('#root_minute')!, {
           target: { value: 2 }
         });
-        Simulate.change(container.querySelector('#root_second'), {
+        fireEvent.change(container.querySelector('#root_second')!, {
           target: { value: 3 }
         });
       });
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: '2012-10-02T01:02:03.000Z'
       });
     });
@@ -920,7 +920,7 @@ describe('StringField', () => {
         formData: datetime
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -1036,7 +1036,7 @@ describe('StringField', () => {
           uiSchema
         });
 
-        Simulate.click(container.querySelector('a.btn-now'));
+        fireEvent.click(container.querySelector('a.btn-now'));
         const formValue = onChange.lastCall.args[0].formData;
         // Test that the two DATETIMEs are within 5 seconds of each other.
         const now = new Date().getTime();
@@ -1053,10 +1053,10 @@ describe('StringField', () => {
           uiSchema
         });
 
-        Simulate.click(container.querySelector('a.btn-now'));
-        Simulate.click(container.querySelector('a.btn-clear'));
+        fireEvent.click(container.querySelector('a.btn-now'));
+        fireEvent.click(container.querySelector('a.btn-clear'));
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: undefined
         });
       });
@@ -1109,7 +1109,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field select')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field select')).toHaveLength((3));
     });
 
     it('should render a string field with a main label', () => {
@@ -1136,7 +1136,7 @@ describe('StringField', () => {
         uiSchema
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -1151,17 +1151,17 @@ describe('StringField', () => {
       });
 
       act(() => {
-        Simulate.change(container.querySelector('#root_year'), {
+        fireEvent.change(container.querySelector('#root_year')!, {
           target: { value: 2012 }
         });
-        Simulate.change(container.querySelector('#root_month'), {
+        fireEvent.change(container.querySelector('#root_month')!, {
           target: { value: 10 }
         });
-        Simulate.change(container.querySelector('#root_day'), {
+        fireEvent.change(container.querySelector('#root_day')!, {
           target: { value: 2 }
         });
       });
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: '2012-10-02'
       });
     });
@@ -1176,17 +1176,17 @@ describe('StringField', () => {
       });
 
       act(() => {
-        Simulate.change(container.querySelector('#root_year'), {
+        fireEvent.change(container.querySelector('#root_year')!, {
           target: { value: 2012 }
         });
-        Simulate.change(container.querySelector('#root_month'), {
+        fireEvent.change(container.querySelector('#root_month')!, {
           target: { value: 10 }
         });
       });
       expect(container.querySelector('#root_year').value).eql('2012');
       expect(container.querySelector('#root_month').value).eql('10');
       expect(container.querySelector('#root_day').value).eql('');
-      sinon.assert.notCalled(onChange);
+      expect(onChange).not.toHaveBeenCalled();
     });
 
     it('should fill field with data', () => {
@@ -1200,7 +1200,7 @@ describe('StringField', () => {
         formData: datetime
       });
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: datetime
       });
     });
@@ -1294,7 +1294,7 @@ describe('StringField', () => {
         formData: '2012-12-12'
       });
 
-      sinon.assert.notCalled(onError);
+      expect(onError).not.toHaveBeenCalled();
     });
 
     it('should throw on invalid date', () => {
@@ -1336,11 +1336,11 @@ describe('StringField', () => {
           uiSchema
         });
 
-        Simulate.click(container.querySelector('a.btn-now'));
+        fireEvent.click(container.querySelector('a.btn-now'));
 
         const expected = toDateString(parseDateString(new Date().toJSON()), false);
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: expected
         });
       });
@@ -1354,10 +1354,10 @@ describe('StringField', () => {
           uiSchema
         });
 
-        Simulate.click(container.querySelector('a.btn-now'));
-        Simulate.click(container.querySelector('a.btn-clear'));
+        fireEvent.click(container.querySelector('a.btn-now'));
+        fireEvent.click(container.querySelector('a.btn-clear'));
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: undefined
         });
       });
@@ -1390,7 +1390,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=email]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=email]')).toHaveLength((1));
     });
 
     it('should render a string field with a label', () => {
@@ -1429,7 +1429,7 @@ describe('StringField', () => {
 
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: email
       });
     });
@@ -1444,7 +1444,7 @@ describe('StringField', () => {
 
       const newDatetime = new Date().toJSON();
 
-      Simulate.change(container.querySelector('[type=email]'), {
+      fireEvent.change(container.querySelector('[type=email]')!, {
         target: { value: newDatetime }
       });
 
@@ -1462,7 +1462,7 @@ describe('StringField', () => {
       });
 
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: email
       });
     });
@@ -1487,11 +1487,11 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=email]'), {
+      fireEvent.change(container.querySelector('[type=email]')!, {
         target: { value: 'invalid' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { __errors: ['should match format "email"'] },
         errors: [
           {
@@ -1530,7 +1530,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=url]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=url]')).toHaveLength((1));
     });
 
     it('should render a string field with a label', () => {
@@ -1569,7 +1569,7 @@ describe('StringField', () => {
 
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: url
       });
     });
@@ -1583,7 +1583,7 @@ describe('StringField', () => {
       });
 
       const newDatetime = new Date().toJSON();
-      Simulate.change(container.querySelector('[type=url]'), {
+      fireEvent.change(container.querySelector('[type=url]')!, {
         target: { value: newDatetime }
       });
 
@@ -1602,7 +1602,7 @@ describe('StringField', () => {
 
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: url
       });
     });
@@ -1627,11 +1627,11 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=url]'), {
+      fireEvent.change(container.querySelector('[type=url]')!, {
         target: { value: 'invalid' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { __errors: ['should match format "uri"'] },
         errors: [
           {
@@ -1674,7 +1674,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field [type=color]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=color]')).toHaveLength((1));
     });
 
     it('should assign a default value', () => {
@@ -1688,7 +1688,7 @@ describe('StringField', () => {
       });
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: color });
+      expect(onSubmit.mock.lastCall).toEqual({ formData: color });
     });
 
     it('should reflect the change into the dom', () => {
@@ -1702,7 +1702,7 @@ describe('StringField', () => {
 
       const newColor = '#654321';
 
-      Simulate.change(container.querySelector('[type=color]'), {
+      fireEvent.change(container.querySelector('[type=color]')!, {
         target: { value: newColor }
       });
 
@@ -1719,7 +1719,7 @@ describe('StringField', () => {
       });
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: color });
+      expect(onSubmit.mock.lastCall).toEqual({ formData: color });
     });
 
     it('should render the widget with the expected id', () => {
@@ -1744,11 +1744,11 @@ describe('StringField', () => {
         liveValidate: true
       });
 
-      Simulate.change(container.querySelector('[type=color]'), {
+      fireEvent.change(container.querySelector('[type=color]')!, {
         target: { value: 'invalid' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { __errors: ['should match format "color"'] },
         errors: [
           {
@@ -1789,7 +1789,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=file]')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field [type=file]')).toHaveLength((1));
     });
 
     it('should assign a default value', () => {
@@ -1802,7 +1802,7 @@ describe('StringField', () => {
       });
       submitForm(container);
 
-      sinon.assert.calledWithMatch(onSubmit.lastCall, {
+      expect(onSubmit.mock.lastCall).toEqual({
         formData: initialValue
       });
     });
@@ -1822,7 +1822,7 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('[type=file]'), {
+      fireEvent.change(container.querySelector('[type=file]')!, {
         target: {
           files: [{ name: 'file1.txt', size: 1, type: 'type' }]
         }
@@ -1830,7 +1830,7 @@ describe('StringField', () => {
 
       await new Promise(setImmediate);
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'data:text/plain;name=file1.txt;base64,x='
       });
     });
@@ -1853,7 +1853,7 @@ describe('StringField', () => {
         }
       });
 
-      Simulate.change(container.querySelector('[type=file]'), {
+      fireEvent.change(container.querySelector('[type=file]')!, {
         target: {
           files: [{ name: nonUriEncodedValue, size: 1, type: 'type' }]
         }
@@ -1861,7 +1861,7 @@ describe('StringField', () => {
 
       await new Promise(setImmediate);
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: 'data:text/plain;name=' + uriEncodedValue + ';base64,x='
       });
     });

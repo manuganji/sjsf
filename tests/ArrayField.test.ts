@@ -1,7 +1,7 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
 
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
+import { fireEvent } from '@testing-library/dom';
 
 const ArrayKeyDataAttr = 'data-rjsf-itemkey';
 const ExposedArrayKeyTemplate = function (props) {
@@ -73,7 +73,6 @@ const CustomOnAddClickTemplate = function (props) {
 };
 
 describe('ArrayField', () => {
-  let sandbox;
   const CustomComponent = (props) => {
     return <div id="custom">{props.rawErrors}</div>;
   };
@@ -89,14 +88,6 @@ describe('ArrayField', () => {
       </select>
     );
   };
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
 
   describe('Unsupported array schema', () => {
     it('should warn on missing items descriptor', () => {
@@ -118,7 +109,9 @@ describe('ArrayField', () => {
         fields
       });
 
-      expect(container.querySelectorAll('#custom')[0].textContent).to.eql('Custom UnsupportedField');
+      expect(container.querySelectorAll('#custom')[0].textContent).to.eql(
+        'Custom UnsupportedField'
+      );
     });
   });
 
@@ -138,7 +131,7 @@ describe('ArrayField', () => {
         schema,
         formData: { foo: null }
       });
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(0);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((0));
     });
   });
 
@@ -158,14 +151,14 @@ describe('ArrayField', () => {
         schema,
         formData: { foo: null }
       });
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(0);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((0));
     });
     it('should contain a field in the list when nested array formData is a single item', () => {
       const { container } = createFormComponent({
         schema,
         formData: { foo: ['test'] }
       });
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((1));
     });
   });
 
@@ -181,7 +174,7 @@ describe('ArrayField', () => {
       const { container } = createFormComponent({ schema });
 
       const fieldset = container.querySelectorAll('fieldset');
-      expect(fieldset).to.have.length.of(1);
+      expect(fieldset).toHaveLength((1));
       expect(fieldset[0].id).eql('root');
     });
 
@@ -257,7 +250,9 @@ describe('ArrayField', () => {
         formData: ['foo', 'barr']
       });
 
-      expect(container.querySelectorAll("input[placeholder='Placeholder...']")).to.have.length.of(2);
+      expect(container.querySelectorAll("input[placeholder='Placeholder...']")).to.have.length.of(
+        2
+      );
     });
 
     it('should pass rawErrors down to custom array field templates', () => {
@@ -277,14 +272,14 @@ describe('ArrayField', () => {
       });
 
       const matches = container.querySelectorAll('#custom');
-      expect(matches).to.have.length.of(1);
+      expect(matches).toHaveLength((1));
       expect(matches[0].textContent).to.eql('should NOT have fewer than 2 items');
     });
 
     it('should contain no field in the list by default', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(0);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((0));
     });
 
     it('should have an add button', () => {
@@ -305,9 +300,9 @@ describe('ArrayField', () => {
     it('should add a new field when clicking the add button', () => {
       const { container } = createFormComponent({ schema });
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
-      expect(container.querySelectorAll('.field-string')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field-string')).toHaveLength((1));
     });
 
     it('should assign new keys/ids when clicking the add button', () => {
@@ -316,7 +311,7 @@ describe('ArrayField', () => {
         ArrayFieldTemplate: ExposedArrayKeyTemplate
       });
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
       expect(container.querySelector('.array-item').hasAttribute(ArrayKeyDataAttr)).to.be.true;
     });
@@ -327,7 +322,7 @@ describe('ArrayField', () => {
         ArrayFieldTemplate: CustomOnAddClickTemplate
       });
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
       expect(container.querySelector('.array-item')).not.to.be.null;
     });
@@ -361,7 +356,7 @@ describe('ArrayField', () => {
       const startRow1_key = startRows[0].getAttribute(ArrayKeyDataAttr);
       const startRow2_key = startRows[1] ? startRows[1].getAttribute(ArrayKeyDataAttr) : undefined;
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
       const endRows = container.querySelectorAll('.array-item');
       const endRow1_key = endRows[0].getAttribute(ArrayKeyDataAttr);
@@ -431,8 +426,8 @@ describe('ArrayField', () => {
       const startRow2_key = startRows[1].getAttribute(ArrayKeyDataAttr);
       const startRow3_key = startRows[2].getAttribute(ArrayKeyDataAttr);
 
-      Simulate.click(addBeforeButtons[0]);
-      Simulate.click(addAfterButtons[0]);
+      fireEvent.click(addBeforeButtons[0]);
+      fireEvent.click(addAfterButtons[0]);
 
       const endRows = container.querySelectorAll('.array-item');
       const endRow2_key = endRows[1].getAttribute(ArrayKeyDataAttr);
@@ -481,7 +476,7 @@ describe('ArrayField', () => {
     it('should mark a non-null array item widget as required', () => {
       const { container } = createFormComponent({ schema });
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
       expect(container.querySelector('.field-string input[type=text]').required).eql(true);
     });
@@ -493,7 +488,7 @@ describe('ArrayField', () => {
       });
       const inputs = container.querySelectorAll('.field-string input[type=text]');
 
-      expect(inputs).to.have.length.of(2);
+      expect(inputs).toHaveLength((2));
       expect(inputs[0].value).eql('foo');
       expect(inputs[1].value).eql('bar');
     });
@@ -522,10 +517,10 @@ describe('ArrayField', () => {
       });
       const moveDownBtns = container.querySelectorAll('.array-item-move-down');
 
-      Simulate.click(moveDownBtns[0]);
+      fireEvent.click(moveDownBtns[0]);
 
       const inputs = container.querySelectorAll('.field-string input[type=text]');
-      expect(inputs).to.have.length.of(3);
+      expect(inputs).toHaveLength((3));
       expect(inputs[0].value).eql('bar');
       expect(inputs[1].value).eql('foo');
       expect(inputs[2].value).eql('baz');
@@ -538,10 +533,10 @@ describe('ArrayField', () => {
       });
       const moveUpBtns = container.querySelectorAll('.array-item-move-up');
 
-      Simulate.click(moveUpBtns[2]);
+      fireEvent.click(moveUpBtns[2]);
 
       const inputs = container.querySelectorAll('.field-string input[type=text]');
-      expect(inputs).to.have.length.of(3);
+      expect(inputs).toHaveLength((3));
       expect(inputs[0].value).eql('foo');
       expect(inputs[1].value).eql('baz');
       expect(inputs[2].value).eql('bar');
@@ -559,7 +554,7 @@ describe('ArrayField', () => {
       const startRow2_key = startRows[1].getAttribute(ArrayKeyDataAttr);
       const startRow3_key = startRows[2].getAttribute(ArrayKeyDataAttr);
 
-      Simulate.click(moveDownBtns[0]);
+      fireEvent.click(moveDownBtns[0]);
 
       const endRows = container.querySelectorAll('.array-item');
       const endRow1_key = endRows[0].getAttribute(ArrayKeyDataAttr);
@@ -587,7 +582,7 @@ describe('ArrayField', () => {
       const startRow2_key = startRows[1].getAttribute(ArrayKeyDataAttr);
       const startRow3_key = startRows[2].getAttribute(ArrayKeyDataAttr);
 
-      Simulate.click(moveUpBtns[2]);
+      fireEvent.click(moveUpBtns[2]);
 
       const endRows = container.querySelectorAll('.array-item');
       const endRow1_key = endRows[0].getAttribute(ArrayKeyDataAttr);
@@ -645,7 +640,7 @@ describe('ArrayField', () => {
       const startRow3_key = startRows[2].getAttribute(ArrayKeyDataAttr);
 
       const button = container.querySelector('.item-0 .array-item-move-to-2');
-      Simulate.click(button);
+      fireEvent.click(button);
 
       const inputs = container.querySelectorAll('.field-string input[type=text]');
       expect(inputs[0].value).eql('bar');
@@ -713,10 +708,10 @@ describe('ArrayField', () => {
       });
       const dropBtns = container.querySelectorAll('.array-item-remove');
 
-      Simulate.click(dropBtns[0]);
+      fireEvent.click(dropBtns[0]);
 
       const inputs = container.querySelectorAll('.field-string input[type=text]');
-      expect(inputs).to.have.length.of(1);
+      expect(inputs).toHaveLength((1));
       expect(inputs[0].value).eql('bar');
     });
 
@@ -727,12 +722,12 @@ describe('ArrayField', () => {
       });
       const deleteBtns = container.querySelectorAll('.array-item-remove');
 
-      Simulate.click(deleteBtns[0]);
+      fireEvent.click(deleteBtns[0]);
 
       const inputs = container.querySelectorAll('.field-string input[type=text]');
 
-      Simulate.change(inputs[0], { target: { value: 'fuzz' } });
-      expect(inputs).to.have.length.of(2);
+      fireEvent.change(inputs[0], { target: { value: 'fuzz' } });
+      expect(inputs).toHaveLength((2));
       expect(inputs[0].value).eql('fuzz');
       expect(inputs[1].value).eql('baz');
     });
@@ -748,7 +743,7 @@ describe('ArrayField', () => {
       const startRow2_key = startRows[1].getAttribute(ArrayKeyDataAttr);
 
       const dropBtns = container.querySelectorAll('.array-item-remove');
-      Simulate.click(dropBtns[0]);
+      fireEvent.click(dropBtns[0]);
 
       const endRows = container.querySelectorAll('.array-item');
       const endRow1_key = endRows[0].getAttribute(ArrayKeyDataAttr);
@@ -790,18 +785,18 @@ describe('ArrayField', () => {
       });
 
       try {
-        Simulate.submit(container);
+        fireEvent.submit(container);
       } catch (e) {
         // Silencing error thrown as failure is expected here
       }
 
-      expect(container.querySelectorAll('.has-error .error-detail')).to.have.length.of(1);
+      expect(container.querySelectorAll('.has-error .error-detail')).toHaveLength((1));
 
       const dropBtns = container.querySelectorAll('.array-item-remove');
 
-      Simulate.click(dropBtns[0]);
+      fireEvent.click(dropBtns[0]);
 
-      expect(container.querySelectorAll('.has-error .error-detail')).to.have.length.of(0);
+      expect(container.querySelectorAll('.has-error .error-detail')).toHaveLength((0));
     });
 
     it('should handle cleared field values in the array', () => {
@@ -816,11 +811,11 @@ describe('ArrayField', () => {
         formData
       });
 
-      Simulate.change(container.querySelector('#root_1'), {
+      fireEvent.change(container.querySelector('#root_1')!, {
         target: { value: '' }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         errorSchema: { 1: { __errors: ['should be integer'] } },
         errors: [
           {
@@ -836,7 +831,7 @@ describe('ArrayField', () => {
       });
 
       submitForm(container);
-      sinon.assert.calledWithMatch(onError.lastCall, [
+      expect(onError.mock.lastCall).toEqual([
         {
           message: 'should be integer',
           name: 'type',
@@ -1024,7 +1019,7 @@ describe('ArrayField', () => {
       });
       submitForm(form.container);
 
-      sinon.assert.calledWithMatch(form.onSubmit.lastCall, {
+      expect(form.onSubmit.mock.lastCall).toEqual({
         formData: { multipleChoicesList: [] }
       });
 
@@ -1037,7 +1032,7 @@ describe('ArrayField', () => {
       });
       submitForm(form.container);
 
-      sinon.assert.calledWithMatch(form.onError.lastCall, [
+      expect(form.onSubmit.mock.lastCall).toEqual([
         {
           message: 'should NOT have fewer than 3 items',
           name: 'minItems',
@@ -1097,7 +1092,7 @@ describe('ArrayField', () => {
       it('should render a select widget', () => {
         const { container } = createFormComponent({ schema });
 
-        expect(container.querySelectorAll('select')).to.have.length.of(1);
+        expect(container.querySelectorAll('select')).toHaveLength((1));
       });
 
       it('should render a select widget with a label', () => {
@@ -1115,13 +1110,13 @@ describe('ArrayField', () => {
       it('should render options', () => {
         const { container } = createFormComponent({ schema });
 
-        expect(container.querySelectorAll('select option')).to.have.length.of(3);
+        expect(container.querySelectorAll('select option')).toHaveLength((3));
       });
 
       it('should handle a change event', () => {
         const { container, onChange } = createFormComponent({ schema });
 
-        Simulate.change(container.querySelector('.field select'), {
+        fireEvent.change(container.querySelector('.field select')!, {
           target: {
             options: [
               { selected: true, value: 'foo' },
@@ -1131,17 +1126,17 @@ describe('ArrayField', () => {
           }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: ['foo', 'bar']
         });
       });
 
       it('should handle a blur event', () => {
-        const onBlur = sandbox.spy();
+        const onBlur = vi.fn();
         const { container } = createFormComponent({ schema, onBlur });
 
         const select = container.querySelector('.field select');
-        Simulate.blur(select, {
+        fireEvent.blur(select, {
           target: {
             options: [
               { selected: true, value: 'foo' },
@@ -1155,11 +1150,11 @@ describe('ArrayField', () => {
       });
 
       it('should handle a focus event', () => {
-        const onFocus = sandbox.spy();
+        const onFocus = vi.fn();
         const { container } = createFormComponent({ schema, onFocus });
 
         const select = container.querySelector('.field select');
-        Simulate.focus(select, {
+        fireEvent.focus(select, {
           target: {
             options: [
               { selected: true, value: 'foo' },
@@ -1179,7 +1174,7 @@ describe('ArrayField', () => {
         });
 
         const options = container.querySelectorAll('.field select option');
-        expect(options).to.have.length.of(3);
+        expect(options).toHaveLength((3));
         expect(options[0].selected).eql(true); // foo
         expect(options[1].selected).eql(true); // bar
         expect(options[2].selected).eql(false); // fuzz
@@ -1188,7 +1183,7 @@ describe('ArrayField', () => {
       it('should render the select widget with the expected id', () => {
         const { container } = createFormComponent({ schema });
 
-        expect(container.querySelector('select').id).eql('root');
+        expect(container.querySelector('select')!.id).eql('root');
       });
 
       it('should pass rawErrors down to custom widgets', () => {
@@ -1202,7 +1197,7 @@ describe('ArrayField', () => {
         });
 
         const matches = container.querySelectorAll('#custom');
-        expect(matches).to.have.length.of(1);
+        expect(matches).toHaveLength((1));
         expect(matches[0].textContent).to.eql(
           'should NOT have duplicate items (items ## 1 and 0 are identical)'
         );
@@ -1218,7 +1213,7 @@ describe('ArrayField', () => {
         });
 
         const matches = container.querySelectorAll('#test');
-        expect(matches).to.have.length.of(1);
+        expect(matches).toHaveLength((1));
         expect(matches[0].textContent).to.eql(schema.title);
       });
 
@@ -1242,7 +1237,7 @@ describe('ArrayField', () => {
       it('should render the expected number of checkboxes', () => {
         const { container } = createFormComponent({ schema, uiSchema });
 
-        expect(container.querySelectorAll('[type=checkbox]')).to.have.length.of(3);
+        expect(container.querySelectorAll('[type=checkbox]')).toHaveLength((3));
       });
 
       it('should render the expected labels', () => {
@@ -1261,14 +1256,14 @@ describe('ArrayField', () => {
           uiSchema
         });
 
-        Simulate.change(container.querySelectorAll('[type=checkbox]')[0], {
+        fireEvent.change(container.querySelectorAll('[type=checkbox]')[0], {
           target: { checked: true }
         });
-        Simulate.change(container.querySelectorAll('[type=checkbox]')[2], {
+        fireEvent.change(container.querySelectorAll('[type=checkbox]')[2], {
           target: { checked: true }
         });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: ['foo', 'fuzz']
         });
       });
@@ -1304,7 +1299,7 @@ describe('ArrayField', () => {
           }
         });
 
-        expect(container.querySelectorAll('.checkbox-inline')).to.have.length.of(3);
+        expect(container.querySelectorAll('.checkbox-inline')).toHaveLength((3));
       });
 
       it('should pass rawErrors down to custom widgets', () => {
@@ -1330,7 +1325,7 @@ describe('ArrayField', () => {
         });
 
         const matches = container.querySelectorAll('#custom');
-        expect(matches).to.have.length.of(1);
+        expect(matches).toHaveLength((1));
         expect(matches[0].textContent).to.eql('should NOT have fewer than 3 items');
       });
 
@@ -1352,7 +1347,7 @@ describe('ArrayField', () => {
           }
         });
 
-        expect(container.querySelectorAll('.checkbox-inline')).to.have.length.of(3);
+        expect(container.querySelectorAll('.checkbox-inline')).toHaveLength((3));
       });
     });
   });
@@ -1370,7 +1365,7 @@ describe('ArrayField', () => {
     it('should render an input[type=file] widget', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('input[type=file]')).to.have.length.of(1);
+      expect(container.querySelectorAll('input[type=file]')).toHaveLength((1));
     });
 
     it('should render a select widget with a label', () => {
@@ -1395,7 +1390,7 @@ describe('ArrayField', () => {
 
       const { container, onChange } = createFormComponent({ schema });
 
-      Simulate.change(container.querySelector('.field input[type=file]'), {
+      fireEvent.change(container.querySelector('.field input[type=file]')!, {
         target: {
           files: [
             { name: 'file1.txt', size: 1, type: 'type' },
@@ -1406,7 +1401,7 @@ describe('ArrayField', () => {
 
       await new Promise(setImmediate);
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: [
           'data:text/plain;name=file1.txt;base64,x=',
           'data:text/plain;name=file2.txt;base64,x='
@@ -1425,7 +1420,7 @@ describe('ArrayField', () => {
 
       const li = container.querySelectorAll('.file-info li');
 
-      expect(li).to.have.length.of(2);
+      expect(li).toHaveLength((2));
       expect(li[0].textContent).eql('file1.txt (text/plain, 5 bytes)');
       expect(li[1].textContent).eql('file2.png (image/png, 7 bytes)');
     });
@@ -1480,7 +1475,7 @@ describe('ArrayField', () => {
       });
 
       const matches = container.querySelectorAll('#custom');
-      expect(matches).to.have.length.of(1);
+      expect(matches).toHaveLength((1));
       expect(matches[0].textContent).to.eql('should NOT have fewer than 5 items');
     });
   });
@@ -1506,16 +1501,16 @@ describe('ArrayField', () => {
           [3, 4]
         ]
       });
-      expect(container.querySelectorAll('fieldset fieldset')).to.have.length.of(2);
+      expect(container.querySelectorAll('fieldset fieldset')).toHaveLength((2));
     });
 
     it('should add an inner list when clicking the add button', () => {
       const { container } = createFormComponent({ schema });
       expect(container.querySelectorAll('fieldset fieldset')).to.be.empty;
 
-      Simulate.click(container.querySelector('.array-item-add button'));
+      fireEvent.click(container.querySelector('.array-item-add button'));
 
-      expect(container.querySelectorAll('fieldset fieldset')).to.have.length.of(1);
+      expect(container.querySelectorAll('fieldset fieldset')).toHaveLength((1));
     });
 
     it('should pass rawErrors down to every level of custom widgets', () => {
@@ -1551,7 +1546,7 @@ describe('ArrayField', () => {
       });
 
       const matches = container.querySelectorAll('#custom-error');
-      expect(matches).to.have.length.of(2);
+      expect(matches).toHaveLength((2));
       expect(matches[0].textContent).to.eql('should NOT have fewer than 3 items');
       expect(matches[1].textContent).to.eql('should NOT have fewer than 2 items');
     });
@@ -1595,7 +1590,7 @@ describe('ArrayField', () => {
     it('should render a fieldset', () => {
       const { container } = createFormComponent({ schema });
 
-      expect(container.querySelectorAll('fieldset')).to.have.length.of(1);
+      expect(container.querySelectorAll('fieldset')).toHaveLength((1));
     });
 
     it('should render a fieldset legend', () => {
@@ -1637,10 +1632,10 @@ describe('ArrayField', () => {
       const strInput = container.querySelector('fieldset .field-string input[type=text]');
       const numInput = container.querySelector('fieldset .field-number input[type=number]');
 
-      Simulate.change(strInput, { target: { value: 'bar' } });
-      Simulate.change(numInput, { target: { value: '101' } });
+      fireEvent.change(strInput, { target: { value: 'bar' } });
+      fireEvent.change(numInput, { target: { value: '101' } });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: ['bar', 101]
       });
     });
@@ -1776,11 +1771,11 @@ describe('ArrayField', () => {
       it('should add a field when clicking add button', () => {
         const addBtn = container.querySelector('.array-item-add button');
 
-        Simulate.click(addBtn);
+        fireEvent.click(addBtn);
 
-        expect(container.querySelectorAll('.field-string')).to.have.length.of(2);
+        expect(container.querySelectorAll('.field-string')).toHaveLength((2));
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: [1, 2, 'foo', undefined]
         });
       });
@@ -1807,10 +1802,10 @@ describe('ArrayField', () => {
       it('should change the state when changing input value', () => {
         const inputs = container.querySelectorAll('.field-string input[type=text]');
 
-        Simulate.change(inputs[0], { target: { value: 'bar' } });
-        Simulate.change(inputs[1], { target: { value: 'baz' } });
+        fireEvent.change(inputs[0], { target: { value: 'bar' } });
+        fireEvent.change(inputs[1], { target: { value: 'baz' } });
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: [1, 2, 'bar', 'baz']
         });
       });
@@ -1818,19 +1813,19 @@ describe('ArrayField', () => {
       it('should remove array items when clicking remove buttons', () => {
         let dropBtns = container.querySelectorAll('.array-item-remove');
 
-        Simulate.click(dropBtns[0]);
+        fireEvent.click(dropBtns[0]);
 
-        expect(container.querySelectorAll('.field-string')).to.have.length.of(1);
+        expect(container.querySelectorAll('.field-string')).toHaveLength((1));
 
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: [1, 2, 'baz']
         });
 
         dropBtns = container.querySelectorAll('.array-item-remove');
-        Simulate.click(dropBtns[0]);
+        fireEvent.click(dropBtns[0]);
 
         expect(container.querySelectorAll('.field-string')).to.be.empty;
-        sinon.assert.calledWithMatch(onChange.lastCall, {
+        expect(onChange.mock.lastCall).toEqual({
           formData: [1, 2]
         });
       });
@@ -1851,7 +1846,7 @@ describe('ArrayField', () => {
     it("should convert array of strings to numbers if type of items is 'number'", () => {
       const { container, onChange } = createFormComponent({ schema });
 
-      Simulate.change(container.querySelector('.field select'), {
+      fireEvent.change(container.querySelector('.field select')!, {
         target: {
           options: [
             { selected: true, value: '1' },
@@ -1861,7 +1856,7 @@ describe('ArrayField', () => {
         }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, {
+      expect(onChange.mock.lastCall).toEqual({
         formData: [1, 2]
       });
     });
@@ -1887,7 +1882,7 @@ describe('ArrayField', () => {
         }
       });
 
-      expect(container.querySelectorAll('#custom-select')).to.have.length.of(2);
+      expect(container.querySelectorAll('#custom-select')).toHaveLength((2));
     });
 
     it('should pass uiSchema to custom widget', () => {
@@ -1947,7 +1942,7 @@ describe('ArrayField', () => {
         }
       });
 
-      expect(container.querySelectorAll('#custom-select')).to.have.length.of(2);
+      expect(container.querySelectorAll('#custom-select')).toHaveLength((2));
     });
   });
 
@@ -2059,7 +2054,7 @@ describe('ArrayField', () => {
         },
         validate
       });
-      Simulate.submit(container);
+      fireEvent.submit(container);
 
       const inputs = container.querySelectorAll('.form-group.field-error input[type=text]');
       expect(inputs[0].id).eql('root_foo_0_bar');
@@ -2077,10 +2072,10 @@ describe('ArrayField', () => {
         validate,
         showErrorList: false
       });
-      Simulate.submit(container);
+      fireEvent.submit(container);
 
       const inputsNoError = container.querySelectorAll('.form-group.field-error input[type=text]');
-      expect(inputsNoError).to.have.length.of(0);
+      expect(inputsNoError).toHaveLength((0));
     });
   });
 });

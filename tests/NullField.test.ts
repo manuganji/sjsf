@@ -20,7 +20,7 @@ describe('NullField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field')).to.have.length.of(1);
+      expect(container.querySelectorAll('.field')).toHaveLength((1));
     });
 
     it('should render a null field with a label', () => {
@@ -42,7 +42,7 @@ describe('NullField', () => {
         }
       });
 
-      sinon.assert.calledWithMatch(onChange.lastCall, { formData: null });
+      expect(onChange.mock.lastCall).toEqual({ formData: null });
     });
 
     it('should not overwrite existing data', () => {
@@ -55,7 +55,7 @@ describe('NullField', () => {
       });
 
       submitForm(container);
-      sinon.assert.calledWithMatch(onSubmit.lastCall, { formData: 3 });
+      expect(onSubmit.mock.lastCall).toEqual({ formData: 3 });
     });
   });
 });

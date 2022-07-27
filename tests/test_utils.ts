@@ -40,11 +40,6 @@ export function createFormComponent(props) {
   return createComponent(Form, props);
 }
 
-export function createSandbox() {
-  const sandbox = sinon.createSandbox();
-  return sandbox;
-}
-
 // export function setProps(comp: SvelteComponent, newProps) {
 //   const node = findDOMNode(comp);
 //   render(React.createElement(comp.constructor, newProps), node.parentNode);

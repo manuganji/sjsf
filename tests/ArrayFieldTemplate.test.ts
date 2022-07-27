@@ -1,5 +1,5 @@
+import { fireEvent } from '@testing-library/dom';
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
-import { Simulate } from 'react-dom/test-utils';
 import { createFormComponent, createSandbox } from './test_utils';
 
 describe('ArrayFieldTemplate', () => {
@@ -55,7 +55,7 @@ describe('ArrayFieldTemplate', () => {
             ArrayFieldTemplate
           });
 
-          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).toHaveLength((3));
         });
       });
       describe('with template configured in ui:ArrayFieldTemplate', () => {
@@ -68,7 +68,7 @@ describe('ArrayFieldTemplate', () => {
             }
           });
 
-          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).toHaveLength((3));
         });
       });
       describe('with template configured globally being overriden in ui:ArrayFieldTemplate', () => {
@@ -83,7 +83,7 @@ describe('ArrayFieldTemplate', () => {
             ArrayFieldTemplate: () => <div />
           });
 
-          expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+          expect(container.querySelectorAll('.field-array .field-content div')).toHaveLength((3));
         });
       });
     });
@@ -148,21 +148,21 @@ describe('ArrayFieldTemplate', () => {
       });
       function sharedIts() {
         it('should render one root element for the array', () => {
-          expect(container.querySelectorAll('.custom-array')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array')).toHaveLength((1));
         });
 
         it('should render one add button', () => {
-          expect(container.querySelectorAll('.custom-array-add')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array-add')).toHaveLength((1));
         });
 
         it('should render one child for each array item', () => {
-          expect(container.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
+          expect(container.querySelectorAll('.custom-array-item')).toHaveLength((formData.length));
         });
 
         it('should render text input for each array item', () => {
           expect(
             container.querySelectorAll('.custom-array-item .field input[type=text]')
-          ).to.have.length.of(formData.length);
+          ).toHaveLength((formData.length));
         });
 
         it('should render move up button for all but one array items', () => {
@@ -236,29 +236,29 @@ describe('ArrayFieldTemplate', () => {
       });
       function sharedIts() {
         it('should render one root element for the array', () => {
-          expect(container.querySelectorAll('.custom-array')).to.have.length.of(1);
+          expect(container.querySelectorAll('.custom-array')).toHaveLength((1));
         });
 
         it('should not render an add button', () => {
-          expect(container.querySelectorAll('.custom-array-add')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-add')).toHaveLength((0));
         });
 
         it('should render one child for each array item', () => {
-          expect(container.querySelectorAll('.custom-array-item')).to.have.length.of(formData.length);
+          expect(container.querySelectorAll('.custom-array-item')).toHaveLength((formData.length));
         });
 
         it('should render text input for each array item', () => {
           expect(
             container.querySelectorAll('.custom-array-item .field input[type=text]')
-          ).to.have.length.of(formData.length);
+          ).toHaveLength((formData.length));
         });
 
         it('should not render any move up buttons', () => {
-          expect(container.querySelectorAll('.custom-array-item-move-up')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-item-move-up')).toHaveLength((0));
         });
 
         it('should not render any move down buttons', () => {
-          expect(container.querySelectorAll('.custom-array-item-move-down')).to.have.length.of(0);
+          expect(container.querySelectorAll('.custom-array-item-move-down')).toHaveLength((0));
         });
       }
     });
@@ -283,7 +283,7 @@ describe('ArrayFieldTemplate', () => {
         formData,
         ArrayFieldTemplate
       });
-      expect(container.querySelectorAll('.field-array .field-content div')).to.have.length.of(3);
+      expect(container.querySelectorAll('.field-array .field-content div')).toHaveLength((3));
     });
   });
 
@@ -321,7 +321,7 @@ describe('ArrayFieldTemplate', () => {
         formData,
         ArrayFieldTemplate
       });
-      Simulate.click(container.querySelector('.array-item-add'));
+      fireEvent.click(container.querySelector('.array-item-add'));
     });
   });
 });
