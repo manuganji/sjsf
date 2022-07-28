@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Form from '$lib/index.svelte';
+  import Form from '$lib/components/Form.svelte';
   import type { JSONSchema7 } from 'json-schema';
   const schema: JSONSchema7 = {
     type: 'object',
@@ -15,4 +15,4 @@
 </script>
 
 <div>{JSON.stringify(schema)}</div>
-<Form {schema} />
+<Form />

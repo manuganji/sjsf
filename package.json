@@ -39,6 +39,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@types/json-schema": "^7.0.11"
+    "@types/json-schema": "^7.0.11",
+    "ajv": "^8.11.0"
   }
 }

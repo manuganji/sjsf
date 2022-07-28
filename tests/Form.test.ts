@@ -1,6 +1,6 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 import React, { createRef } from 'react';
-import { renderIntoDocument, Simulate } from 'react-dom/test-utils';
+import { renderIntoDocument, } from 'react-dom/test-utils';
 import { render, findDOMcontainer } from 'react-dom';
 import { Portal } from 'react-portal';
 
@@ -8,23 +8,12 @@ import Form from '../src/lib';
 import {
   createComponent,
   createFormComponent,
-  createSandbox,
   describeRepeated,
   submitForm
 } from './test_utils';
 import { fireEvent } from '@testing-library/svelte';
 
 describeRepeated('Form common', (createFormComponent) => {
-  let sandbox;
-
-  beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   describe('Empty schema', () => {
     it('should render a form tag', () => {
       const { container } = createFormComponent({ schema: {} });
