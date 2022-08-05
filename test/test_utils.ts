@@ -3,7 +3,7 @@
 import { SpyInstance, vi, describe } from 'vitest';
 import { fireEvent, render, act } from '@testing-library/svelte';
 import type { RenderResult } from '@testing-library/svelte';
-import Form from '../src/lib';
+import Form from '../src/lib/components/Form.svelte';
 import type { SvelteComponent } from 'svelte/types/runtime';
 
 export function createComponent(
