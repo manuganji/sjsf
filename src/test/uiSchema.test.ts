@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/dom';
 import SelectWidget from '../src/components/widgets/SelectWidget';
 import RadioWidget from '../src/components/widgets/RadioWidget';
 import { createFormComponent, createSandbox, submitForm } from './test_utils';
-import Form from '../src/lib';
+import Form from '../lib';
 
 describe('uiSchema', () => {
   let sandbox;

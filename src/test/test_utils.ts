@@ -1,14 +1,14 @@
 
 /* Utils for tests. */
 
-import { type SpyInstance, vi, describe } from 'vitest';
+import { type SpyInstance, vi, describe, type ArgumentsType } from 'vitest';
 import { fireEvent, render, act } from '@testing-library/svelte';
 import type { RenderResult } from '@testing-library/svelte';
-import type { SvelteComponent } from 'svelte/types/runtime';
+import type { SvelteComponentTyped } from 'svelte/types/runtime';
 import Form from '$lib/components/Form.svelte';
 
 export function createComponent(
-  Component: SvelteComponent,
+  Component: SvelteComponentTyped,
   props: any
 ): Pick<RenderResult, 'component' | 'container' | 'rerender' | 'unmount'> & {
   onChange: SpyInstance;
@@ -37,7 +37,7 @@ export function createComponent(
   };
 }
 
-export function createFormComponent(props) {
+export function createFormComponent(props: object) {
   return createComponent(Form, props);
 }
 
@@ -48,14 +48,14 @@ export function createFormComponent(props) {
 
 /* Run a group of tests with different combinations of omitExtraData and liveOmit as form props.
  */
-export function describeRepeated(title, fn) {
+export function describeRepeated(title:string, fn:Function) {
   const formExtraPropsList = [
     { omitExtraData: false },
     { omitExtraData: true },
     { omitExtraData: true, liveOmit: true }
   ];
   for (let formExtraProps of formExtraPropsList) {
-    const createFormComponentFn = (props) => createFormComponent({ ...props, ...formExtraProps });
+    const createFormComponentFn = (props: object) => createFormComponent({ ...props, ...formExtraProps });
     describe(title + ' ' + JSON.stringify(formExtraProps), () => fn(createFormComponentFn));
   }
 }

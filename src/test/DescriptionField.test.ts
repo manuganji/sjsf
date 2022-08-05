@@ -1,6 +1,6 @@
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 
-import DescriptionField from '../src/lib/components/fields/DescriptionField';
+import DescriptionField from '../lib/components/fields/DescriptionField';
 import { createSandbox, createComponent } from './test_utils';
 
 describe('DescriptionField', () => {

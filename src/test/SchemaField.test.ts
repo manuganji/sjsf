@@ -1,12 +1,12 @@
 import { expect, describe, beforeEach, afterEach, it } from 'vitest';
 import { fireEvent } from '@testing-library/dom';
 
-import SchemaField from '../src/lib/components/fields/SchemaField';
-import TitleField from '../src/lib/components/fields/TitleField';
-import DescriptionField from '../src/lib/components/fields/DescriptionField';
+import SchemaField from '../lib/components/fields/SchemaField';
+import TitleField from '../lib/components/fields/TitleField';
+import DescriptionField from '../lib/components/fields/DescriptionField';
 
 import { createFormComponent, createSandbox } from './test_utils';
-import { getDefaultRegistry } from '../src/lib/defaultRegistry';
+import { getDefaultRegistry } from '../lib/defaultRegistry';
 
 describe('SchemaField', () => {
   let sandbox;

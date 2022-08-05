@@ -12,7 +12,7 @@ import {
 } from './test_utils';
 import { fireEvent } from '@testing-library/svelte';
 
-describeRepeated('Form common', (createFormComponent) => {
+describeRepeated('Form common', () => {
   describe('Empty schema', () => {
     it('should render a form tag', () => {
       const { container } = createFormComponent({ schema: {} });
