@@ -1,0 +1,35 @@
+<script lang="ts">
+  import sections from './_sections';
+  import { page } from '$app/stores';
+  const sectionName = $page.params.section;
+  const title = sectionName[0].toUpperCase() + sectionName.slice(1);
+</script>
+
+<svelte:head>
+  <title>{title} Examples</title>
+</svelte:head>
+
+<div class="dark:bg-dark-9 h-screen w-full dark:text-warmGray-3">
+  <ul class="flex flex-wrap gap-1 py-2 px-4 bg-indigo-2 dark:bg-indigo-7">
+    {#each Object.entries(sections) as [section, _]}
+      <li
+        class="list-none
+          bg-amber-1 dark:bg-amber-7
+        border-amber border-2 
+          border-solid p-2
+          rounded-2
+        hover:border-amber-5
+          cursor-pointer"
+      >
+        <a
+          class="text-gray-6 hover:text-gray-7 dark:text-warmGray-2 no-underline"
+          href={`/examples/${section}`}>{section[0].toUpperCase() + section.slice(1)}</a
+        >
+      </li>
+    {/each}
+  </ul>
+  {#key $page.params.section}
+    <h1 class="px-4">{title} Examples</h1>
+    <slot />
+  {/key}
+</div>

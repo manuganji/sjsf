@@ -31,7 +31,7 @@
 //   });
 // });
 import { render } from '@testing-library/svelte';
-import IntegerExample from '../routes/examples/integer.svelte';
+import Examples from '../routes/examples/[section]/index.svelte';
 
 describe('integer type', () => {
   const { container, component } = render(IntegerExample);

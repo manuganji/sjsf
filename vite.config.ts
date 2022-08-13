@@ -7,7 +7,11 @@ const config = {
   plugins: [
     sveltekit(),
     Unocss({
-      presets: [presetWind()]
+      presets: [
+        presetWind({
+          dark: 'media'
+        })
+      ]
     })
   ],
   test: {

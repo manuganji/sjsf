@@ -4,10 +4,11 @@
 // import fill from 'core-js-pure/features/array/fill';
 // import union from 'lodash/union';
 // import jsonpointer from 'jsonpointer';
-import validateFormData, { isValid } from './validate';
+// import validateFormData, { isValid } from './validate';
 import type { SvelteComponent } from 'svelte';
 import type { JSONSchema7 } from 'json-schema';
-import IntegerField from '$lib/components/fields/IntegerField.svelte';
+import InputField from '$lib/components/fields/InputField.svelte';
+import { set } from 'lodash-es';
 // import { getComponent } from './helpers';
 
 export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
@@ -1233,10 +1234,16 @@ export function getComponent(schema: JSONSchema7, propKey?: string): typeof Svel
   if (!schema) {
     return null;
   }
-  if (schema['type'] == 'integer') {
-    return IntegerField;
+  switch (schema.type) {
+    case 'integer':
+      return InputField;
+    case 'number':
+      return InputField;
+    case 'string':
+      return InputField;
+    default:
+      return null;
   }
-  return null;
 }
 
 /**
@@ -1258,20 +1265,29 @@ export function getDefault(schema: JSONSchema7, propKey?: string): any {
 export function getProps(
   schema: JSONSchema7,
   ctx: {
+    type?: string;
     id: string;
     idPrefix: string;
     idSeparator: string;
+  } = {
+    id: '',
+    idPrefix: 'sjsf',
+    idSeparator: '.'
   }
-): object | null {
-  if (schema['type'] == 'integer') {
-    return {
-      schema,
-      id: ctx.id
-    };
-  } else {
-    return {
-      schema,
-      ...ctx
-    };
+): {
+  schema: JSONSchema7;
+  ctx: {
+    [key: string]: any;
+  };
+} {
+  let props = {
+    schema,
+    ctx
+  };
+
+  if (schema['type'] == 'integer' || schema['type'] == 'number') {
+    props.ctx.type = 'number';
   }
+
+  return props;
 }
