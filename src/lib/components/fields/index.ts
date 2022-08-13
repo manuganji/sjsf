@@ -1,26 +1,20 @@
-import ArrayField from './ArrayField';
-import BooleanField from './BooleanField';
-import DescriptionField from './DescriptionField';
-import MultiSchemaField from './MultiSchemaField';
-import NumberField from './NumberField';
-import ObjectField from './ObjectField';
-import SchemaField from './SchemaField';
-import StringField from './StringField';
-import TitleField from './TitleField';
-import NullField from './NullField';
-import UnsupportedField from './UnsupportedField';
+import type { FieldComponents } from "../../types";
 
-export default {
-  AnyOfField: MultiSchemaField,
-  ArrayField,
-  BooleanField,
-  DescriptionField,
-  NumberField,
-  ObjectField,
-  OneOfField: MultiSchemaField,
-  SchemaField,
-  StringField,
-  TitleField,
-  NullField,
-  UnsupportedField
+import BooleanField from "./BooleanField.svelte";
+import NullField from "./NullField.svelte";
+import NumberField from "./NumberField.svelte";
+import StringField from "./StringField.svelte";
+import ObjectField from "./ObjectField.svelte";
+import ArrayField from "./ArrayField.svelte";
+
+export const defaultFieldComponents: FieldComponents = {
+  boolean: BooleanField,
+  null: NullField,
+  number: NumberField,
+  integer: [NumberField, { step: 1 }],
+  string: StringField,
+  object: ObjectField,
+  array: ArrayField,
 };
+
+export { BooleanField, NullField, NumberField, StringField, ObjectField, ArrayField };

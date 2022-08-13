@@ -1,0 +1,37 @@
+// Vitest Snapshot v1
+
+exports[`integer type > example renders 1`] = `
+"<div><div class=\\"columns-2 m-4\\"><div class=\\"rounded box-border border-amber border border-rounded bg-gray-3 py-2 px-4\\"><pre class=\\"inline-block \\"><code>{
+  \\"type\\": \\"integer\\",
+  \\"title\\": \\"Integer default\\",
+  \\"default\\": 0
+}</code></pre></div> <form class=\\"flex flex-col min-w-max\\" id=\\"s0\\"><div class=\\"flex flex-col s-c1k-_LTyZdv1\\"><label class=\\"label s-c1k-_LTyZdv1\\" for=\\"root\\">Integer default</label> <input id=\\"root\\" type=\\"number\\" step=\\"1\\">  </div><!--<Layout>--><!--<IntegerField>--></form><!--<Form>--></div><!--<ExampleLayout>--><div class=\\"columns-2 m-4\\"><div class=\\"rounded box-border border-amber border border-rounded bg-gray-3 py-2 px-4\\"><pre class=\\"inline-block \\"><code>{
+  \\"type\\": \\"integer\\",
+  \\"title\\": \\"Integer min max\\",
+  \\"default\\": 1,
+  \\"minimum\\": 0,
+  \\"maximum\\": 10
+}</code></pre></div> <form class=\\"flex flex-col min-w-max\\" id=\\"s1\\"><div class=\\"flex flex-col s-c1k-_LTyZdv1\\"><label class=\\"label s-c1k-_LTyZdv1\\" for=\\"root\\">Integer min max</label> <input id=\\"root\\" type=\\"number\\" step=\\"1\\" min=\\"0\\" max=\\"10\\">  </div><!--<Layout>--><!--<IntegerField>--></form><!--<Form>--></div><!--<ExampleLayout>--><div class=\\"columns-2 m-4\\"><div class=\\"rounded box-border border-amber border border-rounded bg-gray-3 py-2 px-4\\"><pre class=\\"inline-block \\"><code>{
+  \\"type\\": \\"object\\",
+  \\"title\\": \\"Integer\\",
+  \\"properties\\": {
+    \\"integer\\": {
+      \\"type\\": \\"integer\\",
+      \\"title\\": \\"Integer\\",
+      \\"default\\": 0
+    }
+  }
+}</code></pre></div> <form class=\\"flex flex-col min-w-max\\" id=\\"s2\\"></form><!--<Form>--></div><!--<ExampleLayout>--><div class=\\"columns-2 m-4\\"><div class=\\"rounded box-border border-amber border border-rounded bg-gray-3 py-2 px-4\\"><pre class=\\"inline-block \\"><code>{
+  \\"type\\": \\"object\\",
+  \\"title\\": \\"Integer\\",
+  \\"properties\\": {
+    \\"integer\\": {
+      \\"type\\": \\"integer\\",
+      \\"title\\": \\"Integer\\",
+      \\"default\\": 1,
+      \\"minimum\\": 0,
+      \\"maximum\\": 10
+    }
+  }
+}</code></pre></div> <form class=\\"flex flex-col min-w-max\\" id=\\"s3\\"></form><!--<Form>--></div><!--<ExampleLayout>--><!--<Integer>--></div>"
+`;

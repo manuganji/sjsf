@@ -1,13 +1,13 @@
-import toPath from 'lodash/toPath';
+import toPath from 'lodash-es/toPath';
 import Ajv from 'ajv';
 let ajv = createAjvInstance();
-import { deepEquals, getDefaultFormState } from './utils';
+// import { deepEquals, getDefaultFormState } from './utils';
 
 let formerCustomFormats = null;
 let formerMetaSchema = null;
 const ROOT_SCHEMA_PREFIX = '__rjsf_rootSchema';
 
-import { isObject, mergeObjects } from './utils';
+// import { isObject, mergeObjects } from './utils';
 
 function createAjvInstance() {
   const ajv = new Ajv({

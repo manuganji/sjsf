@@ -4,5 +4,5 @@
 
 <div>
   <ul><li><a href="/examples/integer">Integer</a></li></ul>
-  <slot />
+  <slot/>
 </div>

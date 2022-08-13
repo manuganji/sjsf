@@ -1,0 +1,50 @@
+<script lang="ts">
+  import type { JSONSchema } from '$lib/types';
+  export let id: string = '';
+  export let errors: Error[] | null = null;
+  export let schema: JSONSchema;
+</script>
+
+{#if schema}
+  {#if schema.type == 'object' || schema.type == 'array'}
+    <fieldset class="flex flex-col">
+      <legend>{schema.title}</legend>
+
+      {#if schema.description}
+        <div class="description">{schema.description}</div>
+      {/if}
+
+      <slot>A field is not implemented</slot>
+
+      {#if errors && errors.length}
+        {#each errors as error}
+          <div class="error">{error.message}</div>
+        {/each}
+      {/if}
+    </fieldset>
+  {:else}
+    <div class="flex flex-col">
+      {#if schema.title}
+        <label class="label" for={id}>{schema.title}</label>
+      {/if}
+
+      <slot {id} {schema}>A field is not implemented</slot>
+
+      {#if errors && errors.length}
+        {#each errors as error}
+          <div class="error">{error.message}</div>
+        {/each}
+      {/if}
+
+      {#if schema.description}
+        <div class="description">{schema.description}</div>
+      {/if}
+    </div>
+  {/if}
+{/if}
+
+<style>
+  .error {
+    color: red;
+  }
+</style>

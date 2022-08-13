@@ -1,12 +1,5 @@
-import Form from './components/Form';
-// import withTheme from './withTheme';
-// import * as _utils from './utils';
-// import { getDefaultRegistry } from './defaultRegistry';
+import { Form, defaultFormComponents as components } from './components'
+import * as helpers from './helpers'
+import * as extra from './components/fields/extra'
 
-const utils = {
-  // ..._utils,
-  // getDefaultRegistry
-};
-
-// export { withTheme, utils };
-export default Form;
+export { Form, components, helpers, extra }
