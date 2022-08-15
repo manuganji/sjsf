@@ -1,14 +1,17 @@
 <script lang="ts">
-  import type { JSONSchema } from '$lib/types';
+  import type { JSONSchema7 } from 'json-schema';
   export let id: string = '';
   export let errors: Error[] | null = null;
-  export let schema: JSONSchema;
+  export let schema: JSONSchema7;
+  export let required: boolean = false;
 </script>
 
 {#if schema}
   {#if schema.type == 'object' || schema.type == 'array'}
-    <fieldset class="flex flex-col">
-      <legend>{schema.title}</legend>
+    <fieldset class="flex flex-col gap-y-2">
+      <legend
+        >{schema.title}{#if required}<span class="text-red">*</span>{/if}</legend
+      >
 
       {#if schema.description}
         <div class="description">{schema.description}</div>
@@ -23,9 +26,11 @@
       {/if}
     </fieldset>
   {:else}
-    <div class="flex flex-col">
+    <div class="flex flex-col gap-y-2">
       {#if schema.title}
-        <label class="label" for={id}>{schema.title}</label>
+        <label class="label" for={id}
+          >{schema.title}{#if required}<span class="text-red">*</span>{/if}</label
+        >
       {/if}
 
       <slot {id} {schema}>A field is not implemented</slot>

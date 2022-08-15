@@ -8,62 +8,13 @@
 import type { SvelteComponent } from 'svelte';
 import type { JSONSchema7 } from 'json-schema';
 import InputField from '$lib/components/fields/InputField.svelte';
-import { set } from 'lodash-es';
+import * as propsMap from './propsMap';
+import * as widgetMap from './widgetMap';
+import get from 'lodash-es/get';
+import memoize from 'lodash-es/memoize';
 // import { getComponent } from './helpers';
 
 export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
-
-const widgetMap = {
-  boolean: {
-    checkbox: 'CheckboxWidget',
-    radio: 'RadioWidget',
-    select: 'SelectWidget',
-    hidden: 'HiddenWidget'
-  },
-  string: {
-    text: 'TextWidget',
-    password: 'PasswordWidget',
-    email: 'EmailWidget',
-    hostname: 'TextWidget',
-    ipv4: 'TextWidget',
-    ipv6: 'TextWidget',
-    uri: 'URLWidget',
-    'data-url': 'FileWidget',
-    radio: 'RadioWidget',
-    select: 'SelectWidget',
-    textarea: 'TextareaWidget',
-    hidden: 'HiddenWidget',
-    date: 'DateWidget',
-    datetime: 'DateTimeWidget',
-    'date-time': 'DateTimeWidget',
-    'alt-date': 'AltDateWidget',
-    'alt-datetime': 'AltDateTimeWidget',
-    color: 'ColorWidget',
-    file: 'FileWidget'
-  },
-  number: {
-    text: 'TextWidget',
-    select: 'SelectWidget',
-    updown: 'UpDownWidget',
-    range: 'RangeWidget',
-    radio: 'RadioWidget',
-    hidden: 'HiddenWidget'
-  },
-  integer: {
-    text: 'TextWidget',
-    select: 'SelectWidget',
-    updown: 'UpDownWidget',
-    range: 'RangeWidget',
-    radio: 'RadioWidget',
-    hidden: 'HiddenWidget'
-  },
-  array: {
-    select: 'SelectWidget',
-    checkboxes: 'CheckboxesWidget',
-    files: 'FileWidget',
-    hidden: 'HiddenWidget'
-  }
-};
 
 // export function canExpand(schema, uiSchema, formData) {
 //   if (!schema.additionalProperties) {
@@ -1224,6 +1175,18 @@ const widgetMap = {
 //   return false;
 // }
 
+export const differentiatedSchemaType = memoize(function (
+  type: JSONSchema7['type']
+): string | undefined {
+  if (type) {
+    if (Array.isArray(type)) {
+      return type.filter((v) => v != 'null')[0];
+    } else {
+      return type;
+    }
+  }
+});
+
 /**
  *
  * @param schema JSONSchema
@@ -1234,15 +1197,17 @@ export function getComponent(schema: JSONSchema7, propKey?: string): typeof Svel
   if (!schema) {
     return null;
   }
-  switch (schema.type) {
-    case 'integer':
-      return InputField;
-    case 'number':
-      return InputField;
-    case 'string':
-      return InputField;
-    default:
-      return null;
+  const dtype = differentiatedSchemaType(schema.type) || 'string';
+  if (Object.hasOwn(schema, 'widget')) {
+    return get(
+      widgetMap.BY_WIDGET_CODE,
+      `${dtype}.${schema.widget!}`,
+      get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField)
+    );
+  } else if (dtype == 'string' && Object.hasOwn(schema, 'format')) {
+    return get(widgetMap.BY_STRING_FORMAT, schema.format!, InputField);
+  } else {
+    return get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField);
   }
 }
 
@@ -1258,22 +1223,53 @@ export function getDefault(schema: JSONSchema7, propKey?: string): any {
 
 /**
  *
+ * Gets widget level props by drilling down by different layers
  * @param schema JSONSchema
+ * @returns
+ */
+function widgetProps(schema: JSONSchema7): Record<string, any> {
+  const dtype = differentiatedSchemaType(schema.type) || 'string';
+  if (schema) {
+    if (Object.hasOwn(schema, 'widget')) {
+      return get(
+        propsMap.BY_WIDGET_CODE,
+        `${dtype}.${schema.widget!}`,
+        get(propsMap.BY_SCHEMA_TYPE, dtype, {})
+      );
+    } else if (dtype == 'string' && Object.hasOwn(schema, 'format')) {
+      return get(propsMap.BY_STRING_FORMAT, schema.format!, {});
+    } else {
+      return get(propsMap.BY_SCHEMA_TYPE, dtype, {});
+    }
+  } else {
+    return {};
+  }
+}
+
+/**
+ *
+ * @param schema JSONSchema
+ * @param ctx {
+ *  id: string;
+ *   idPrefix: string;
+ *   idSeparator: string;
+ * } - idPrefix is the prefix for the id, idSeparator is the separator for the id
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns object | null
  */
 export function getProps(
   schema: JSONSchema7,
   ctx: {
-    type?: string;
     id: string;
     idPrefix: string;
     idSeparator: string;
+    [key: string]: any;
   } = {
     id: '',
     idPrefix: 'sjsf',
     idSeparator: '.'
-  }
+  },
+  propKey?: string
 ): {
   schema: JSONSchema7;
   ctx: {
@@ -1285,9 +1281,13 @@ export function getProps(
     ctx
   };
 
-  if (schema['type'] == 'integer' || schema['type'] == 'number') {
-    props.ctx.type = 'number';
-  }
+  props.ctx.required = !Array.isArray(schema.type);
+  const fromWidget = widgetProps(schema);
+
+  props.ctx = {
+    ...props.ctx,
+    ...fromWidget
+  };
 
   return props;
 }

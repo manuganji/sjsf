@@ -9,8 +9,8 @@
   <title>{title} Examples</title>
 </svelte:head>
 
-<div class="dark:bg-dark-9 h-screen w-full dark:text-warmGray-3">
-  <ul class="flex flex-wrap gap-1 py-2 px-4 bg-indigo-2 dark:bg-indigo-7">
+<div class="dark:bg-dark-7 h-screen w-full dark:text-white">
+  <ul class="flex flex-wrap gap-1 py-4 px-4 bg-gray-1 dark:bg-dark-5">
     {#each Object.entries(sections) as [section, _]}
       <li
         class="list-none
@@ -22,7 +22,7 @@
           cursor-pointer"
       >
         <a
-          class="text-gray-6 hover:text-gray-7 dark:text-warmGray-2 no-underline"
+          class="text-gray-6 hover:text-gray-7 dark:text-white no-underline"
           href={`/examples/${section}`}>{section[0].toUpperCase() + section.slice(1)}</a
         >
       </li>

@@ -33,4 +33,14 @@ But there will be a few differences in approach.
 - `schema`
 - `value`
 
+
+## getComponent contract
+
+1. if `schema.widget` is defined, then look up by `schema.type.widget`.
+2. if `schema.format` is defined, then look up by `schema.type.format`.
+3. find by `schema.type`
+
+## getProps contract
+
+
 **WIP** Expect 💥 bugs 💥

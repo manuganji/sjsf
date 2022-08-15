@@ -3,8 +3,8 @@
   import type { getProps } from '$lib/utils';
   import type { JSONSchema7 } from 'json-schema';
   import type { Action } from 'svelte/action';
-  import {colors} from '@unocss/preset-wind'
-  colors
+  import { colors } from '@unocss/preset-wind';
+  colors;
 </script>
 
 <script lang="ts">
@@ -13,14 +13,17 @@
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
 
+  const commonInputClass = 'dark:bg-warmGray-7 dark:text-warmGray-2 p-2 rounded-sm shadow-inset';
+
   // export const onChange = ;
 </script>
 
-<Layout {schema} id={ctx.id}>
+<Layout {schema} id={ctx.id} required={ctx.required}>
   {#if ctx['type'] == 'number'}
     <input
-      class="dark:bg-warmGray-7 dark:text-warmGray-2 p-2 rounded-sm shadow-inset"
+      class={`${commonInputClass}`}
       id={ctx.id}
+      required={ctx.required}
       type="number"
       bind:value
       step={schema?.multipleOf || 1}
@@ -29,7 +32,22 @@
     />
   {/if}
   {#if ctx['type'] == 'text'}
-    <input id={ctx.id} type="text" bind:value />
+    <input
+      class={`${commonInputClass}`}
+      id={ctx.id}
+      type="text"
+      bind:value
+      required={ctx.required}
+    />
+  {/if}
+  {#if ctx['type'] == 'checkbox'}
+    <input
+      class={`${commonInputClass}`}
+      id={ctx.id}
+      type="checkbox"
+      bind:value
+      required={ctx.required}
+    />
   {/if}
 </Layout>
 

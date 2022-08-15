@@ -9,8 +9,9 @@
     <div
       class="rounded box-border border-amber 
       border 
+      opacity-90
       border-rounded
-    dark:text-gray-3
+    dark:text-white
     bg-gray-3 dark:bg-gray-6
       py-2 px-4"
     >
@@ -18,6 +19,6 @@
         <code class="">{JSON.stringify(schema, undefined, 2)}</code>
       </pre>
     </div>
-    <Form id={`${index}`} {schema} />
+    <Form id={`s${index}`} {schema} />
   </div>
 {/each}

@@ -8,12 +8,14 @@
   export let id: string = 'sjsf';
   export let idPrefix: string = 'sjsf';
   export let idSeparator: string = '.';
+  const { ctx, ...rest } = schema;
 </script>
 
-<form>
+<form {id}>
   <svelte:component
     this={getComponent(schema)}
-    {...getProps(schema, {
+    {...getProps(rest, {
+      ...ctx,
       id,
       idPrefix,
       idSeparator
