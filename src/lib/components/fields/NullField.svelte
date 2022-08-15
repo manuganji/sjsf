@@ -1,19 +1,12 @@
-<script lang="ts">
-  import { createProps, defaultValue } from '../../helpers';
+<script lang="ts" context="module">
   import Layout from '$lib/components/Layout.svelte';
-
-  const p = createProps<null>();
-  export let value = p.value;
-  export let errors = p.errors;
-  export let schema = p.schema;
-  export let components = p.components;
-  export let props = p.props;
-
-  let checked = false;
+  import type { JSONSchemaType } from '$lib/types';
+  export const value = null;
 </script>
 
-{#if schema && components}
-  <Layout {schema} {errors}>
-    <input {...props} type="checkbox" bind:checked />
-  </Layout>
-{/if}
+<script lang="ts">
+  export let schema: JSONSchemaType<null>;
+  export let errors: Error[];
+</script>
+
+<Layout {schema} {errors}><p>It's a null value</p></Layout>

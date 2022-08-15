@@ -12,11 +12,13 @@
   // $: if (schema && value == null) {
   //   value = defaultValue<T>(schema, value);
   // }
-  export let value: object = {};
-  export let errors: Error[];
   export let schema: JSONSchemaType<object>;
+  export let value: Record<keyof typeof schema.properties, any> = Object.fromEntries(
+    Object.entries(schema.properties).map(([key, prop]) => [key, null])
+  );
+  export let errors: Error[];
   export let widget: ReturnType<typeof getProps>['widget'];
-  const id= widget.id;
+  const id = widget.id;
   const idPrefix: string = 'sjsf';
   const idSeparator: string = '.';
   let order: Array<string> = widget.order;

@@ -5,7 +5,7 @@
 </script>
 
 <script lang="ts">
-  let value: Array<> = [];
+  let value: Array<any> = [];
 </script>
 
 {#each sections[$page.params.section] as schema, index}

@@ -2,7 +2,7 @@ import type { JSONSchema7TypeName } from 'json-schema';
 import type { SvelteComponent } from 'svelte';
 // import ArrayField from './components/fields/ArrayField.svelte';
 import InputField from './components/fields/InputField.svelte';
-// import NullField from './components/fields/NullField.svelte';
+import NullField from './components/fields/NullField.svelte';
 import ObjectField from './components/fields/ObjectField.svelte';
 
 export const BY_WIDGET_CODE: Partial<
@@ -39,7 +39,7 @@ export const BY_SCHEMA_TYPE: Record<JSONSchema7TypeName, typeof SvelteComponent>
   string: InputField,
   object: ObjectField,
   // array: ArrayField,
-  // null: NullField
+  null: NullField
 };
 
 // const widgetMap = {

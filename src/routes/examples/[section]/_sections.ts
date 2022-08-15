@@ -2,6 +2,13 @@ import type { JSONSchemaType, JSONTypes } from '$lib/types';
 import type { JSONSchema7TypeName } from 'json-schema';
 
 const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
+  // null: [
+  //   {
+  //     type: 'null',
+  //     title: 'Null',
+  //     description: 'This is a null field'
+  //   }
+  // ],
   string: [
     {
       type: 'string',
