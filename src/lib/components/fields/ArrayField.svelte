@@ -1,17 +1,7 @@
 <script lang="ts">
-  import type { ErrorRecord, JSONSchema } from '@pyoner/svelte-form-common';
-  import {
-    createProps,
-    defaultValue,
-    getComponent,
-    getProps,
-    getComponentFromContainer,
-    getPropsFromContainer
-  } from '../../helpers';
-  import Wrap from '../helpers/Wrap.svelte';
-
+  import Layout from '$lib/components/Layout.svelte';
   type T = Array<any>;
-  const p = createProps<T, ErrorRecord>([]);
+  // const p = createProps<T, ErrorRecord>([]);
   export let value = p.value;
   export let errors = p.errors;
   export let schema = p.schema;
@@ -59,7 +49,7 @@
 </script>
 
 {#if components && schema && schema.items && schema.items.type}
-  <Wrap {schema} {errors} component={components.wrapper}>
+  <Layout {schema} {errors}>
     {#if value}
       {#each value as v, i (i)}
         <svelte:component
@@ -103,5 +93,5 @@
       {addItem}
       props={getProps(schema, components.addItem, 'addItem')}
     />
-  </Wrap>
+  </Layout>
 {/if}

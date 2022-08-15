@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createProps, defaultValue } from "../../helpers";
-  import Wrap from "../helpers/Wrap.svelte";
+  import { createProps, defaultValue } from '../../helpers';
+  import Layout from '$lib/components/Layout.svelte';
 
   const p = createProps<null>();
   export let value = p.value;
@@ -13,7 +13,7 @@
 </script>
 
 {#if schema && components}
-  <Wrap {schema} {errors} component={components.wrapper}>
+  <Layout {schema} {errors}>
     <input {...props} type="checkbox" bind:checked />
-  </Wrap>
+  </Layout>
 {/if}

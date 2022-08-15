@@ -1,6 +1,7 @@
-import type { JSONSchema7 } from 'json-schema';
+import type { JSONSchemaType, JSONTypes } from '$lib/types';
+import type { JSONSchema7TypeName } from 'json-schema';
 
-const sections: Record<string, Array<JSONSchema7>> = {
+const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
   string: [
     {
       type: 'string',
@@ -47,10 +48,11 @@ const sections: Record<string, Array<JSONSchema7>> = {
       type: 'object',
       title: 'Float object',
       properties: {
-        integer: {
+        float: {
           type: 'number',
           title: 'Float',
-          default: 0
+          default: 0,
+          multipleOf: 0.01
         }
       }
     },
@@ -58,7 +60,7 @@ const sections: Record<string, Array<JSONSchema7>> = {
       type: 'object',
       title: 'Float object min max',
       properties: {
-        integer: {
+        float: {
           type: 'number',
           title: 'Integer',
           default: 1,

@@ -1,8 +1,8 @@
-import { JSONSchema7 as BaseJSONSchema7 } from 'json-schema';
+import { JSONSchemaType as BaseJSONSchemaType } from './ajv';
+import type { JSONSchema7TypeName } from 'json-schema';
 
-declare module 'json-schema' {
-  interface JSONSchema7 extends BaseJSONSchema7 {
-    widget?: string;
-    ctx?: Record<string, any>;
-  }
-}
+export type JSONTypes = boolean | string | number | object | null | [];
+export type JSONSchemaType<T> = BaseJSONSchemaType<T> & {
+  widget?: string;
+  ctx?: Record<string, any>;
+};

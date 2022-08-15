@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { JSONSchema7 } from 'json-schema';
+  import type { JSONSchemaType, JSONTypes } from '$lib/types';
   export let id: string = '';
   export let errors: Error[] | null = null;
-  export let schema: JSONSchema7;
+  export let schema: JSONSchemaType<JSONTypes>;
   export let required: boolean = false;
 </script>
 

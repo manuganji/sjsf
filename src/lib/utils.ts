@@ -1,17 +1,12 @@
-// import React from 'react';
-// import * as ReactIs from 'react-is';
-// import mergeAllOf from 'json-schema-merge-allof';
-// import fill from 'core-js-pure/features/array/fill';
-// import union from 'lodash/union';
 // import jsonpointer from 'jsonpointer';
 // import validateFormData, { isValid } from './validate';
-import type { SvelteComponent } from 'svelte';
-import type { JSONSchema7 } from 'json-schema';
+import type { JSONSchemaType } from '$lib/types';
 import InputField from '$lib/components/fields/InputField.svelte';
 import * as propsMap from './propsMap';
 import * as widgetMap from './widgetMap';
 import get from 'lodash-es/get';
 import memoize from 'lodash-es/memoize';
+import type { JSONSchema7TypeName } from 'json-schema';
 // import { getComponent } from './helpers';
 
 export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
@@ -1176,8 +1171,11 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 // }
 
 export const differentiatedSchemaType = memoize(function (
-  type: JSONSchema7['type']
-): string | undefined {
+  type?:
+    | JSONSchema7TypeName
+    | ['null', Exclude<JSONSchema7TypeName, 'null'>]
+    | [Exclude<JSONSchema7TypeName, 'null'>, 'null']
+) {
   if (type) {
     if (Array.isArray(type)) {
       return type.filter((v) => v != 'null')[0];
@@ -1193,10 +1191,7 @@ export const differentiatedSchemaType = memoize(function (
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns SvelteComponent | null
  */
-export function getComponent(schema: JSONSchema7, propKey?: string): typeof SvelteComponent | null {
-  if (!schema) {
-    return null;
-  }
+export function getComponent<T = JSONSchema7TypeName>(schema: JSONSchemaType<T>, propKey?: string) {
   const dtype = differentiatedSchemaType(schema.type) || 'string';
   if (Object.hasOwn(schema, 'widget')) {
     return get(
@@ -1217,7 +1212,7 @@ export function getComponent(schema: JSONSchema7, propKey?: string): typeof Svel
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns any
  */
-export function getDefault(schema: JSONSchema7, propKey?: string): any {
+export function getDefault<T>(schema: JSONSchemaType<T>, propKey?: string) {
   // TODO
 }
 
@@ -1227,22 +1222,18 @@ export function getDefault(schema: JSONSchema7, propKey?: string): any {
  * @param schema JSONSchema
  * @returns
  */
-function widgetProps(schema: JSONSchema7): Record<string, any> {
+function widgetProps<T>(schema: JSONSchemaType<T>) {
   const dtype = differentiatedSchemaType(schema.type) || 'string';
-  if (schema) {
-    if (Object.hasOwn(schema, 'widget')) {
-      return get(
-        propsMap.BY_WIDGET_CODE,
-        `${dtype}.${schema.widget!}`,
-        get(propsMap.BY_SCHEMA_TYPE, dtype, {})
-      );
-    } else if (dtype == 'string' && Object.hasOwn(schema, 'format')) {
-      return get(propsMap.BY_STRING_FORMAT, schema.format!, {});
-    } else {
-      return get(propsMap.BY_SCHEMA_TYPE, dtype, {});
-    }
+  if (Object.hasOwn(schema, 'widget')) {
+    return get(
+      propsMap.BY_WIDGET_CODE,
+      `${dtype}.${schema.widget!}`,
+      get(propsMap.BY_SCHEMA_TYPE, dtype, {})
+    );
+  } else if (dtype == 'string' && Object.hasOwn(schema, 'format')) {
+    return get(propsMap.BY_STRING_FORMAT, schema.format!, {});
   } else {
-    return {};
+    return get(propsMap.BY_SCHEMA_TYPE, dtype, {});
   }
 }
 
@@ -1257,12 +1248,12 @@ function widgetProps(schema: JSONSchema7): Record<string, any> {
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns object | null
  */
-export function getProps(
-  schema: JSONSchema7,
+export function getProps<T>(
+  schema: JSONSchemaType<T>,
   ctx: {
-    id: string;
-    idPrefix: string;
-    idSeparator: string;
+    id?: string;
+    idPrefix?: string;
+    idSeparator?: string;
     [key: string]: any;
   } = {
     id: '',
@@ -1270,22 +1261,21 @@ export function getProps(
     idSeparator: '.'
   },
   propKey?: string
-): {
-  schema: JSONSchema7;
-  ctx: {
-    [key: string]: any;
-  };
-} {
+) {
   let props = {
     schema,
-    ctx
+    widget: ctx
   };
 
-  props.ctx.required = !Array.isArray(schema.type);
+  props.widget.required = !Array.isArray(schema.type);
   const fromWidget = widgetProps(schema);
 
-  props.ctx = {
-    ...props.ctx,
+  if (differentiatedSchemaType(schema.type) == 'object') {
+    props.widget.order = Object.keys(schema.properties);
+  }
+
+  props.widget = {
+    ...props.widget,
     ...fromWidget
   };
 

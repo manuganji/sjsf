@@ -1,15 +1,15 @@
 <script lang="ts" context="module">
   import Layout from '$lib/components/Layout.svelte';
   import type { getProps } from '$lib/utils';
-  import type { JSONSchema7 } from 'json-schema';
-  import type { Action } from 'svelte/action';
+  import type { JSONSchemaType } from '$lib/types';
+  import type { JSONSchema7TypeName } from 'json-schema';
   import { colors } from '@unocss/preset-wind';
   colors;
 </script>
 
 <script lang="ts">
-  export let schema: JSONSchema7 = {};
-  export let ctx: ReturnType<typeof getProps>['ctx'] = { type: 'text' };
+  export let schema: JSONSchemaType<JSONSchema7TypeName>;
+  export let widget: ReturnType<typeof getProps>['widget'] = { type: 'text' };
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
 
@@ -18,12 +18,12 @@
   // export const onChange = ;
 </script>
 
-<Layout {schema} id={ctx.id} required={ctx.required}>
-  {#if ctx['type'] == 'number'}
+<Layout {schema} id={widget.id} required={widget.required}>
+  {#if widget['type'] == 'number'}
     <input
       class={`${commonInputClass}`}
-      id={ctx.id}
-      required={ctx.required}
+      id={widget.id}
+      required={widget.required}
       type="number"
       bind:value
       step={schema?.multipleOf || 1}
@@ -31,22 +31,22 @@
       max={'maximum' in schema ? schema.maximum : undefined}
     />
   {/if}
-  {#if ctx['type'] == 'text'}
+  {#if widget['type'] == 'text'}
     <input
       class={`${commonInputClass}`}
-      id={ctx.id}
+      id={widget.id}
       type="text"
       bind:value
-      required={ctx.required}
+      required={widget.required}
     />
   {/if}
-  {#if ctx['type'] == 'checkbox'}
+  {#if widget['type'] == 'checkbox'}
     <input
       class={`${commonInputClass}`}
-      id={ctx.id}
+      id={widget.id}
       type="checkbox"
       bind:value
-      required={ctx.required}
+      required={widget.required}
     />
   {/if}
 </Layout>
