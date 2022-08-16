@@ -1191,7 +1191,7 @@ export const differentiatedSchemaType = memoize(function (
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns SvelteComponent | null
  */
-export function getComponent<T = JSONSchema7TypeName>(schema: JSONSchemaType<T>, propKey?: string) {
+export function getComponent<T = JSONSchema7TypeName>(schema: JSONSchemaType<T>, propKey: string = "") {
   const dtype = differentiatedSchemaType(schema.type) || 'string';
   if (Object.hasOwn(schema, 'widget')) {
     return get(
@@ -1251,16 +1251,17 @@ function widgetProps<T>(schema: JSONSchemaType<T>) {
 export function getProps<T>(
   schema: JSONSchemaType<T>,
   ctx: {
+    propKey?: string;
     id?: string;
     idPrefix?: string;
     idSeparator?: string;
     [key: string]: any;
   } = {
+    propKey: '',
     id: '',
     idPrefix: 'sjsf',
     idSeparator: '.'
-  },
-  propKey?: string
+  }
 ) {
   let props = {
     schema,

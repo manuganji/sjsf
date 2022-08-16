@@ -9,7 +9,7 @@
   export let id: string = 'sjsf';
   export let idPrefix: string = 'sjsf';
   export let idSeparator: string = '.';
-  export let value;
+  export let value: object | string | boolean | number | null;
   const { ctx, ...rest } = schema;
 </script>
 
@@ -18,10 +18,12 @@
     this={getComponent(schema)}
     {...getProps(rest, {
       ...ctx,
+      propKey: '',
       id,
       idPrefix,
       idSeparator
     })}
     bind:value
   />
+  <slot><button class="my-2" type="submit">Submit</button></slot>
 </form>

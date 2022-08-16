@@ -22,6 +22,7 @@
   {#if widget['type'] == 'number'}
     <input
       class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
       id={widget.id}
       required={widget.required}
       type="number"
@@ -34,6 +35,7 @@
   {#if widget['type'] == 'text'}
     <input
       class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
       id={widget.id}
       type="text"
       bind:value
@@ -43,6 +45,7 @@
   {#if widget['type'] == 'checkbox'}
     <input
       class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
       id={widget.id}
       type="checkbox"
       bind:value
