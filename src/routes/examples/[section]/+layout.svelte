@@ -1,6 +1,10 @@
-<script lang="ts">
-  import sections from './_sections';
+<script lang="ts" context="module">
   import { page } from '$app/stores';
+</script>
+
+<script lang="ts">
+  export let data;
+  const { keys } = data;
   const sectionName = $page.params.section;
   const title = sectionName[0].toUpperCase() + sectionName.slice(1);
 </script>
@@ -11,7 +15,7 @@
 
 <div class="dark:bg-dark-7 h-screen w-full dark:text-white">
   <ul class="flex flex-wrap gap-1 py-4 px-4 bg-gray-1 dark:bg-dark-5">
-    {#each Object.entries(sections) as [section, _]}
+    {#each keys as section}
       <li
         class="list-none
           bg-amber-1 dark:bg-amber-7
