@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  import { getComponent, getProps } from '$lib/utils';
+  import { getComponent as defGetComponent, getProps as defGetProps } from '$lib/utils';
   import type { JSONSchemaType } from '$lib/types';
   import type { JSONSchema7TypeName } from 'json-schema';
 </script>
@@ -11,19 +11,22 @@
   export let idSeparator: string = '.';
   export let value: object | string | boolean | number | null;
   const { ctx, ...rest } = schema;
-</script>
-
-<form {id}>
-  <svelte:component
-    this={getComponent(schema)}
-    {...getProps(rest, {
+  export let getProps = defGetProps;
+  export let getComponent = defGetComponent;
+  const propsToPass = {
+    getProps,
+    getComponent,
+    ...getProps(rest, {
       ...ctx,
       propKey: '',
       id,
       idPrefix,
       idSeparator
-    })}
-    bind:value
-  />
+    })
+  };
+</script>
+
+<form {id}>
+  <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
   <slot><button class="my-2" type="submit">Submit</button></slot>
 </form>

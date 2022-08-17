@@ -1206,6 +1206,8 @@ export function getComponent<T = JSONSchema7TypeName>(schema: JSONSchemaType<T>,
   }
 }
 
+export type GetComponent = typeof getComponent;
+
 /**
  *
  * @param schema JSONSchema
@@ -1236,6 +1238,7 @@ function widgetProps<T>(schema: JSONSchemaType<T>) {
     return get(propsMap.BY_SCHEMA_TYPE, dtype, {});
   }
 }
+
 
 /**
  *
@@ -1282,3 +1285,5 @@ export function getProps<T>(
 
   return props;
 }
+
+export type GetProps = typeof getProps;

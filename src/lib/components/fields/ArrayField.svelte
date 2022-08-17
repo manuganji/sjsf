@@ -48,6 +48,12 @@
   };
 </script>
 
+<!-- TODO:
+key expression for string, number, boolean arrays 
+key expression for object arrays
+key expression for array of arrays
+-->
+
 {#if components && schema && schema.items && schema.items.type}
   <Layout {schema} {errors}>
     {#if value}

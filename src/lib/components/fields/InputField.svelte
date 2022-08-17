@@ -1,6 +1,6 @@
 <script lang="ts" context="module">
+  import type { GetProps } from '$lib/utils'
   import Layout from '$lib/components/Layout.svelte';
-  import type { getProps } from '$lib/utils';
   import type { JSONSchemaType } from '$lib/types';
   import type { JSONSchema7TypeName } from 'json-schema';
   import { colors } from '@unocss/preset-wind';
@@ -9,7 +9,7 @@
 
 <script lang="ts">
   export let schema: JSONSchemaType<JSONSchema7TypeName>;
-  export let widget: ReturnType<typeof getProps>['widget'] = { type: 'text' };
+  export let widget: ReturnType<GetProps>['widget'] = { type: 'text' };
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
 
@@ -22,7 +22,7 @@
   {#if widget['type'] == 'number'}
     <input
       class={`${commonInputClass}`}
-      name={`${widget.propKey}`}
+      name={`${widget.id}`}
       id={widget.id}
       required={widget.required}
       type="number"
@@ -35,7 +35,7 @@
   {#if widget['type'] == 'text'}
     <input
       class={`${commonInputClass}`}
-      name={`${widget.propKey}`}
+      name={`${widget.id}`}
       id={widget.id}
       type="text"
       bind:value
@@ -45,7 +45,7 @@
   {#if widget['type'] == 'checkbox'}
     <input
       class={`${commonInputClass}`}
-      name={`${widget.propKey}`}
+      name={`${widget.id}`}
       id={widget.id}
       type="checkbox"
       bind:value

@@ -8,7 +8,7 @@
 
 {#if schema}
   {#if schema.type == 'object' || schema.type == 'array'}
-    <fieldset class="flex flex-col gap-y-2">
+    <fieldset id={id} class="flex flex-col gap-y-2">
       <legend
         >{schema.title}{#if required}<span class="text-red">*</span>{/if}</legend
       >
@@ -17,7 +17,7 @@
         <div class="description">{schema.description}</div>
       {/if}
 
-      <slot>A field is not implemented</slot>
+      <slot>The field {id}</slot>
 
       {#if errors && errors.length}
         {#each errors as error}
