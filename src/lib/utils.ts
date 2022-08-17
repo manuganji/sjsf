@@ -108,113 +108,113 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   }
 // }
 
-// function computeDefaults(
-//   _schema,
-//   parentDefaults,
-//   rootSchema,
-//   rawFormData = {},
-//   includeUndefinedValues = false
-// ) {
-//   let schema = isObject(_schema) ? _schema : {};
-//   const formData = isObject(rawFormData) ? rawFormData : {};
-//   // Compute the defaults recursively: give highest priority to deepest nodes.
-//   let defaults = parentDefaults;
-//   if (isObject(defaults) && isObject(schema.default)) {
-//     // For object defaults, only override parent defaults that are defined in
-//     // schema.default.
-//     defaults = mergeObjects(defaults, schema.default);
-//   } else if ('default' in schema) {
-//     // Use schema defaults for this node.
-//     defaults = schema.default;
-//   } else if ('$ref' in schema) {
-//     // Use referenced schema defaults for this node.
-//     const refSchema = findSchemaDefinition(schema.$ref, rootSchema);
-//     return computeDefaults(refSchema, defaults, rootSchema, formData, includeUndefinedValues);
-//   } else if ('dependencies' in schema) {
-//     const resolvedSchema = resolveDependencies(schema, rootSchema, formData);
-//     return computeDefaults(resolvedSchema, defaults, rootSchema, formData, includeUndefinedValues);
-//   } else if (isFixedItems(schema)) {
-//     defaults = schema.items.map((itemSchema, idx) =>
-//       computeDefaults(
-//         itemSchema,
-//         Array.isArray(parentDefaults) ? parentDefaults[idx] : undefined,
-//         rootSchema,
-//         formData,
-//         includeUndefinedValues
-//       )
-//     );
-//   } else if ('oneOf' in schema) {
-//     schema = schema.oneOf[getMatchingOption(undefined, schema.oneOf, rootSchema)];
-//   } else if ('anyOf' in schema) {
-//     schema = schema.anyOf[getMatchingOption(undefined, schema.anyOf, rootSchema)];
-//   }
+function computeDefaults(
+  _schema,
+  parentDefaults,
+  rootSchema,
+  rawFormData = {},
+  includeUndefinedValues = false
+) {
+  let schema = isObject(_schema) ? _schema : {};
+  const formData = isObject(rawFormData) ? rawFormData : {};
+  // Compute the defaults recursively: give highest priority to deepest nodes.
+  let defaults = parentDefaults;
+  if (isObject(defaults) && isObject(schema.default)) {
+    // For object defaults, only override parent defaults that are defined in
+    // schema.default.
+    defaults = mergeObjects(defaults, schema.default);
+  } else if ('default' in schema) {
+    // Use schema defaults for this node.
+    defaults = schema.default;
+  } else if ('$ref' in schema) {
+    // Use referenced schema defaults for this node.
+    const refSchema = findSchemaDefinition(schema.$ref, rootSchema);
+    return computeDefaults(refSchema, defaults, rootSchema, formData, includeUndefinedValues);
+  } else if ('dependencies' in schema) {
+    const resolvedSchema = resolveDependencies(schema, rootSchema, formData);
+    return computeDefaults(resolvedSchema, defaults, rootSchema, formData, includeUndefinedValues);
+  } else if (isFixedItems(schema)) {
+    defaults = schema.items.map((itemSchema, idx) =>
+      computeDefaults(
+        itemSchema,
+        Array.isArray(parentDefaults) ? parentDefaults[idx] : undefined,
+        rootSchema,
+        formData,
+        includeUndefinedValues
+      )
+    );
+  } else if ('oneOf' in schema) {
+    schema = schema.oneOf[getMatchingOption(undefined, schema.oneOf, rootSchema)];
+  } else if ('anyOf' in schema) {
+    schema = schema.anyOf[getMatchingOption(undefined, schema.anyOf, rootSchema)];
+  }
 
-//   // Not defaults defined for this node, fallback to generic typed ones.
-//   if (typeof defaults === 'undefined') {
-//     defaults = schema.default;
-//   }
+  // Not defaults defined for this node, fallback to generic typed ones.
+  if (typeof defaults === 'undefined') {
+    defaults = schema.default;
+  }
 
-//   switch (getSchemaType(schema)) {
-//     // We need to recur for object schema inner default values.
-//     case 'object':
-//       return Object.keys(schema.properties || {}).reduce((acc, key) => {
-//         // Compute the defaults for this node, with the parent defaults we might
-//         // have from a previous run: defaults[key].
-//         let computedDefault = computeDefaults(
-//           schema.properties[key],
-//           (defaults || {})[key],
-//           rootSchema,
-//           (formData || {})[key],
-//           includeUndefinedValues
-//         );
-//         if (includeUndefinedValues || computedDefault !== undefined) {
-//           acc[key] = computedDefault;
-//         }
-//         return acc;
-//       }, {});
+  switch (getSchemaType(schema)) {
+    // We need to recur for object schema inner default values.
+    case 'object':
+      return Object.keys(schema.properties || {}).reduce((acc, key) => {
+        // Compute the defaults for this node, with the parent defaults we might
+        // have from a previous run: defaults[key].
+        let computedDefault = computeDefaults(
+          schema.properties[key],
+          (defaults || {})[key],
+          rootSchema,
+          (formData || {})[key],
+          includeUndefinedValues
+        );
+        if (includeUndefinedValues || computedDefault !== undefined) {
+          acc[key] = computedDefault;
+        }
+        return acc;
+      }, {});
 
-//     case 'array':
-//       // Inject defaults into existing array defaults
-//       if (Array.isArray(defaults)) {
-//         defaults = defaults.map((item, idx) => {
-//           return computeDefaults(
-//             schema.items[idx] || schema.additionalItems || {},
-//             item,
-//             rootSchema
-//           );
-//         });
-//       }
+    case 'array':
+      // Inject defaults into existing array defaults
+      if (Array.isArray(defaults)) {
+        defaults = defaults.map((item, idx) => {
+          return computeDefaults(
+            schema.items[idx] || schema.additionalItems || {},
+            item,
+            rootSchema
+          );
+        });
+      }
 
-//       // Deeply inject defaults into already existing form data
-//       if (Array.isArray(rawFormData)) {
-//         defaults = rawFormData.map((item, idx) => {
-//           return computeDefaults(schema.items, (defaults || {})[idx], rootSchema, item);
-//         });
-//       }
-//       if (schema.minItems) {
-//         if (!isMultiSelect(schema, rootSchema)) {
-//           const defaultsLength = defaults ? defaults.length : 0;
-//           if (schema.minItems > defaultsLength) {
-//             const defaultEntries = defaults || [];
-//             // populate the array with the defaults
-//             const fillerSchema = Array.isArray(schema.items)
-//               ? schema.additionalItems
-//               : schema.items;
-//             const fillerEntries = fill(
-//               new Array(schema.minItems - defaultsLength),
-//               computeDefaults(fillerSchema, fillerSchema.defaults, rootSchema)
-//             );
-//             // then fill up the rest with either the item default or empty, up to minItems
+      // Deeply inject defaults into already existing form data
+      if (Array.isArray(rawFormData)) {
+        defaults = rawFormData.map((item, idx) => {
+          return computeDefaults(schema.items, (defaults || {})[idx], rootSchema, item);
+        });
+      }
+      if (schema.minItems) {
+        if (!isMultiSelect(schema, rootSchema)) {
+          const defaultsLength = defaults ? defaults.length : 0;
+          if (schema.minItems > defaultsLength) {
+            const defaultEntries = defaults || [];
+            // populate the array with the defaults
+            const fillerSchema = Array.isArray(schema.items)
+              ? schema.additionalItems
+              : schema.items;
+            const fillerEntries = fill(
+              new Array(schema.minItems - defaultsLength),
+              computeDefaults(fillerSchema, fillerSchema.defaults, rootSchema)
+            );
+            // then fill up the rest with either the item default or empty, up to minItems
 
-//             return defaultEntries.concat(fillerEntries);
-//           }
-//         } else {
-//           return defaults ? defaults : [];
-//         }
-//       }
-//   }
-//   return defaults;
-// }
+            return defaultEntries.concat(fillerEntries);
+          }
+        } else {
+          return defaults ? defaults : [];
+        }
+      }
+  }
+  return defaults;
+}
 
 // export function getDefaultFormState(
 //   _schema,
@@ -338,12 +338,12 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   return displayLabel;
 // }
 
-// export function isObject(thing) {
-//   if (typeof File !== 'undefined' && thing instanceof File) {
-//     return false;
-//   }
-//   return typeof thing === 'object' && thing !== null && !Array.isArray(thing);
-// }
+export function isObject(thing: object) {
+  if (typeof File !== 'undefined' && thing instanceof File) {
+    return false;
+  }
+  return typeof thing === 'object' && thing !== null && !Array.isArray(thing);
+}
 
 // export function mergeObjects(obj1, obj2, concatArrays = false) {
 //   // Recursively merge deeply nested objects.
@@ -424,13 +424,13 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   return complete;
 // }
 
-// /**
-//  * This function checks if the given schema matches a single
-//  * constant value.
-//  */
-// export function isConstant(schema) {
-//   return (Array.isArray(schema.enum) && schema.enum.length === 1) || schema.hasOwnProperty('const');
-// }
+/**
+ * This function checks if the given schema matches a single
+ * constant value.
+ */
+export function isConstant(schema) {
+  return (Array.isArray(schema.enum) && schema.enum.length === 1) || schema.hasOwnProperty('const');
+}
 
 // export function toConstant(schema) {
 //   if (Array.isArray(schema.enum) && schema.enum.length === 1) {
@@ -442,23 +442,23 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   }
 // }
 
-// export function isSelect(_schema, rootSchema = {}) {
-//   const schema = retrieveSchema(_schema, rootSchema);
-//   const altSchemas = schema.oneOf || schema.anyOf;
-//   if (Array.isArray(schema.enum)) {
-//     return true;
-//   } else if (Array.isArray(altSchemas)) {
-//     return altSchemas.every((altSchemas) => isConstant(altSchemas));
-//   }
-//   return false;
-// }
+export function isSelect(_schema, rootSchema = {}) {
+  const schema = retrieveSchema(_schema, rootSchema);
+  const altSchemas = schema.oneOf || schema.anyOf;
+  if (Array.isArray(schema.enum)) {
+    return true;
+  } else if (Array.isArray(altSchemas)) {
+    return altSchemas.every((altSchemas) => isConstant(altSchemas));
+  }
+  return false;
+}
 
-// export function isMultiSelect(schema, rootSchema = {}) {
-//   if (!schema.uniqueItems || !schema.items) {
-//     return false;
-//   }
-//   return isSelect(schema.items, rootSchema);
-// }
+export function isMultiSelect(schema, rootSchema = {}) {
+  if (!schema.uniqueItems || !schema.items) {
+    return false;
+  }
+  return isSelect(schema.items, rootSchema);
+}
 
 // export function isFilesArray(schema, uiSchema, rootSchema = {}) {
 //   if (uiSchema['ui:widget'] === 'files') {
@@ -552,43 +552,43 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 // };
 
 // // This function will create new "properties" items for each key in our formData
-// export function stubExistingAdditionalProperties(schema, rootSchema = {}, formData = {}) {
-//   // Clone the schema so we don't ruin the consumer's original
-//   schema = {
-//     ...schema,
-//     properties: { ...schema.properties }
-//   };
+export function stubExistingAdditionalProperties(schema, rootSchema = {}, formData = {}) {
+  // Clone the schema so we don't ruin the consumer's original
+  schema = {
+    ...schema,
+    properties: { ...schema.properties }
+  };
 
-//   // make sure formData is an object
-//   formData = isObject(formData) ? formData : {};
+  // make sure formData is an object
+  formData = isObject(formData) ? formData : {};
 
-//   Object.keys(formData).forEach((key) => {
-//     if (schema.properties.hasOwnProperty(key)) {
-//       // No need to stub, our schema already has the property
-//       return;
-//     }
+  Object.keys(formData).forEach((key) => {
+    if (schema.properties.hasOwnProperty(key)) {
+      // No need to stub, our schema already has the property
+      return;
+    }
 
-//     let additionalProperties;
-//     if (schema.additionalProperties.hasOwnProperty('$ref')) {
-//       additionalProperties = retrieveSchema(
-//         { $ref: schema.additionalProperties['$ref'] },
-//         rootSchema,
-//         formData
-//       );
-//     } else if (schema.additionalProperties.hasOwnProperty('type')) {
-//       additionalProperties = { ...schema.additionalProperties };
-//     } else {
-//       additionalProperties = { type: guessType(formData[key]) };
-//     }
+    let additionalProperties;
+    if (schema.additionalProperties.hasOwnProperty('$ref')) {
+      additionalProperties = retrieveSchema(
+        { $ref: schema.additionalProperties['$ref'] },
+        rootSchema,
+        formData
+      );
+    } else if (schema.additionalProperties.hasOwnProperty('type')) {
+      additionalProperties = { ...schema.additionalProperties };
+    } else {
+      additionalProperties = { type: guessType(formData[key]) };
+    }
 
-//     // The type of our new key should match the additionalProperties value;
-//     schema.properties[key] = additionalProperties;
-//     // Set our additional property flag so we know it was dynamically added
-//     schema.properties[key][ADDITIONAL_PROPERTY_FLAG] = true;
-//   });
+    // The type of our new key should match the additionalProperties value;
+    schema.properties[key] = additionalProperties;
+    // Set our additional property flag so we know it was dynamically added
+    schema.properties[key][ADDITIONAL_PROPERTY_FLAG] = true;
+  });
 
-//   return schema;
-// }
+  return schema;
+}
 
 // /**
 //  * Resolves a conditional block (if/else/then) by removing the condition and merging the appropriate conditional branch with the rest of the schema
@@ -645,56 +645,56 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   return retrieveSchema({ ...$refSchema, ...localSchema }, rootSchema, formData);
 // }
 
-// export function retrieveSchema(schema, rootSchema = {}, formData = {}) {
-//   if (!isObject(schema)) {
-//     return {};
-//   }
-//   let resolvedSchema = resolveSchema(schema, rootSchema, formData);
+export function retrieveSchema(schema, rootSchema = {}, formData = {}) {
+  if (!isObject(schema)) {
+    return {};
+  }
+  let resolvedSchema = resolveSchema(schema, rootSchema, formData);
 
-//   if (schema.hasOwnProperty('if')) {
-//     return resolveCondition(schema, rootSchema, formData);
-//   }
+  if (schema.hasOwnProperty('if')) {
+    return resolveCondition(schema, rootSchema, formData);
+  }
 
-//   // For each level of the dependency, we need to recursively determine the appropriate resolved schema given the current state of formData.
-//   // Otherwise, nested allOf subschemas will not be correctly displayed.
-//   if (resolvedSchema.properties) {
-//     const properties = {};
+  // For each level of the dependency, we need to recursively determine the appropriate resolved schema given the current state of formData.
+  // Otherwise, nested allOf subschemas will not be correctly displayed.
+  if (resolvedSchema.properties) {
+    const properties = {};
 
-//     Object.entries(resolvedSchema.properties).forEach((entries) => {
-//       const propName = entries[0];
-//       const propSchema = entries[1];
-//       const rawPropData = formData && formData[propName];
-//       const propData = isObject(rawPropData) ? rawPropData : {};
-//       const resolvedPropSchema = retrieveSchema(propSchema, rootSchema, propData);
+    Object.entries(resolvedSchema.properties).forEach((entries) => {
+      const propName = entries[0];
+      const propSchema = entries[1];
+      const rawPropData = formData && formData[propName];
+      const propData = isObject(rawPropData) ? rawPropData : {};
+      const resolvedPropSchema = retrieveSchema(propSchema, rootSchema, propData);
 
-//       properties[propName] = resolvedPropSchema;
+      properties[propName] = resolvedPropSchema;
 
-//       if (propSchema !== resolvedPropSchema && resolvedSchema.properties !== properties) {
-//         resolvedSchema = { ...resolvedSchema, properties };
-//       }
-//     });
-//   }
+      if (propSchema !== resolvedPropSchema && resolvedSchema.properties !== properties) {
+        resolvedSchema = { ...resolvedSchema, properties };
+      }
+    });
+  }
 
-//   if ('allOf' in schema) {
-//     try {
-//       resolvedSchema = mergeAllOf({
-//         ...resolvedSchema,
-//         allOf: resolvedSchema.allOf
-//       });
-//     } catch (e) {
-//       console.warn('could not merge subschemas in allOf:\n' + e);
-//       const { allOf, ...resolvedSchemaWithoutAllOf } = resolvedSchema;
-//       return resolvedSchemaWithoutAllOf;
-//     }
-//   }
-//   const hasAdditionalProperties =
-//     resolvedSchema.hasOwnProperty('additionalProperties') &&
-//     resolvedSchema.additionalProperties !== false;
-//   if (hasAdditionalProperties) {
-//     return stubExistingAdditionalProperties(resolvedSchema, rootSchema, formData);
-//   }
-//   return resolvedSchema;
-// }
+  if ('allOf' in schema) {
+    try {
+      resolvedSchema = mergeAllOf({
+        ...resolvedSchema,
+        allOf: resolvedSchema.allOf
+      });
+    } catch (e) {
+      console.warn('could not merge subschemas in allOf:\n' + e);
+      const { allOf, ...resolvedSchemaWithoutAllOf } = resolvedSchema;
+      return resolvedSchemaWithoutAllOf;
+    }
+  }
+  const hasAdditionalProperties =
+    resolvedSchema.hasOwnProperty('additionalProperties') &&
+    resolvedSchema.additionalProperties !== false;
+  if (hasAdditionalProperties) {
+    return stubExistingAdditionalProperties(resolvedSchema, rootSchema, formData);
+  }
+  return resolvedSchema;
+}
 
 // function resolveDependencies(schema, rootSchema, formData) {
 //   // Drop the dependencies from the source schema.
@@ -1191,7 +1191,10 @@ export const differentiatedSchemaType = memoize(function (
  * @param propKey `lodash` style object key with dot notation, empty key is root
  * @returns SvelteComponent | null
  */
-export function getComponent<T = JSONSchema7TypeName>(schema: JSONSchemaType<T>, propKey: string = "") {
+export function getComponent<T = JSONSchema7TypeName>(
+  schema: JSONSchemaType<T>,
+  propKey: string = ''
+) {
   const dtype = differentiatedSchemaType(schema.type) || 'string';
   if (Object.hasOwn(schema, 'widget')) {
     return get(
@@ -1238,7 +1241,6 @@ function widgetProps<T>(schema: JSONSchemaType<T>) {
     return get(propsMap.BY_SCHEMA_TYPE, dtype, {});
   }
 }
-
 
 /**
  *
@@ -1287,3 +1289,35 @@ export function getProps<T>(
 }
 
 export type GetProps = typeof getProps;
+
+function literalKey(value: any) {
+  if (typeof value === 'boolean') {
+    return value ? 1 : 0;
+  } else {
+    return value;
+  }
+}
+
+function objectToKey(value: object) {
+  return JSON.stringify(value);
+}
+
+export function arrayKeyGetter<T>(schema: JSONSchemaType<T[]>, propKey?: string) {
+  if (schema?.items?.type) {
+    if (
+      ['boolean', 'number', 'integer', 'string', 'null'].indexOf(
+        //@ts-ignore
+        differentiatedSchemaType(schema.items.type)
+      ) > 0
+    ) {
+      // array, object, anything else
+      return literalKey;
+    } else {
+      return objectToKey;
+    }
+  } else {
+    return objectToKey;
+  }
+}
+
+export type ArrayKeyGetter = typeof arrayKeyGetter;

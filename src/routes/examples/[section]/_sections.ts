@@ -9,6 +9,40 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
   //     description: 'This is a null field'
   //   }
   // ],
+  array: [
+    {
+      type: 'array',
+      title: 'Array of strings',
+      description: 'This is an array field',
+      items: {
+        type: 'string',
+        title: 'String',
+        description: 'This is a string field'
+      }
+    },
+    {
+      type: 'object',
+      title: 'Object with an array',
+      description: 'This is an object with an array field',
+      properties: {
+        integer: {
+          type: 'integer',
+          title: 'Integer',
+          description: 'This is an integer field'
+        },
+        array: {
+          type: 'array',
+          title: 'Array',
+          description: 'This is an array field',
+          items: {
+            type: 'number',
+            title: 'Number',
+            description: 'This is a number field'
+          }
+        }
+      }
+    }
+  ],
   string: [
     {
       type: 'string',
