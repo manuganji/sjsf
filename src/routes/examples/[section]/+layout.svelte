@@ -1,11 +1,10 @@
 <script lang="ts" context="module">
   import type { LayoutData } from './$types';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 </script>
 
 <script lang="ts">
-  import { page } from '$app/stores';
-
   export let data: LayoutData;
   const { keys } = data;
   let title: string, sectionName: string;
