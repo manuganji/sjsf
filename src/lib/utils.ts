@@ -1,4 +1,4 @@
-// import jsonpointer from 'jsonpointer';
+import jsonpointer from 'jsonpointer';
 // import validateFormData, { isValid } from './validate';
 import type { JSONSchemaType } from '$lib/types';
 import InputField from '$lib/components/fields/InputField.svelte';
@@ -27,28 +27,28 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   return true;
 // }
 
-// /* Gets the type of a given schema. */
-// export function getSchemaType(schema) {
-//   let { type } = schema;
+/* Gets the type of a given schema. */
+export function getSchemaType(schema) {
+  let { type } = schema;
 
-//   if (!type && schema.const) {
-//     return guessType(schema.const);
-//   }
+  if (!type && schema.const) {
+    return guessType(schema.const);
+  }
 
-//   if (!type && schema.enum) {
-//     return 'string';
-//   }
+  if (!type && schema.enum) {
+    return 'string';
+  }
 
-//   if (!type && (schema.properties || schema.additionalProperties)) {
-//     return 'object';
-//   }
+  if (!type && (schema.properties || schema.additionalProperties)) {
+    return 'object';
+  }
 
-//   if (type instanceof Array && type.length === 2 && type.includes('null')) {
-//     return type.find((type) => type !== 'null');
-//   }
+  if (type instanceof Array && type.length === 2 && type.includes('null')) {
+    return type.find((type) => type !== 'null');
+  }
 
-//   return type;
-// }
+  return type;
+}
 
 // export function getWidget(schema, widget, registeredWidgets = {}) {
 //   const type = getSchemaType(schema);
@@ -108,7 +108,7 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   }
 // }
 
-function computeDefaults(
+export function computeDefaults(
   _schema,
   parentDefaults,
   rootSchema,
@@ -470,13 +470,13 @@ export function isMultiSelect(schema, rootSchema = {}) {
 //   return false;
 // }
 
-// export function isFixedItems(schema) {
-//   return (
-//     Array.isArray(schema.items) &&
-//     schema.items.length > 0 &&
-//     schema.items.every((item) => isObject(item))
-//   );
-// }
+export function isFixedItems(schema: JSONSchemaType) {
+  return (
+    Array.isArray(schema.items) &&
+    schema.items.length > 0 &&
+    schema.items.every((item) => isObject(item))
+  );
+}
 
 // export function isCustomWidget(uiSchema) {
 //   return (
@@ -513,43 +513,43 @@ export function isMultiSelect(schema, rootSchema = {}) {
 //   }
 // }
 
-// export function findSchemaDefinition($ref, rootSchema = {}) {
-//   const origRef = $ref;
-//   if ($ref.startsWith('#')) {
-//     // Decode URI fragment representation.
-//     $ref = decodeURIComponent($ref.substring(1));
-//   } else {
-//     throw new Error(`Could not find a definition for ${origRef}.`);
-//   }
-//   const current = jsonpointer.get(rootSchema, $ref);
-//   if (current === undefined) {
-//     throw new Error(`Could not find a definition for ${origRef}.`);
-//   }
-//   if (current.hasOwnProperty('$ref')) {
-//     return findSchemaDefinition(current.$ref, rootSchema);
-//   }
-//   return current;
-// }
+export function findSchemaDefinition($ref, rootSchema = {}) {
+  const origRef = $ref;
+  if ($ref.startsWith('#')) {
+    // Decode URI fragment representation.
+    $ref = decodeURIComponent($ref.substring(1));
+  } else {
+    throw new Error(`Could not find a definition for ${origRef}.`);
+  }
+  const current = jsonpointer.get(rootSchema, $ref);
+  if (current === undefined) {
+    throw new Error(`Could not find a definition for ${origRef}.`);
+  }
+  if (current.hasOwnProperty('$ref')) {
+    return findSchemaDefinition(current.$ref, rootSchema);
+  }
+  return current;
+}
 
 // // In the case where we have to implicitly create a schema, it is useful to know what type to use
 // //  based on the data we are defining
-// export const guessType = function guessType(value) {
-//   if (Array.isArray(value)) {
-//     return 'array';
-//   } else if (typeof value === 'string') {
-//     return 'string';
-//   } else if (value == null) {
-//     return 'null';
-//   } else if (typeof value === 'boolean') {
-//     return 'boolean';
-//   } else if (!isNaN(value)) {
-//     return 'number';
-//   } else if (typeof value === 'object') {
-//     return 'object';
-//   }
-//   // Default to string if we can't figure it out
-//   return 'string';
-// };
+export const guessType = function guessType(value: any) {
+  if (Array.isArray(value)) {
+    return 'array';
+  } else if (typeof value === 'string') {
+    return 'string';
+  } else if (value == null) {
+    return 'null';
+  } else if (typeof value === 'boolean') {
+    return 'boolean';
+  } else if (!isNaN(value)) {
+    return 'number';
+  } else if (typeof value === 'object') {
+    return 'object';
+  }
+  // Default to string if we can't figure it out
+  return 'string';
+};
 
 // // This function will create new "properties" items for each key in our formData
 export function stubExistingAdditionalProperties(schema, rootSchema = {}, formData = {}) {
@@ -1079,65 +1079,65 @@ export function retrieveSchema(schema, rootSchema = {}, formData = {}) {
 //   return { blob, name };
 // }
 
-// export function getMatchingOption(formData, options, rootSchema) {
-//   // For performance, skip validating subschemas if formData is undefined. We just
-//   // want to get the first option in that case.
-//   if (formData === undefined) {
-//     return 0;
-//   }
-//   for (let i = 0; i < options.length; i++) {
-//     const option = options[i];
+export function getMatchingOption(formData, options, rootSchema) {
+  // For performance, skip validating subschemas if formData is undefined. We just
+  // want to get the first option in that case.
+  if (formData === undefined) {
+    return 0;
+  }
+  for (let i = 0; i < options.length; i++) {
+    const option = options[i];
 
-//     // If the schema describes an object then we need to add slightly more
-//     // strict matching to the schema, because unless the schema uses the
-//     // "requires" keyword, an object will match the schema as long as it
-//     // doesn't have matching keys with a conflicting type. To do this we use an
-//     // "anyOf" with an array of requires. This augmentation expresses that the
-//     // schema should match if any of the keys in the schema are present on the
-//     // object and pass validation.
-//     if (option.properties) {
-//       // Create an "anyOf" schema that requires at least one of the keys in the
-//       // "properties" object
-//       const requiresAnyOf = {
-//         anyOf: Object.keys(option.properties).map((key) => ({
-//           required: [key]
-//         }))
-//       };
+    // If the schema describes an object then we need to add slightly more
+    // strict matching to the schema, because unless the schema uses the
+    // "requires" keyword, an object will match the schema as long as it
+    // doesn't have matching keys with a conflicting type. To do this we use an
+    // "anyOf" with an array of requires. This augmentation expresses that the
+    // schema should match if any of the keys in the schema are present on the
+    // object and pass validation.
+    if (option.properties) {
+      // Create an "anyOf" schema that requires at least one of the keys in the
+      // "properties" object
+      const requiresAnyOf = {
+        anyOf: Object.keys(option.properties).map((key) => ({
+          required: [key]
+        }))
+      };
 
-//       let augmentedSchema;
+      let augmentedSchema;
 
-//       // If the "anyOf" keyword already exists, wrap the augmentation in an "allOf"
-//       if (option.anyOf) {
-//         // Create a shallow clone of the option
-//         const { ...shallowClone } = option;
+      // If the "anyOf" keyword already exists, wrap the augmentation in an "allOf"
+      if (option.anyOf) {
+        // Create a shallow clone of the option
+        const { ...shallowClone } = option;
 
-//         if (!shallowClone.allOf) {
-//           shallowClone.allOf = [];
-//         } else {
-//           // If "allOf" already exists, shallow clone the array
-//           shallowClone.allOf = shallowClone.allOf.slice();
-//         }
+        if (!shallowClone.allOf) {
+          shallowClone.allOf = [];
+        } else {
+          // If "allOf" already exists, shallow clone the array
+          shallowClone.allOf = shallowClone.allOf.slice();
+        }
 
-//         shallowClone.allOf.push(requiresAnyOf);
+        shallowClone.allOf.push(requiresAnyOf);
 
-//         augmentedSchema = shallowClone;
-//       } else {
-//         augmentedSchema = Object.assign({}, option, requiresAnyOf);
-//       }
+        augmentedSchema = shallowClone;
+      } else {
+        augmentedSchema = Object.assign({}, option, requiresAnyOf);
+      }
 
-//       // Remove the "required" field as it's likely that not all fields have
-//       // been filled in yet, which will mean that the schema is not valid
-//       delete augmentedSchema.required;
+      // Remove the "required" field as it's likely that not all fields have
+      // been filled in yet, which will mean that the schema is not valid
+      delete augmentedSchema.required;
 
-//       if (isValid(augmentedSchema, formData, rootSchema)) {
-//         return i;
-//       }
-//     } else if (isValid(option, formData, rootSchema)) {
-//       return i;
-//     }
-//   }
-//   return 0;
-// }
+      if (isValid(augmentedSchema, formData, rootSchema)) {
+        return i;
+      }
+    } else if (isValid(option, formData, rootSchema)) {
+      return i;
+    }
+  }
+  return 0;
+}
 
 // // Check to see if a schema specifies that a value must be true
 // export function schemaRequiresTrueValue(schema) {

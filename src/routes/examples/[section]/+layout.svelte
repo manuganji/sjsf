@@ -1,9 +1,10 @@
 <script lang="ts" context="module">
   import { page } from '$app/stores';
+  import type { LayoutData } from './$types';
 </script>
 
 <script lang="ts">
-  export let data;
+  export let data: LayoutData;
   const { keys } = data;
   const sectionName = $page.params.section;
   const title = sectionName[0].toUpperCase() + sectionName.slice(1);

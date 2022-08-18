@@ -1,9 +1,10 @@
 <script lang="ts" context="module">
   import Form from '$lib/components/Form.svelte';
+  import type { PageData } from './$types';
 </script>
 
 <script lang="ts">
-  export let data;
+  export let data: PageData;
   const { examples } = data;
   let value: Array<any> = [];
 </script>
