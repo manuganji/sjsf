@@ -17,7 +17,8 @@ const config = {
   test: {
     globals: true,
     environment: 'jsdom',
-    clearMocks: true
+    clearMocks: true,
+    include: ['tests/**/*.test.[t,j]s'],
   }
 };
 

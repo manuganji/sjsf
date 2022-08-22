@@ -1,31 +1,31 @@
 import toPath from 'lodash-es/toPath';
 import Ajv from 'ajv';
-let ajv = createAjvInstance();
+
 // import { deepEquals, getDefaultFormState } from './utils';
 
 let formerCustomFormats = null;
 let formerMetaSchema = null;
-const ROOT_SCHEMA_PREFIX = '__rjsf_rootSchema';
+const ROOT_SCHEMA_PREFIX = '__sjsf_rootSchema';
 
 // import { isObject, mergeObjects } from './utils';
 
 function createAjvInstance() {
   const ajv = new Ajv({
-    errorDataPath: 'property',
+    useDefaults: 'empty',
     allErrors: true,
-    multipleOfPrecision: 8,
-    schemaId: 'auto',
-    unknownFormats: 'ignore'
+    strict: true
   });
 
   // add custom formats
-  ajv.addFormat('data-url', /^data:([a-z]+\/[a-z0-9-+.]+)?;(?:name=(.*);)?base64,(.*)$/);
+  // ajv.addFormat('data-url', /^data:([a-z]+\/[a-z0-9-+.]+)?;(?:name=(.*);)?base64,(.*)$/);
   ajv.addFormat(
     'color',
     /^(#?([0-9A-Fa-f]{3}){1,2}\b|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow|(rgb\(\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*,\s*\b([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\b\s*\))|(rgb\(\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*,\s*(\d?\d%|100%)+\s*\)))$/
   );
   return ajv;
 }
+
+export let ajv = createAjvInstance();
 
 function toErrorSchema(errors) {
   // Transforms a ajv validation errors list:

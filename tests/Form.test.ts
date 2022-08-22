@@ -3,12 +3,12 @@
 // import { renderIntoDocument, } from 'react-dom/test-utils';
 // import { render, findDOMcontainer } from 'react-dom';
 // import { Portal } from 'react-portal';
-import TwoSubmitButtonsSvelte from './components/TwoSubmitButtons.svelte';
 import Form from '$lib/components/Form.svelte';
+import TwoSubmitButtonsSvelte from './components/TwoSubmitButtons.svelte';
 
 import { createComponent, createFormComponent, submitForm } from './test_utils';
 import { findByTestId, fireEvent, render, within } from '@testing-library/svelte';
-import InvalidSchemaSvelte from './components/InvalidSchema.svelte';
+// import InvalidSchemaSvelte from './components/InvalidSchema.svelte';
 import type { SpyInstance } from 'vitest';
 
 describe('Empty schema', () => {
@@ -40,14 +40,14 @@ describe('Empty schema', () => {
     expect(container.querySelectorAll('button[type=submit]')).toHaveLength(2);
   });
 
-  it.skip("should render errors if schema isn't object", () => {
-    const props = {};
-    const { container } = render(InvalidSchemaSvelte);
+  // it.skip("should render errors if schema isn't object", () => {
+  //   const props = {};
+  //   const { container } = render(InvalidSchemaSvelte);
 
-    expect(container.querySelector('.unsupported-field').textContent).to.contain(
-      'Unknown field type undefined'
-    );
-  });
+  //   expect(container.querySelector('.unsupported-field').textContent).to.contain(
+  //     'Unknown field type undefined'
+  //   );
+  // });
 });
 
 describe('on component creation', () => {

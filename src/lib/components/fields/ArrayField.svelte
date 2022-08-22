@@ -14,7 +14,7 @@
   export let widget: ReturnType<typeof getProps>['widget'];
   const arrayKeyFn = arrayKeyGetter(schema, widget.propKey);
   const id = widget.id;
-  const length = value.length;
+  const length = value ? value.length : 0;
 
   const removeItem = (index: number) => {
     if (!value) {
@@ -78,19 +78,29 @@
         {...itemProps(i)}
         bind:value={value[i]}
       />
-      <button
-        type="button"
-        on:click={() => {
-          removeItem(i);
-        }}>Remove</button
-      >
-      <button type="button" disabled={i <= 0} on:click={() => swapPosition(i, i - 1)}
-        >Move Up</button
-      >
-      <button type="button" disabled={i + 1 == length} on:click={() => swapPosition(i, i + 1)}
-        >Move Down</button
-      >
+      <div class="flex flex-row gap-x-1">
+        <button
+          type="button"
+          on:click={() => {
+            removeItem(i);
+          }}>Remove</button
+        >
+
+        <button type="button" disabled={i <= 0} on:click={() => swapPosition(i, i - 1)}
+          >Move Up</button
+        >
+        <button type="button" disabled={i + 1 == length} on:click={() => swapPosition(i, i + 1)}
+          >Move Down</button
+        >
+      </div>
     {/each}
-    <button type="button">New</button>
   {/if}
+  <div class="flex justify-end">
+    <button
+      type="button"
+      on:click={() => {
+        value = value ? [...value, null] : [null];
+      }}>Add</button
+    >
+  </div>
 </Layout>
