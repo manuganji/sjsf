@@ -7,6 +7,7 @@ import * as widgetMap from './widgetMap';
 import get from 'lodash-es/get';
 import memoize from 'lodash-es/memoize';
 import type { JSONSchema7TypeName } from 'json-schema';
+import { noop } from 'lodash-es';
 // import { getComponent } from './helpers';
 
 export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
@@ -533,16 +534,26 @@ export function findSchemaDefinition<T = JSONTypes>(
   return current;
 }
 
+const ARRAY_SCHEMA = ['anyOf', 'oneOf', 'allOf'];
+const MAYBE_SCHEMA_LIKE = ['if', 'then', 'else', 'not'];
+
+/**
+ * Copies default values over for $ref values to ensure ajv's useDefaults option works predictably.
+ * 
+ * @param root JSONSchemaType
+ * @param sub JSONSchemaType
+ * @returns JSONSchemaType
+ */
 export function copyDefaults<T = JSONTypes>(
   root: JSONSchemaType<T>,
   sub?: JSONSchemaType<JSONTypes>
 ): JSONSchemaType<T> {
-  if (typeof sub == "undefined") {
+  if (typeof sub == 'undefined') {
     // @ts-ignore
     sub = root;
   }
 
-  if (Object.hasOwn(sub!, '$ref')) {
+  if (Object.hasOwn(sub!, '$ref') && !Object.hasOwn(sub!, 'default')) {
     const schemaDef = findSchemaDefinition(sub!.$ref!, root);
     if (schemaDef?.default) {
       // @ts-ignore
@@ -550,24 +561,41 @@ export function copyDefaults<T = JSONTypes>(
         ...sub!,
         default: schemaDef.default
       };
-    } else {
-      // @ts-ignore
-      return sub!;
     }
-  } else {
-    switch (differentiatedSchemaType(sub!.type)) {
-      case 'object':
-        for (let prop in sub!.properties) {
-          sub!.properties[prop] = copyDefaults(root, sub?.properties[prop]);
-        }
-      case 'array':
-      // @ts-ignore
-      default:
-      // @ts-ignore
-    }
-    //@ts-ignore
-    return sub!;
   }
+
+  // anyOf, oneOf, allOf
+  for (let propName of ARRAY_SCHEMA) {
+    if (Object.hasOwn(sub!, propName)) {
+      for (let optionSub of sub![propName]) {
+        optionSub = copyDefaults(root, optionSub);
+      }
+    }
+  }
+
+  // 'if', 'then', 'else', 'not'
+  for (let propName of MAYBE_SCHEMA_LIKE) {
+    if (Object.hasOwn(sub!, propName)) {
+      sub![propName] = copyDefaults(root, sub![propName]);
+    }
+  }
+
+  switch (getSchemaType(sub!)) {
+    case 'object':
+      for (let prop in sub!.properties) {
+        sub!.properties[prop] = copyDefaults(root, sub?.properties[prop]);
+      }
+      break;
+    case 'array':
+      // @ts-ignore
+      sub!.items = copyDefaults(root, sub!.items);
+      break;
+    default:
+      noop();
+  }
+
+  //@ts-ignore
+  return sub!;
 }
 
 // // In the case where we have to implicitly create a schema, it is useful to know what type to use

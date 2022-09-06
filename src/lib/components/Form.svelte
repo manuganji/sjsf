@@ -35,5 +35,5 @@
 
 <form {id}>
   <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
-  <slot><button class="my-2" type="submit">Submit</button></slot>
+   <slot><button class="my-2" type="submit">Submit</button></slot>
 </form>

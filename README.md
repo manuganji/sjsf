@@ -6,14 +6,12 @@ Supports JSON Schema `Draft-07`. You can assert for this by checking the `$schem
 
 **Supports only a subset of JSON Schema Draft-07.**
 
-- Only `ajv` [`strict` mode](https://ajv.js.org/options.html#strict-mode-options) compliant schema: 
+- Only `ajv` [`strict` mode](https://ajv.js.org/options.html#strict-mode-options) compliant schema:
 
-Inspired by [React JSON Schema Form](https://github.com/rjsf-team/react-jsonschema-form).
+Inspired by [React JSON Schema Form](https://github.com/rjsf-team/react-jsonschema-form). Specifically `@rjsf/utils` package in `V5` is super valuable. But there will be a few differences in approach from RJSF.
 
-But there will be a few differences in approach.
-
-1. Will be style agnostic using headless components and providing a way to override the styles
-2. Will allow schema extension and probably a different way of stating UI configuration
+1. No `UiSchema`
+2. Will allow schema extension and a different way of stating UI configuration
 3. Uses Vite ecosystem
 
 `Form`

@@ -4,7 +4,7 @@
 // import { render, findDOMcontainer } from 'react-dom';
 // import { Portal } from 'react-portal';
 import Form from '$lib/components/Form.svelte';
-import TwoSubmitButtonsSvelte from './components/TwoSubmitButtons.svelte';
+import TwoSubmitButtonsSvelte from '$lib/test/TwoSubmitButtons.svelte';
 
 import { createComponent, createFormComponent, submitForm } from './test_utils';
 import { findByTestId, fireEvent, render, within } from '@testing-library/svelte';
@@ -18,19 +18,8 @@ describe('Empty schema', () => {
     expect(e?.nodeName).eql('FORM');
   });
 
-  it('should render a form tag', async () => {
-    const { container } = createFormComponent({ schema: {}, as: 'div' });
-    let e = container.querySelector('#sjsf');
-    expect(e?.nodeName).eql('DIV');
-  });
-
-  it('should render a submit button', () => {
+  it('should expose a submit slot prop', () => {
     const { container } = createFormComponent({ schema: {} });
-    expect(container.querySelectorAll('button[type=submit]')).toHaveLength(1);
-  });
-
-  it('should render a submit button', () => {
-    const { container } = createFormComponent({ schema: {}, as: 'div' });
     expect(container.querySelectorAll('button[type=submit]')).toHaveLength(1);
   });
 

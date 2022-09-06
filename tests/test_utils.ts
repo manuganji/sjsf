@@ -1,4 +1,3 @@
-
 /* Utils for tests. */
 
 import { type SpyInstance, vi, describe, type ArgumentsType } from 'vitest';
@@ -8,10 +7,13 @@ import type { SvelteComponent, SvelteComponentTyped } from 'svelte/types/runtime
 import Form from '$lib/components/Form.svelte';
 
 export function createComponent(
-  Component: SvelteComponentTyped,
+  Component: typeof SvelteComponentTyped,
   props: any,
-  child?: SvelteComponentConstructor
-): Pick<RenderResult, 'component' | 'container' | 'rerender' | 'unmount'> & {
+  child?: SvelteComponentTyped
+): Pick<
+  RenderResult<SvelteComponentTyped>,
+  'component' | 'container' | 'rerender' | 'unmount' | 'debug'
+> & {
   onChange: SpyInstance;
   onSubmit: SpyInstance;
   onError: SpyInstance;
@@ -24,9 +26,14 @@ export function createComponent(
     component,
     container,
     unmount,
+    debug,
     rerender // @ts-ignore
-  }: RenderResult = render(Component, { onSubmit, onError, onChange, slot: child ? new child() : null, ...props }, {
-    container: null
+  }: RenderResult = render(Component, {
+    onSubmit,
+    onError,
+    onChange,
+    slot: child ? child : null,
+    ...props
   });
 
   return {
@@ -36,11 +43,12 @@ export function createComponent(
     onError,
     onSubmit,
     rerender,
-    unmount
+    unmount,
+    debug
   };
 }
 
-export function createFormComponent<T, U=any>(props: object, slot?: SvelteComponentConstructor) {
+export function createFormComponent<T, U = any>(props: object, slot?: SvelteComponentTyped) {
   return createComponent(Form, props, slot);
 }
 
@@ -49,17 +57,7 @@ export function createFormComponent<T, U=any>(props: object, slot?: SvelteCompon
 //   render(React.createElement(comp.constructor, newProps), node.parentNode);
 // }
 
-/* Run a group of tests with different combinations of omitExtraData and liveOmit as form props.
- */
-export function describeRepeated(title:string, fn:Function) {
-  
-  for (let formExtraProps of formExtraPropsList) {
-    const createFormComponentFn = (props: object) => createFormComponent({ ...props, ...formExtraProps });
-    
-  }
-}
-
-export function submitForm(node) {
+export function submitForm(node: Element) {
   act(() => {
     fireEvent.submit(node);
   });

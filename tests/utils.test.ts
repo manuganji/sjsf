@@ -32,7 +32,7 @@ import {
   isCustomWidget,
   getMatchingOption,
   getSubmitButtonOptions
-} from '../src/utils';
+} from '$lib/utils';
 import { createSandbox } from './test_utils';
 
 describe('utils', () => {

@@ -4,5 +4,5 @@
 
 <Form schema={{}} >
   <button type="submit">Submit</button>
-  <button type="submit">Another submit</button>
+  <button type="submit" formaction="/action2">Another submit</button>
 </Form> 
