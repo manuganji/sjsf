@@ -9,6 +9,7 @@ import Form from '$lib/components/Form.svelte';
 export function createComponent(
   Component: typeof SvelteComponentTyped,
   props: any,
+  target?: HTMLElement,
   child?: SvelteComponentTyped
 ): Pick<
   RenderResult<SvelteComponentTyped>,
@@ -29,11 +30,14 @@ export function createComponent(
     debug,
     rerender // @ts-ignore
   }: RenderResult = render(Component, {
-    onSubmit,
-    onError,
-    onChange,
-    slot: child ? child : null,
-    ...props
+    target: target || document.body,
+    props: {
+      onSubmit,
+      onError,
+      onChange,
+      slot: child ? child : null,
+      ...props
+    }
   });
 
   return {
@@ -48,8 +52,8 @@ export function createComponent(
   };
 }
 
-export function createFormComponent<T, U = any>(props: object, slot?: SvelteComponentTyped) {
-  return createComponent(Form, props, slot);
+export function createFormComponent<T, U = any>(props: object, target?: HTMLElement, slot?: SvelteComponentTyped) {
+  return createComponent(Form, props, target, slot);
 }
 
 // export function setProps(comp: SvelteComponent, newProps) {

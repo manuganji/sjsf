@@ -2,13 +2,12 @@
   import type { GetProps } from '$lib/utils'
   import Layout from '$lib/components/Layout.svelte';
   import type { JSONSchemaType } from '$lib/types';
-  import type { JSONSchema7TypeName } from 'json-schema';
   import { colors } from '@unocss/preset-wind';
   colors;
 </script>
 
 <script lang="ts">
-  export let schema: JSONSchemaType<JSONSchema7TypeName>;
+  export let schema: JSONSchemaType;
   export let widget: ReturnType<GetProps>['widget'] = { type: 'text' };
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
@@ -27,7 +26,7 @@
       required={widget.required}
       type="number"
       bind:value
-      step={schema?.multipleOf || 1}
+      step={widget.step(schema)}
       min={'minimum' in schema ? schema.minimum : undefined}
       max={'maximum' in schema ? schema.maximum : undefined}
     />

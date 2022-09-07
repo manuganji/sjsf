@@ -1260,7 +1260,7 @@ export const differentiatedSchemaType = memoize(function (
  * @returns SvelteComponent | null
  */
 export function getComponent<T = JSONSchema7TypeName>(
-  schema: JSONSchemaType<T>,
+  schema: JSONSchemaType,
   propKey: string = ''
 ) {
   const dtype = differentiatedSchemaType(schema.type) || 'string';

@@ -1,3 +1,5 @@
+import type { JSONSchemaType } from '$lib/types';
+
 export const BY_WIDGET_CODE: Record<string, Record<string, any>> = {
   string: {
     color: {
@@ -14,10 +16,22 @@ export const BY_SCHEMA_TYPE: Record<string, Record<string, any>> = {
   },
   integer: {
     type: 'number',
-    step: 1
+    step: (schema: JSONSchemaType) => {
+      if (schema?.multipleOf) {
+        let multipleOf = Math.round(Math.abs(schema?.multipleOf));
+        if (multipleOf < 1) {
+          return 1;
+        } else {
+          return multipleOf;
+        }
+      } else {
+        return 1;
+      }
+    }
   },
   number: {
-    type: 'number'
+    type: 'number',
+    step: (schema: JSONSchemaType) => (schema?.multipleOf ? Math.abs(schema.multipleOf) : undefined)
   },
   boolean: {
     type: 'checkbox'
