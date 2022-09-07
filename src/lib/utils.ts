@@ -1322,7 +1322,7 @@ function widgetProps<T>(schema: JSONSchemaType<T>) {
  * @returns object | null
  */
 export function getProps<T>(
-  schema: JSONSchemaType<T>,
+  schema: JSONSchemaType,
   ctx: {
     propKey?: string;
     id?: string;
@@ -1341,7 +1341,8 @@ export function getProps<T>(
     widget: ctx
   };
 
-  props.widget.required = !Array.isArray(schema.type);
+
+  props.widget.required = !Array.isArray(schema.type) || false;
   const fromWidget = widgetProps(schema);
 
   if (differentiatedSchemaType(schema.type) == 'object') {

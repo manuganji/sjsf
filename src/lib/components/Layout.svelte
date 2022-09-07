@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { JSONSchemaType, JSONTypes } from '$lib/types';
   export let id: string = '';
+  export let name: string = '';
   export let errors: Error[] | null = null;
   export let schema: JSONSchemaType<JSONTypes>;
   export let required: boolean = false;
@@ -8,7 +9,7 @@
 
 {#if schema}
   {#if schema.type == 'object' || schema.type == 'array'}
-    <fieldset id={id} class="flex flex-col gap-y-2">
+    <fieldset {id} class="flex flex-col gap-y-2">
       <legend
         >{schema.title}{#if required}<span class="text-red">*</span>{/if}</legend
       >
@@ -26,9 +27,9 @@
       {/if}
     </fieldset>
   {:else}
-    <div class="flex flex-col gap-y-2">
+    <div class="flex flex-col gap-y-2" {id}>
       {#if schema.title}
-        <label class="label" for={id}
+        <label class="label" for={name}
           >{schema.title}{#if required}<span class="text-red">*</span>{/if}</label
         >
       {/if}
