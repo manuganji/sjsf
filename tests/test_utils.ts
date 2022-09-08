@@ -5,48 +5,39 @@ import { fireEvent, render, act } from '@testing-library/svelte';
 import type { RenderResult } from '@testing-library/svelte';
 import type { SvelteComponent } from 'svelte/types/runtime';
 import Form from '$lib/components/Form.svelte';
-
+import { pick } from 'lodash-es';
 
 export function createComponent(
   Component: typeof SvelteComponent,
   props: any,
-  target?: HTMLElement,
+  spies: boolean,
   child?: typeof SvelteComponent
 ): Pick<
   RenderResult<SvelteComponent>,
   'component' | 'container' | 'rerender' | 'unmount' | 'debug'
 > & {
-  onChange: SpyInstance;
-  onSubmit: SpyInstance;
-  onError: SpyInstance;
+  onSubmit?: SpyInstance | ((arg0: SubmitEvent) => void);
+  onError?: SpyInstance;
+  onBlur?: SpyInstance;
+  onFocus?: SpyInstance;
 } {
-  const onChange = vi.fn();
-  const onError = vi.fn();
-  const onSubmit = vi.fn();
-
+  const composedProps = {
+    ...(spies ? { onSubmit: vi.fn(), onError: vi.fn(), onBlur: vi.fn(), onFocus: vi.fn() } : {}),
+    slot: child ? child : null,
+    ...props
+  };
   const {
     component,
     container,
     unmount,
     debug,
     rerender // @ts-ignore
-  }: RenderResult = render(Component, {
-    target: target || document.body,
-    props: {
-      onSubmit,
-      onError,
-      onChange,
-      slot: child ? child : null,
-      ...props
-    }
-  });
+  }: RenderResult = render(Component, composedProps);
 
   return {
     component,
     container,
-    onChange,
-    onError,
-    onSubmit,
+    ...pick(composedProps, ['onSubmit', 'onError', 'onBlur', 'onFocus']),
     rerender,
     unmount,
     debug
@@ -55,10 +46,10 @@ export function createComponent(
 
 export function createFormComponent<T, U = any>(
   props: object,
-  target?: HTMLElement,
+  spies: boolean = false,
   slot?: typeof SvelteComponent
 ) {
-  return createComponent(Form, props, target, slot);
+  return createComponent(Form, props, spies, slot);
 }
 
 // export function setProps(comp: SvelteComponent, newProps) {
@@ -66,8 +57,8 @@ export function createFormComponent<T, U = any>(
 //   render(React.createElement(comp.constructor, newProps), node.parentNode);
 // }
 
-export function submitForm(node: Element) {
-  act(() => {
+export async function submitForm(node: Element) {
+  return await act(() => {
     fireEvent.submit(node);
   });
 }

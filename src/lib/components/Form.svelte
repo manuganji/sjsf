@@ -10,7 +10,6 @@
 </script>
 
 <script lang="ts">
-  // import { browser } from '$app/environment';
   let ajvInstance = new Ajv({
     useDefaults: true
   });
@@ -21,13 +20,18 @@
   export let idPrefix: string = 'sjsf';
   export let idSeparator: string = '.';
   export let value: any;
-  
+  export let onBlur: ((propKey: string) => void) | undefined = undefined;
+  export let onFocus: ((propKey: string) => void) | undefined = undefined;
+  export let onSubmit: ((arg0: SubmitEvent) => void) | undefined = undefined;
+  export let action: string = '';
+  export let method: string = '';
+
   onMount(function () {
     if (typeof value == 'undefined' && 'default' in schema) {
-      value = schema.default
+      value = schema.default;
     }
   });
-  
+
   const { ctx, ...rest } = schema;
   export let getProps = defGetProps;
   export let getComponent = defGetComponent;
@@ -41,12 +45,21 @@
       propKey: '',
       id: '',
       idPrefix,
-      idSeparator
+      idSeparator,
+      onBlur,
+      onFocus
     })
   };
 </script>
 
-<form {id}>
-  <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
-  <slot><button class="my-2" type="submit">Submit</button></slot>
-</form>
+{#if onSubmit}
+  <form {id} on:submit|preventDefault={onSubmit}>
+    <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
+    <slot><button class="my-2" type="submit">Submit</button></slot>
+  </form>
+{:else}
+  <form {id} {action} {method}>
+    <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
+    <slot><button class="my-2" type="submit">Submit</button></slot>
+  </form>
+{/if}

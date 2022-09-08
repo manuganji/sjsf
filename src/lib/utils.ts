@@ -1305,11 +1305,13 @@ function widgetProps<T>(schema: JSONSchemaType<T>) {
 export function getProps<T>(
   schema: JSONSchemaType,
   ctx: {
-    propKey?: string;
+    propKey: string;
     id?: string;
     idPrefix?: string;
     idSeparator?: string;
     [key: string]: any;
+    onBlur?: (arg0: string) => void;
+    onFocus?: (arg0: string) => void;
   } = {
     propKey: '',
     id: '',
@@ -1317,10 +1319,24 @@ export function getProps<T>(
     idSeparator: '.'
   }
 ) {
+  function onBlur() {
+    if ('onBlur' in ctx) {
+      ctx.onBlur!(ctx.propKey);
+    }
+  }
+
+  function onFocus() {
+    if ('onFocus' in ctx) {
+      ctx.onFocus!(ctx.propKey);
+    }
+  }
+
   let props = {
     schema,
     widget: {
-      ...ctx
+      ...ctx,
+      onBlur,
+      onFocus
     }
   };
 

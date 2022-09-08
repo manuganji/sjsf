@@ -125,38 +125,42 @@ describe('Number input', () => {
     });
   });
 
-  it('should handle a blur event', () => {
-    const onBlur = vi.fn();
-    const { container } = createFormComponent({
-      schema: {
-        type: 'number'
+  it('should handle a blur event', async () => {
+    const { container, onBlur } = createFormComponent(
+      {
+        schema: {
+          type: 'number'
+        }
       },
-      onBlur
-    });
+      true
+    );
 
     const input = container.querySelector('input')!;
-    fireEvent.blur(input, {
+    await fireEvent.blur(input, {
       target: { value: '2' }
     });
 
-    expect(onBlur.calledWith(input.id, 2));
+    expect(onBlur).toHaveBeenCalledOnce();
+    expect(onBlur).lastCalledWith('');
   });
 
   it('should handle a focus event', () => {
-    const onFocus = vi.fn();
-    const { container } = createFormComponent({
-      schema: {
-        type: 'number'
+    const { container, onFocus } = createFormComponent(
+      {
+        schema: {
+          type: 'number'
+        }
       },
-      onFocus
-    });
+      true
+    );
 
     const input = container.querySelector('input')!;
     fireEvent.focus(input, {
       target: { value: '2' }
     });
 
-    expect(onFocus.calledWith(input.id, 2));
+    expect(onFocus).toHaveBeenCalledOnce();
+    expect(onFocus).lastCalledWith('')
   });
 
   it('should fill field with data', () => {
@@ -171,7 +175,7 @@ describe('Number input', () => {
   });
 
   describe('when inputting a number that ends with a dot and/or zero it should normalize it, without changing the input value', () => {
-    const { container, onChange } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'number'
       }
@@ -490,16 +494,19 @@ describe('With enum', () => {
     expect(container.querySelector('select')!.value).to.eql('1');
   });
 
-  it('should fill field with data', () => {
-    const { container: container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'number',
-        enum: [1, 2]
+  it('should fill field with data', async () => {
+    const { container: container, onSubmit } = createFormComponent(
+      {
+        schema: {
+          type: 'number',
+          enum: [1, 2]
+        },
+        value: 2
       },
-      formData: 2
-    });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({ formData: 2 });
+      true
+    );
+    await submitForm(container.querySelector('form')!);
+    expect(onSubmit).toHaveBeenCalledOnce();
   });
 
   it('should render a select element with a blank option, when not required.', () => {
@@ -514,7 +521,7 @@ describe('With enum', () => {
       required: []
     };
 
-    const { container, rerender } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
@@ -537,7 +544,7 @@ describe('With enum', () => {
       }
     };
 
-    const { container, rerender } = createFormComponent({
+    const { container } = createFormComponent({
       schema
     });
 
@@ -571,29 +578,5 @@ describe('With enum', () => {
     const options = container.querySelectorAll('option');
     expect(options.length).eql(1);
     expect(options[0].innerHTML).eql('2');
-  });
-
-  it('should render a select element without a blank option, if the default value is 0.', async () => {
-    const schema = {
-      type: 'object',
-      properties: {
-        foo: {
-          type: 'number',
-          enum: [0],
-          default: 0
-        }
-      }
-    };
-
-    const { container } = createFormComponent({
-      schema
-    });
-
-    const selects = container.querySelectorAll('select');
-    expect(selects[0].value).eql('0');
-
-    const options = container.querySelectorAll('option');
-    expect(options.length).eql(1);
-    expect(options[0].innerHTML).eql('0');
   });
 });

@@ -1,12 +1,16 @@
 <script lang="ts" context="module">
-  import type { GetProps } from '$lib/utils'
+  import type { GetProps } from '$lib/utils';
   import Layout from '$lib/components/Layout.svelte';
   import type { JSONSchemaType } from '$lib/types';
 </script>
 
 <script lang="ts">
   export let schema: JSONSchemaType;
-  export let widget: ReturnType<GetProps>['widget'] = { type: 'text' };
+  export let widget: ReturnType<GetProps>['widget'] = {
+    type: 'text',
+    propKey: '',
+    required: false
+  };
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
 
@@ -26,6 +30,8 @@
       step={widget.step(schema)}
       min={'minimum' in schema ? schema.minimum : undefined}
       max={'maximum' in schema ? schema.maximum : undefined}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
     />
   {/if}
   {#if widget['type'] == 'text'}
@@ -35,6 +41,8 @@
       type="text"
       bind:value
       required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
     />
   {/if}
   {#if widget['type'] == 'checkbox'}
@@ -44,6 +52,8 @@
       type="checkbox"
       bind:value
       required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
     />
   {/if}
 </Layout>
