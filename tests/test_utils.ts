@@ -1,18 +1,19 @@
 /* Utils for tests. */
 
-import { type SpyInstance, vi, describe, type ArgumentsType } from 'vitest';
+import { type SpyInstance, vi } from 'vitest';
 import { fireEvent, render, act } from '@testing-library/svelte';
 import type { RenderResult } from '@testing-library/svelte';
-import type { SvelteComponent, SvelteComponentTyped } from 'svelte/types/runtime';
+import type { SvelteComponent } from 'svelte/types/runtime';
 import Form from '$lib/components/Form.svelte';
 
+
 export function createComponent(
-  Component: typeof SvelteComponentTyped,
+  Component: typeof SvelteComponent,
   props: any,
   target?: HTMLElement,
-  child?: SvelteComponentTyped
+  child?: typeof SvelteComponent
 ): Pick<
-  RenderResult<SvelteComponentTyped>,
+  RenderResult<SvelteComponent>,
   'component' | 'container' | 'rerender' | 'unmount' | 'debug'
 > & {
   onChange: SpyInstance;
@@ -41,8 +42,8 @@ export function createComponent(
   });
 
   return {
-    component: component,
-    container: container,
+    component,
+    container,
     onChange,
     onError,
     onSubmit,
@@ -52,7 +53,11 @@ export function createComponent(
   };
 }
 
-export function createFormComponent<T, U = any>(props: object, target?: HTMLElement, slot?: SvelteComponentTyped) {
+export function createFormComponent<T, U = any>(
+  props: object,
+  target?: HTMLElement,
+  slot?: typeof SvelteComponent
+) {
   return createComponent(Form, props, target, slot);
 }
 

@@ -539,7 +539,7 @@ const MAYBE_SCHEMA_LIKE = ['if', 'then', 'else', 'not'];
 
 /**
  * Copies default values over for $ref values to ensure ajv's useDefaults option works predictably.
- * 
+ *
  * @param root JSONSchemaType
  * @param sub JSONSchemaType
  * @returns JSONSchemaType
@@ -1340,7 +1340,6 @@ export function getProps<T>(
     schema,
     widget: ctx
   };
-
 
   props.widget.required = !Array.isArray(schema.type) || false;
   const fromWidget = widgetProps(schema);

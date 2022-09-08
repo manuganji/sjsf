@@ -11,86 +11,41 @@ describe('Number input', () => {
     cleanup();
   });
 
-  it('should use step to represent the multipleOf keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't1',
-        schema: {
-          type: 'number',
-          multipleOf: 5
-        }
-      }
+  const attributeCases = [
+    {
+      schema: {
+        type: 'number',
+        multipleOf: 5
+      },
+      attr: 'step',
+      value: '5'
+    },
+    {
+      schema: {
+        type: 'number',
+        minimum: 0
+      },
+      attr: 'min',
+      value: '0'
+    },
+    {
+      schema: {
+        type: 'number',
+        maximum: 100
+      },
+      attr: 'max',
+      value: '100'
+    }
+  ];
+
+  attributeCases.forEach(function (value, index) {
+    it(`case ${index} ${JSON.stringify(value.schema)}, ${value.attr}: ${value.value}`, () => {
+      const { container } = createFormComponent({
+        schema: value.schema
+      });
+      expect(container.querySelectorAll(`input`)!).toHaveLength(1);
+      expect(container.querySelector(`input`)!.getAttribute(value.attr)).to.eql(value.value);
     });
-    expect(container.querySelector('#t1 input')!.getAttribute('step')).to.eql('5');
-  });
-
-  it('should use min to represent the minimum keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't2',
-        schema: {
-          type: 'number',
-          minimum: 0
-        }
-      }
-    });
-
-    expect(container.querySelector('#t2 input')!.getAttribute('min')).to.eql('0');
-  });
-
-  it('should use max to represent the maximum keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't3',
-        schema: {
-          type: 'number',
-          maximum: 100
-        }
-      }
-    });
-
-    expect(container.querySelector('#t3 input')!.getAttribute('max')).to.eql('100');
-  });
-
-  it('should use step to represent the multipleOf keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't4',
-        schema: {
-          type: 'number',
-          multipleOf: 5
-        }
-      }
-    });
-
-    expect(container.querySelector('#t4 input')!.getAttribute('step')).to.eql('5');
-  });
-
-  it('should use min to represent the minimum keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't5',
-        schema: {
-          type: 'number',
-          minimum: 0
-        }
-      }
-    });
-    expect(container.querySelector('#t5 input')!.getAttribute('min')).to.eql('0');
-  });
-
-  it('should use max to represent the maximum keyword', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 't6',
-        schema: {
-          type: 'number',
-          maximum: 100
-        }
-      }
-    });
-
-    expect(container.querySelector('#t6 input')!.getAttribute('max')).to.eql('100');
   });
 
   it('should render a string field with a label', () => {
@@ -98,7 +53,7 @@ describe('Number input', () => {
       type: 'number',
       title: 'foo'
     };
-    const { container, rerender, debug } = render(Form, {
+    const { container, rerender } = render(Form, {
       props: {
         id: 'b1',
         schema
@@ -406,19 +361,20 @@ describe('Should handle a float/undefined multipleOf incase of an integer schema
     [-1, 1],
     [undefined, 1]
   ];
-  let idPrefix = 'f';
+
+  beforeEach(() => {
+    cleanup();
+  });
+
   cases.forEach(function (item, index) {
     it(`${Array.isArray(item) ? item[0] : item}`, () => {
-      const { container } = render(Form, {
-        props: {
-          id: `${idPrefix}${index}`,
-          schema: {
-            type: 'integer',
-            multipleOf: Array.isArray(item) ? item[0] : item
-          }
+      const { container } = createFormComponent({
+        schema: {
+          type: 'integer',
+          multipleOf: Array.isArray(item) ? item[0] : item
         }
       });
-      expect(container.querySelector(`#${idPrefix}${index} input`)!.getAttribute('step')).to.eql(
+      expect(container.querySelector(`input`)!.getAttribute('step')).to.eql(
         Math.round(Array.isArray(item) ? item[1] : item).toString()
       );
     });
@@ -435,26 +391,26 @@ describe('Should handle a float/undefined multipleOf for a number schema', () =>
     [undefined, null]
   ];
 
-  let idPrefix = 'g';
+  beforeEach(() => {
+    cleanup();
+  });
+
   cases.forEach(function (item, index) {
     it(`${Array.isArray(item) ? item[0] : item}`, () => {
-      const { container } = render(Form, {
-        props: {
-          id: `${idPrefix}${index}`,
-          schema: {
-            type: 'number',
-            multipleOf: Array.isArray(item) ? item[0] : item
-          }
+      const { container } = createFormComponent({
+        schema: {
+          type: 'number',
+          multipleOf: Array.isArray(item) ? item[0] : item
         }
       });
-      expect(container.querySelector(`#${idPrefix}${index} input`)!.getAttribute('step')).to.eql(
+      expect(container.querySelector(`input`)!.getAttribute('step')).to.eql(
         Array.isArray(item) ? (item[1] ? item[1].toString() : item[1]) : item.toString()
       );
     });
   });
 });
 
-describe('SelectWidget', () => {
+describe('With enum', () => {
   it('should render a number field', () => {
     const { container } = createFormComponent({
       schema: {
@@ -463,7 +419,7 @@ describe('SelectWidget', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field select')).toHaveLength(1);
+    expect(container.querySelectorAll('select')).toHaveLength(1);
   });
 
   it('should infer the value from an enum on change', () => {

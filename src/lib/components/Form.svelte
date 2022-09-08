@@ -19,7 +19,7 @@
   export let id: string = 'sjsf';
   export let idPrefix: string = 'sjsf';
   export let idSeparator: string = '.';
-  export let value: object | string | boolean | number | null;
+  export let value: object | string | boolean | number | null = null;
   const { ctx, ...rest } = schema;
   export let getProps = defGetProps;
   export let getComponent = defGetComponent;
