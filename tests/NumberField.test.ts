@@ -84,18 +84,17 @@ describe('Number input', () => {
     expect(container.querySelector('#b2 input + .description')!.textContent).eql('bar');
   });
 
-  it('formData should default to undefined', () => {
-    const { container } = render(Form, {
-      props: {
-        id: 'b2',
+  it('value should default to undefined', async () => {
+    const { container, onSubmit } = createFormComponent(
+      {
         schema: { type: 'number' }
-      }
-    });
+      },
+      true
+    );
 
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: undefined
-    });
+    await submitForm(container.querySelector('form')!);
+    expect(container.querySelector('input')?.value).to.eq('');
+    expect(onSubmit).toHaveBeenCalledOnce();
   });
 
   it('should assign a default value', () => {
@@ -106,23 +105,7 @@ describe('Number input', () => {
       }
     });
 
-    expect(container.querySelector('.field input')!.value).eql('2');
-  });
-
-  it('should handle a change event', () => {
-    const { container: container, onChange } = createFormComponent({
-      schema: {
-        type: 'number'
-      }
-    });
-
-    fireEvent.change(container.querySelector('input')!, {
-      target: { value: '2' }
-    });
-
-    expect(onChange.mock.lastCall).toEqual({
-      formData: 2
-    });
+    expect(container.querySelector('input')!.value).eql('2');
   });
 
   it('should handle a blur event', async () => {
@@ -160,86 +143,18 @@ describe('Number input', () => {
     });
 
     expect(onFocus).toHaveBeenCalledOnce();
-    expect(onFocus).lastCalledWith('')
+    expect(onFocus).lastCalledWith('');
   });
 
-  it('should fill field with data', () => {
+  it('should fill field with value', () => {
     const { container } = createFormComponent({
       schema: {
         type: 'number'
       },
-      formData: 2
+      value: 2
     });
 
-    expect(container.querySelector('.field input')!.value).eql('2');
-  });
-
-  describe('when inputting a number that ends with a dot and/or zero it should normalize it, without changing the input value', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'number'
-      }
-    });
-
-    const $input = container.querySelector('input')!;
-
-    const tests = [
-      {
-        input: '2.',
-        output: 2
-      },
-      {
-        input: '2.0',
-        output: 2
-      },
-      {
-        input: '2.3',
-        output: 2.3
-      },
-      {
-        input: '2.30',
-        output: 2.3
-      },
-      {
-        input: '2.300',
-        output: 2.3
-      },
-      {
-        input: '2.3001',
-        output: 2.3001
-      },
-      {
-        input: '2.03',
-        output: 2.03
-      },
-      {
-        input: '2.003',
-        output: 2.003
-      },
-      {
-        input: '2.00300',
-        output: 2.003
-      },
-      {
-        input: '200300',
-        output: 200300
-      }
-    ];
-
-    tests.forEach((test) => {
-      it(`should work with an input value of ${test.input}`, () => {
-        fireEvent.change($input, {
-          target: { value: test.input }
-        });
-
-        expect(onChange.mock.lastCall).toEqual({
-          formData: test.output
-        });
-        // "2." is not really a valid number in a input field of type number
-        // so we need to use getAttribute("value") instead since .value outputs the empty string
-        expect($input.getAttribute('value')).eql(test.input);
-      });
-    });
+    expect(container.querySelector('input')!.value).eql('2');
   });
 
   it('should normalize values beginning with a decimal point', () => {
@@ -297,7 +212,7 @@ describe('Number input', () => {
     expect(container.querySelector('input')!.id).eql('root');
   });
 
-  it('should render with trailing zeroes', () => {
+  it('should render with trailing zeroes', async () => {
     const { container } = createFormComponent({
       schema: {
         type: 'number'
@@ -309,22 +224,22 @@ describe('Number input', () => {
     });
     // "2." is not really a valid number in a input field of type number
     // so we need to use getAttribute("value") instead since .value outputs the empty string
-    expect(container.querySelector('.field input')!.getAttribute('value')).eql('2.');
+    expect(container.querySelector('input')!.value).eql('2.');
 
     fireEvent.change(container.querySelector('input')!, {
       target: { value: '2.0' }
     });
-    expect(container.querySelector('.field input')!.value).eql('2.0');
+    expect(container.querySelector('input')!.value).eql('2.0');
 
     fireEvent.change(container.querySelector('input')!, {
       target: { value: '2.00' }
     });
-    expect(container.querySelector('.field input')!.value).eql('2.00');
+    expect(container.querySelector('input')!.value).eql('2.00');
 
     fireEvent.change(container.querySelector('input')!, {
       target: { value: '2.000' }
     });
-    expect(container.querySelector('.field input')!.value).eql('2.000');
+    expect(container.querySelector('input')!.value).eql('2.000');
   });
 
   it('should allow a zero to be input', () => {
@@ -337,7 +252,7 @@ describe('Number input', () => {
     fireEvent.change(container.querySelector('input')!, {
       target: { value: '0' }
     });
-    expect(container.querySelector('.field input')!.value).eql('0');
+    expect(container.querySelector('input')!.value).eql('0');
   });
 
   // it('should render customized StringField', () => {
