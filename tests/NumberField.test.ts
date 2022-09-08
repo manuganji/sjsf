@@ -5,6 +5,7 @@ import { fireEvent } from '@testing-library/dom';
 import { cleanup, render, type RenderResult } from '@testing-library/svelte';
 import type { SvelteComponent } from 'svelte';
 import Form from '$lib/components/Form.svelte';
+import { omit } from 'lodash-es';
 
 describe('Number input', () => {
   beforeEach(() => {
@@ -411,35 +412,59 @@ describe('Should handle a float/undefined multipleOf for a number schema', () =>
 });
 
 describe('With enum', () => {
+  beforeEach(() => {
+    cleanup();
+  });
+
   it('should render a number field', () => {
-    const { container } = createFormComponent({
+    const { container, debug } = createFormComponent({
       schema: {
         type: 'number',
         enum: [1, 2]
       }
     });
-
     expect(container.querySelectorAll('select')).toHaveLength(1);
   });
 
-  it('should infer the value from an enum on change', () => {
-    const spy = vi.fn();
+  it('should set required', () => {
+    const { container, rerender } = createFormComponent({
+      schema: {
+        title: 'foo',
+        type: 'number',
+        enum: [1, 2]
+      }
+    });
+    expect(container.querySelector('label')!.textContent).eq('foo*');
+    expect(container.querySelector('select')!.required).to.equal(true);
+
+    rerender({
+      schema: {
+        title: 'foo',
+        type: ['number', 'null'],
+        enum: [1, 2]
+      }
+    });
+    expect(container.querySelector('label')!.textContent).eq('foo');
+    expect(container.querySelector('select')!.required).to.equal(false);
+  });
+
+  it('should infer the value from an enum on change', async () => {
+    let value;
     const { container } = createFormComponent({
+      type: 'number',
       schema: {
         enum: [1, 2]
       },
-      onChange: spy
+      value
     });
 
-    expect(container.querySelectorAll('.field select')).toHaveLength(1);
-    const $select = container.querySelector('.field select')!;
-    expect($select.value).eql('');
+    expect(container.querySelectorAll('select')).toHaveLength(1);
+    expect(value).to.eql(undefined);
 
-    fireEvent.change(container.querySelector('.field select')!, {
-      target: { value: '1' }
+    await fireEvent.change(container.querySelector('select')!, {
+      target: { value: 2 }
     });
-    expect($select.value).eql('1');
-    expect(spy.mock.lastCall!['formData']).eql(1);
+    expect(container.querySelector('select')!.value).to.eq('2');
   });
 
   it('should render a string field with a label', () => {
@@ -451,35 +476,18 @@ describe('With enum', () => {
       }
     });
 
-    expect(container.querySelector('.field label')!.textContent).eql('foo');
+    expect(container.querySelector('label')!.textContent).eql('foo*');
   });
 
   it('should assign a default value', () => {
-    const { onChange } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'number',
         enum: [1, 2],
         default: 1
-      },
-      noValidate: true
-    });
-
-    expect(onChange.mock.lastCall).toEqual({ formData: 1 });
-  });
-
-  it('should handle a change event', () => {
-    const { container: container, onChange } = createFormComponent({
-      schema: {
-        type: 'number',
-        enum: [1, 2]
       }
     });
-
-    fireEvent.change(container.querySelector('select')!, {
-      target: { value: '2' }
-    });
-
-    expect(onChange.mock.lastCall).toEqual({ formData: 2 });
+    expect(container.querySelector('select')!.value).to.eql('1');
   });
 
   it('should fill field with data', () => {
@@ -494,18 +502,7 @@ describe('With enum', () => {
     expect(onSubmit.mock.lastCall).toEqual({ formData: 2 });
   });
 
-  it('should render the widget with the expected id', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'number',
-        enum: [1, 2]
-      }
-    });
-
-    expect(container.querySelector('select')!.id).eql('root');
-  });
-
-  it('should render a select element with a blank option, when default value is not set.', () => {
+  it('should render a select element with a blank option, when not required.', () => {
     const schema = {
       type: 'object',
       properties: {
@@ -513,10 +510,11 @@ describe('With enum', () => {
           type: 'number',
           enum: [0]
         }
-      }
+      },
+      required: []
     };
 
-    const { container } = createFormComponent({
+    const { container, rerender } = createFormComponent({
       schema
     });
 
@@ -528,7 +526,30 @@ describe('With enum', () => {
     expect(options[0].innerHTML).eql('');
   });
 
-  it('should render a select element without a blank option, if a default value is set.', () => {
+  it('should render a select element with a blank option, when no required attribute is present', () => {
+    const schema = {
+      type: 'object',
+      properties: {
+        foo: {
+          type: 'number',
+          enum: [0]
+        }
+      }
+    };
+
+    const { container, rerender } = createFormComponent({
+      schema
+    });
+
+    const selects = container.querySelectorAll('select');
+    expect(selects[0].value).eql('');
+
+    const options = container.querySelectorAll('option');
+    expect(options.length).eql(2);
+    expect(options[0].innerHTML).eql('');
+  });
+
+  it('should render a select element without a blank option, if required.', async () => {
     const schema = {
       type: 'object',
       properties: {
@@ -537,22 +558,22 @@ describe('With enum', () => {
           enum: [2],
           default: 2
         }
-      }
+      },
+      required: ['foo']
     };
 
-    const { container } = createFormComponent({
+    const { container, debug } = await createFormComponent({
       schema
     });
 
     const selects = container.querySelectorAll('select');
-    expect(selects[0].value).eql('2');
-
+    expect(selects).toHaveLength(1);
     const options = container.querySelectorAll('option');
     expect(options.length).eql(1);
     expect(options[0].innerHTML).eql('2');
   });
 
-  it('should render a select element without a blank option, if the default value is 0.', () => {
+  it('should render a select element without a blank option, if the default value is 0.', async () => {
     const schema = {
       type: 'object',
       properties: {

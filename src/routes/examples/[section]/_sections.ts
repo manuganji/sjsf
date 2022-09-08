@@ -130,6 +130,14 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
       maximum: 10
     },
     {
+      type: 'integer',
+      enum: [1,2,5],
+      title: 'Integer min max',
+      default: 1,
+      minimum: 0,
+      maximum: 10
+    },
+    {
       type: 'object',
       title: 'Integer',
       properties: {

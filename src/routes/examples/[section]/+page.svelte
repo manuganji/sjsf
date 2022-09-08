@@ -1,12 +1,24 @@
 <script lang="ts" context="module">
   import Form from '$lib/components/Form.svelte';
+  import { differentiatedSchemaType } from '$lib/utils';
   import type { PageData } from './$types';
 </script>
 
 <script lang="ts">
   export let data: PageData;
   const { examples } = data;
-  let value: Array<any> = [];
+  let value: Array<any> = new Array(examples.length).map((_, index) => {
+    switch (differentiatedSchemaType(examples[index])) {
+      case 'object':
+        return {};
+      case 'array':
+        return [];
+      default:
+        return undefined;
+    }
+  });
+  
+  console.log(value);
 </script>
 
 {#each examples as schema, index}

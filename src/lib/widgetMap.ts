@@ -32,6 +32,7 @@ export const BY_STRING_FORMAT: Record<string, typeof SvelteComponent> = {
   // color: 'ColorWidget',
   // file: 'FileWidget'
 };
+
 export const BY_SCHEMA_TYPE: Record<JSONSchema7TypeName, typeof SvelteComponent> = {
   integer: InputField,
   number: InputField,

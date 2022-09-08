@@ -1,6 +1,8 @@
 <script lang="ts" context="module">
   import type { JSONSchemaType } from '$lib/types';
   import type { ArrayKeyGetter, GetComponent, GetProps } from '$lib/utils';
+  import { has, omit } from 'lodash-es';
+  import { onMount } from 'svelte';
   import Layout from '../Layout.svelte';
 </script>
 
@@ -12,10 +14,24 @@
   export let value: Record<keyof typeof schema.properties, any> = Object.fromEntries(
     Object.entries(schema.properties).map(([key, prop]) => [key, null])
   );
+  let required: Set<string> | null;
+  $: {
+    console.log(schema);
+    required = 'required' in schema ? new Set(schema.required) : null;
+  }
+
   export let errors: Error[];
   export let widget: ReturnType<typeof getProps>['widget'];
   const id = widget.id;
   let order: Array<string> = widget.order;
+
+  onMount(function () {
+    for (let key in schema.properties) {
+      if (value && !(key in value)) {
+        value[key] = 'default' in schema.properties[key] ? schema.properties[key].default : null;
+      }
+    }
+  });
 </script>
 
 <!-- errors={errors && errors[key]} -->
@@ -27,7 +43,8 @@
       {getComponent}
       {arrayKeyGetter}
       {...getProps(schema.properties[key], {
-        ...widget,
+        ...omit(widget, 'order'),
+        required: required ? required.has(key) : false,
         propKey: `${widget.propKey ? [widget.propKey, key].join('.') : key}`,
         id: `${id}${widget.idSeparator}${key}`
       })}

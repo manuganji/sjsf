@@ -2,8 +2,6 @@
   import type { GetProps } from '$lib/utils'
   import Layout from '$lib/components/Layout.svelte';
   import type { JSONSchemaType } from '$lib/types';
-  import { colors } from '@unocss/preset-wind';
-  colors;
 </script>
 
 <script lang="ts">

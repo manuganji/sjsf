@@ -4,6 +4,7 @@ import type { JSONSchemaType, JSONTypes } from '$lib/types';
 import InputField from '$lib/components/fields/InputField.svelte';
 import * as propsMap from './propsMap';
 import * as widgetMap from './widgetMap';
+import EnumField from './components/fields/EnumField.svelte';
 import get from 'lodash-es/get';
 import memoize from 'lodash-es/memoize';
 import type { JSONSchema7TypeName } from 'json-schema';
@@ -27,29 +28,6 @@ export const ADDITIONAL_PROPERTY_FLAG = '__additional_property';
 //   }
 //   return true;
 // }
-
-/* Gets the type of a given schema. */
-export function getSchemaType(schema: JSONSchemaType<JSONTypes>) {
-  let { type } = schema;
-
-  if (!type && schema.const) {
-    return guessType(schema.const);
-  }
-
-  if (!type && schema.enum) {
-    return 'string';
-  }
-
-  if (!type && (schema.properties || schema.additionalProperties)) {
-    return 'object';
-  }
-
-  if (type instanceof Array && type.length === 2) {
-    return type.find((type) => type !== 'null');
-  }
-
-  return type;
-}
 
 // export function getWidget(schema, widget, registeredWidgets = {}) {
 //   const type = getSchemaType(schema);
@@ -1263,6 +1241,9 @@ export function getComponent<T = JSONSchema7TypeName>(
   schema: JSONSchemaType,
   propKey: string = ''
 ) {
+  if ('enum' in schema) {
+    return EnumField;
+  }
   const dtype = differentiatedSchemaType(schema.type) || 'string';
   if (Object.hasOwn(schema, 'widget')) {
     return get(
@@ -1338,20 +1319,27 @@ export function getProps<T>(
 ) {
   let props = {
     schema,
-    widget: ctx
+    widget: {
+      ...ctx
+    }
   };
 
-  props.widget.required = !Array.isArray(schema.type) || false;
-  const fromWidget = widgetProps(schema);
-
-  if (differentiatedSchemaType(schema.type) == 'object') {
-    props.widget.order = Object.keys(schema.properties);
+  if (!('required' in props.widget)) {
+    props.widget.required = !Array.isArray(schema.type) || false;
   }
 
-  props.widget = {
-    ...props.widget,
-    ...fromWidget
-  };
+  if (!('enum' in schema)) {
+    const fromWidget = widgetProps(schema);
+
+    if (differentiatedSchemaType(schema.type) == 'object') {
+      props.widget.order = Object.keys(schema.properties);
+    }
+
+    props.widget = {
+      ...props.widget,
+      ...fromWidget
+    };
+  }
 
   return props;
 }

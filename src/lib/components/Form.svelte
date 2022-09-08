@@ -4,6 +4,7 @@
     getProps as defGetProps,
     arrayKeyGetter as defArrayKeyGetter
   } from '$lib/utils';
+  import { onMount } from 'svelte';
   import type { JSONSchemaType, JSONTypes } from '$lib/types';
   import Ajv from 'ajv';
 </script>
@@ -19,7 +20,14 @@
   export let id: string = 'sjsf';
   export let idPrefix: string = 'sjsf';
   export let idSeparator: string = '.';
-  export let value: object | string | boolean | number | null = null;
+  export let value: any;
+  
+  onMount(function () {
+    if (typeof value == 'undefined' && 'default' in schema) {
+      value = schema.default
+    }
+  });
+  
   const { ctx, ...rest } = schema;
   export let getProps = defGetProps;
   export let getComponent = defGetComponent;
