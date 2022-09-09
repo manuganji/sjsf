@@ -15,13 +15,14 @@
   export let errors: Array<Error> | null = null;
 
   const commonInputClass = 'dark:bg-warmGray-7 dark:text-warmGray-2 p-2 rounded-sm shadow-inset';
-
+  const inputId = `${widget.id}input`;
   // export const onChange = ;
 </script>
 
 <Layout {schema} id={widget.id} required={widget.required}>
   {#if widget['type'] == 'number'}
     <input
+      id={inputId}
       class={`${commonInputClass}`}
       name={`${widget.propKey}`}
       required={widget.required}
@@ -36,6 +37,7 @@
   {/if}
   {#if widget['type'] == 'text'}
     <input
+      id={inputId}
       class={`${commonInputClass}`}
       name={`${widget.propKey}`}
       type="text"
@@ -47,6 +49,7 @@
   {/if}
   {#if widget['type'] == 'checkbox'}
     <input
+      id={inputId}
       class={`${commonInputClass}`}
       name={`${widget.propKey}`}
       type="checkbox"

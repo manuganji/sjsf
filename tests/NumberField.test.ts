@@ -1,6 +1,6 @@
 // import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 
-import { createFormComponent, submitForm } from './test_utils';
+import { changeValue, createFormComponent, submitForm } from './test_utils';
 import { fireEvent } from '@testing-library/dom';
 import { cleanup, render, type RenderResult } from '@testing-library/svelte';
 import type { SvelteComponent } from 'svelte';
@@ -157,8 +157,8 @@ describe('Number input', () => {
     expect(container.querySelector('input')!.value).eql('2');
   });
 
-  it('should normalize values beginning with a decimal point', () => {
-    const { container: container, onChange } = createFormComponent({
+  it('should normalize values beginning with a decimal point', async () => {
+    const { container: container } = createFormComponent({
       schema: {
         type: 'number'
       }
@@ -166,40 +166,29 @@ describe('Number input', () => {
 
     const $input = container.querySelector('input')!;
 
-    fireEvent.change($input, {
-      target: { value: '.00' }
-    });
+    await changeValue($input, '.00');
 
-    expect(onChange.mock.lastCall).toEqual({
-      formData: 0
-    });
-    expect($input.value).eql('.00');
+    expect(container.querySelector('input')!.value).eql('.00');
   });
 
-  it('should update input values correctly when formData prop changes', () => {
+  it('should update input value correctly when prop changes', () => {
     const schema = {
       type: 'number'
     };
 
-    const {
-      component: comp,
-      container: container,
-      rerender
-    } = createFormComponent({
+    const { component, container, rerender, debug } = createFormComponent({
       schema,
-      formData: 2.03
+      value: 2.03
     });
 
-    const $input = container.querySelector('input')!;
-
-    expect($input.value).eql('2.03');
+    expect(container.querySelector('input')!.value).eql('2.03');
 
     rerender({
       schema,
-      formData: 203
+      value: 203
     });
 
-    expect($input.value).eql('203');
+    expect(container.querySelector('input')!.value).eql('203');
   });
 
   it('should render the widget with the expected id', () => {
@@ -209,7 +198,7 @@ describe('Number input', () => {
       }
     });
 
-    expect(container.querySelector('input')!.id).eql('root');
+    expect(container.querySelector('input')!.id).eql('input');
   });
 
   it('should render with trailing zeroes', async () => {
@@ -219,27 +208,13 @@ describe('Number input', () => {
       }
     });
 
-    fireEvent.change(container.querySelector('input')!, {
-      target: { value: '2.' }
-    });
-    // "2." is not really a valid number in a input field of type number
-    // so we need to use getAttribute("value") instead since .value outputs the empty string
-    expect(container.querySelector('input')!.value).eql('2.');
+    const node = container.querySelector('input')!;
 
-    fireEvent.change(container.querySelector('input')!, {
-      target: { value: '2.0' }
-    });
-    expect(container.querySelector('input')!.value).eql('2.0');
+    await changeValue(node, '2.0');
+    expect(node.value).eql('2.0');
 
-    fireEvent.change(container.querySelector('input')!, {
-      target: { value: '2.00' }
-    });
-    expect(container.querySelector('input')!.value).eql('2.00');
-
-    fireEvent.change(container.querySelector('input')!, {
-      target: { value: '2.000' }
-    });
-    expect(container.querySelector('input')!.value).eql('2.000');
+    await changeValue(node, '2.00');
+    expect(node.value).eql('2.00');
   });
 
   it('should allow a zero to be input', () => {
@@ -254,22 +229,6 @@ describe('Number input', () => {
     });
     expect(container.querySelector('input')!.value).eql('0');
   });
-
-  // it('should render customized StringField', () => {
-  //   const CustomStringField = () => <div id="custom" />;
-
-  //   const { container } = createFormComponent({
-  //     schema: {
-  //       type: 'number'
-  //     },
-  //     uiSchema,
-  //     fields: {
-  //       StringField: CustomStringField
-  //     }
-  //   });
-
-  //   expect(container.querySelector('#custom')).to.exist;
-  // });
 });
 
 describe('Should handle a float/undefined multipleOf incase of an integer schema', () => {

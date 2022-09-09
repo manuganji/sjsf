@@ -62,3 +62,13 @@ export async function submitForm(node: Element) {
     fireEvent.submit(node);
   });
 }
+
+export async function changeValue(node: Element, value: any) {
+  return await act(() => {
+    fireEvent.change(node, {
+      target: {
+        value
+      }
+    });
+  });
+}

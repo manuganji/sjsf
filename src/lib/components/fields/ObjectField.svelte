@@ -16,7 +16,6 @@
   );
   let required: Set<string> | null;
   $: {
-    console.log(schema);
     required = 'required' in schema ? new Set(schema.required) : null;
   }
 

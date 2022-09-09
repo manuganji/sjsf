@@ -3,7 +3,7 @@
   export let id: string = '';
   export let name: string = '';
   export let errors: Error[] | null = null;
-  export let schema: JSONSchemaType<JSONTypes>;
+  export let schema: JSONSchemaType;
   export let required: boolean = false;
 </script>
 
