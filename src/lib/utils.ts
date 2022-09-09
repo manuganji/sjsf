@@ -1251,7 +1251,7 @@ export function getComponent<T = JSONSchema7TypeName>(
       `${dtype}.${schema.widget!}`,
       get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField)
     );
-  } else if (dtype == 'string' && Object.hasOwn(schema, 'format')) {
+  } else if (dtype == 'string' && 'format' in schema) {
     return get(widgetMap.BY_STRING_FORMAT, schema.format!, InputField);
   } else {
     return get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField);

@@ -14,7 +14,7 @@ export const BY_WIDGET_CODE: Partial<
 export const BY_STRING_FORMAT: Record<string, typeof SvelteComponent> = {
   // text: 'TextWidget',
   // password: 'PasswordWidget',
-  // email: 'EmailWidget',
+  // email: InputField,
   // hostname: 'TextWidget',
   // ipv4: 'TextWidget',
   // ipv6: 'TextWidget',

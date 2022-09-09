@@ -4,11 +4,21 @@ export const BY_WIDGET_CODE: Record<string, Record<string, any>> = {
   string: {
     color: {
       type: 'color'
+    },
+    email: {
+      type: 'email'
     }
   }
 };
 
-export const BY_STRING_FORMAT: Record<string, Record<string, any>> = {};
+export const BY_STRING_FORMAT: Record<string, Record<string, any>> = {
+  color: {
+    type: 'color'
+  },
+  email: {
+    type: 'email'
+  }
+};
 
 export const BY_SCHEMA_TYPE: Record<string, Record<string, any>> = {
   string: {
