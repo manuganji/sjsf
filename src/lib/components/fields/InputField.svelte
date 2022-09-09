@@ -19,7 +19,7 @@
     ...('default' in schema ? [schema.default] : []),
     ...('examples' in schema
       ? 'default' in schema
-        ? schema.examples.filter((i:any) => i !== schema.default)
+        ? schema.examples.filter((i: any) => i !== schema.default)
         : schema.examples
       : [])
   ];
@@ -43,8 +43,7 @@
       on:blur={widget.onBlur}
       on:focus={widget.onFocus}
     />
-  {/if}
-  {#if widget['type'] == 'text'}
+  {:else if widget['type'] == 'text'}
     <input
       id={inputId}
       class={`${commonInputClass}`}
@@ -55,6 +54,8 @@
       on:blur={widget.onBlur}
       on:focus={widget.onFocus}
       list={'examples' in schema ? `${inputId}examples` : undefined}
+      placeholder={widget?.placeholder}
+      autocomplete={widget?.autocomplete}
     />
     {#if 'examples' in schema}
       <datalist id={`${inputId}examples`}>
@@ -63,8 +64,7 @@
         {/each}
       </datalist>
     {/if}
-  {/if}
-  {#if widget['type'] == 'checkbox'}
+  {:else if widget['type'] == 'checkbox'}
     <input
       id={inputId}
       class={`${commonInputClass}`}

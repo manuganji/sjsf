@@ -1312,6 +1312,8 @@ export function getProps<T>(
     [key: string]: any;
     onBlur?: (arg0: string) => void;
     onFocus?: (arg0: string) => void;
+    placeholder?: string;
+    autocomplete?: string;
   } = {
     propKey: '',
     id: '',

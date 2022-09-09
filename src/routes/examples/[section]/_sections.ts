@@ -46,6 +46,29 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
   string: [
     {
       type: 'string',
+      enum: ['foo', 'bar'],
+      default: 'bar'
+    },
+    {
+      type: 'string',
+      enum: ['foo', 'bar']
+    },
+    {
+      type: ['string', 'null'],
+      enum: ['foo', 'bar'],
+      ctx: {
+        placeholder: 'Test'
+      }
+    },
+    {
+      type: 'string',
+      enum: ['foo', 'bar'],
+      ctx: {
+        placeholder: 'Test'
+      }
+    },
+    {
+      type: 'string',
       description: 'This is a string field',
       examples: ['one', 'two', 'three']
     },
@@ -136,7 +159,7 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
     },
     {
       type: 'integer',
-      enum: [1,2,5],
+      enum: [1, 2, 5],
       title: 'Integer min max',
       default: 1,
       minimum: 0,

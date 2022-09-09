@@ -2,7 +2,7 @@ import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 
 // import { parseDateString, toDateString, utcToLocal } from '../src/utils';
 import { blurNode, changeValue, createFormComponent, focusNode, submitForm } from './test_utils';
-import { cleanup } from '@testing-library/svelte';
+import { act, cleanup, fireEvent } from '@testing-library/svelte';
 
 describe('StringField', () => {
   beforeEach(() => {
@@ -147,50 +147,16 @@ describe('StringField', () => {
       expect(onFocus).toHaveBeenCalledWith('');
     });
 
-    it('should handle an empty string change event', () => {
-      const { container, onChange } = createFormComponent({
-        schema: { type: 'string' },
-        formData: 'x'
-      });
-
-      fireEvent.change(container.querySelector('input')!, {
-        target: { value: '' }
-      });
-
-      expect(onChange.mock.lastCall).toEqual({ formData: undefined });
-    });
-
-    it('should handle an empty string change event with custom ui:emptyValue', () => {
-      const { container, onChange } = createFormComponent({
-        schema: { type: 'string' },
-        uiSchema: { 'ui:emptyValue': 'default' },
-        formData: 'x'
-      });
-
-      fireEvent.change(container.querySelector('input')!, {
-        target: { value: '' }
-      });
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: 'default'
-      });
-    });
-
-    it('should handle an empty string change event with defaults set', () => {
-      const { container, onChange } = createFormComponent({
+    it('should handle an empty string change event with defaults set', async () => {
+      const { container } = createFormComponent({
         schema: {
           type: 'string',
           default: 'a'
         }
       });
 
-      fireEvent.change(container.querySelector('input')!, {
-        target: { value: '' }
-      });
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: undefined
-      });
+      await changeValue(container.querySelector('input')!, '');
+      expect(container.querySelector('input')!.value).toEqual('');
     });
 
     it('should fill field with data', () => {
@@ -198,20 +164,10 @@ describe('StringField', () => {
         schema: {
           type: 'string'
         },
-        formData: 'plip'
+        value: 'plip'
       });
 
-      expect(container.querySelector('.field input').value).eql('plip');
-    });
-
-    it('should render the widget with the expected id', () => {
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string'
-        }
-      });
-
-      expect(container.querySelector('input[type=text]').id).eql('root');
+      expect(container.querySelector('input')?.value).eql('plip');
     });
 
     it('should render customized TextWidget', () => {
@@ -227,11 +183,21 @@ describe('StringField', () => {
       expect(container.querySelector('#custom')).to.exist;
     });
 
+    it('should set placeholder if present', () => {
+      const { container } = createFormComponent({
+        schema: {
+          type: 'string',
+          ctx: {
+            placeholder: 'foo'
+          }
+        }
+      });
+
+      expect(container.querySelector('input')?.getAttribute('placeholder')).eql('foo');
+    });
     it('should create and set autocomplete attribute', () => {
       const { container } = createFormComponent({
-        schema: { type: 'string' },
-        uiSchema: { 'ui:autocomplete': 'family-name' },
-        formData: undefined
+        schema: { type: 'string', ctx: { autocomplete: 'family-name' } }
       });
 
       expect(container.querySelector('input')!.getAttribute('autocomplete')).eql('family-name');
@@ -247,7 +213,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength(1);
+      expect(container.querySelectorAll('select')).toHaveLength(1);
     });
 
     it('should render a string field for an enum without a type', () => {
@@ -257,7 +223,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength(1);
+      expect(container.querySelectorAll('select')).toHaveLength(1);
     });
 
     it('should render a string field with a label', () => {
@@ -269,114 +235,99 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('label')?.textContent).eql('foo*');
     });
 
-    it('should render empty option', () => {
+    it('should render an unselectable placeholder', () => {
       const { container } = createFormComponent({
         schema: {
           type: 'string',
-          enum: ['foo', 'bar']
-        }
-      });
-
-      expect(container.querySelectorAll('.field option')[0].value).eql('');
-    });
-
-    it('should render empty option with placeholder text', () => {
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string',
-          enum: ['foo', 'bar']
-        },
-        uiSchema: {
-          'ui:options': {
+          enum: ['foo', 'bar'],
+          ctx: {
             placeholder: 'Test'
           }
         }
       });
 
-      expect(container.querySelectorAll('.field option')[0].textContent).eql('Test');
+      expect(container.querySelectorAll('option')).toHaveLength(3);
+      expect(container.querySelector('option')).to.have.property('hidden', true);
     });
 
-    it('should assign a default value', () => {
-      const { container, onSubmit } = createFormComponent({
+    it("shouldn't render empty option", () => {
+      const { container } = createFormComponent({
+        schema: {
+          type: 'string',
+          enum: ['foo', 'bar']
+        }
+      });
+
+      expect(container.querySelectorAll('option')).toHaveLength(2);
+    });
+
+    it('should render empty option', () => {
+      const { container } = createFormComponent({
+        schema: {
+          type: ['string', 'null'],
+          enum: ['foo', 'bar']
+        }
+      });
+
+      expect(container.querySelectorAll('option')[0].value).to.eq('null');
+      expect(container.querySelectorAll('option')).toHaveLength(3);
+    });
+
+    it('should render empty option with placeholder text', () => {
+      const { container } = createFormComponent({
+        schema: {
+          type: ['string', 'null'],
+          enum: ['foo', 'bar'],
+          ctx: {
+            placeholder: 'Test'
+          }
+        }
+      });
+
+      expect(container.querySelectorAll('option')[0].textContent).eql('Test');
+    });
+
+    it('should assign a default value', async () => {
+      const { container } = createFormComponent({
         schema: {
           type: 'string',
           enum: ['foo', 'bar'],
           default: 'bar'
         }
       });
-
-      submitForm(container);
-
-      expect(onSubmit.mock.lastCall).toEqual({
-        formData: 'bar'
-      });
+      expect(container.querySelector('select')?.value).to.eq('bar');
     });
 
-    it('should reflect the change in the change event', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          enum: ['foo', 'bar']
-        }
-      });
-
-      fireEvent.change(container.querySelector('select')!, {
-        target: { value: 'foo' }
-      });
-      expect(onChange.mock.lastCall).toEqual({
-        formData: 'foo'
-      });
-    });
-
-    it('should reflect undefined in change event if empty option selected', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          enum: ['foo', 'bar']
-        }
-      });
-
-      fireEvent.change(container.querySelector('select')!, {
-        target: { value: '' }
-      });
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: undefined
-      });
-    });
-
-    it('should reflect the change into the dom', () => {
+    it('should reflect the change in the change event', async () => {
       const { container } = createFormComponent({
         schema: {
           type: 'string',
-          enum: ['foo', 'bar']
+          enum: ['foo', 'bar'],
+          default: 'foo'
         }
       });
 
-      fireEvent.change(container.querySelector('select')!, {
-        target: { value: 'foo' }
-      });
-
-      expect(container.querySelector('select')!.value).eql('foo');
+      await changeValue(container.querySelector('select')!, 'bar');
+      expect(container.querySelector('select')?.value).to.eq('bar');
     });
 
-    it('should reflect undefined value into the dom as empty option', () => {
+    it('should reflect null in change event if empty option selected', async () => {
       const { container } = createFormComponent({
         schema: {
-          type: 'string',
+          type: ['string', 'null'],
           enum: ['foo', 'bar']
         }
       });
 
-      fireEvent.change(container.querySelector('select')!, {
-        target: { value: '' }
-      });
-
-      expect(container.querySelector('select')!.value).eql('');
+      await act(function() {
+        fireEvent.click(container.querySelectorAll('option')[0]!);
+      })
+      expect(container.querySelector('select')?.value).to.eq('null');
     });
+
 
     it('should fill field with data', () => {
       const { container, onSubmit } = createFormComponent({
