@@ -46,6 +46,11 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
   string: [
     {
       type: 'string',
+      description: 'This is a string field',
+      examples: ['one', 'two', 'three']
+    },
+    {
+      type: 'string',
       title: 'String',
       description: 'This is a string field'
     },

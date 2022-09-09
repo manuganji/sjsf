@@ -2,6 +2,7 @@
   import type { GetProps } from '$lib/utils';
   import Layout from '$lib/components/Layout.svelte';
   import type { JSONSchemaType } from '$lib/types';
+  import { uniq } from 'lodash-es';
 </script>
 
 <script lang="ts">
@@ -14,6 +15,14 @@
   export let value = 'default' in schema ? schema.default : undefined;
   export let errors: Array<Error> | null = null;
 
+  const examples = [
+    ...('default' in schema ? [schema.default] : []),
+    ...('examples' in schema
+      ? 'default' in schema
+        ? schema.examples.filter((i:any) => i !== schema.default)
+        : schema.examples
+      : [])
+  ];
   const commonInputClass = 'dark:bg-warmGray-7 dark:text-warmGray-2 p-2 rounded-sm shadow-inset';
   const inputId = `${widget.id}input`;
   // export const onChange = ;
@@ -45,7 +54,15 @@
       required={widget.required}
       on:blur={widget.onBlur}
       on:focus={widget.onFocus}
+      list={'examples' in schema ? `${inputId}examples` : undefined}
     />
+    {#if 'examples' in schema}
+      <datalist id={`${inputId}examples`}>
+        {#each examples as example}
+          <option value={example} />
+        {/each}
+      </datalist>
+    {/if}
   {/if}
   {#if widget['type'] == 'checkbox'}
     <input

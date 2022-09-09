@@ -1,6 +1,6 @@
 // import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
 
-import { changeValue, createFormComponent, submitForm } from './test_utils';
+import { blurNode, changeValue, createFormComponent, focusNode, submitForm } from './test_utils';
 import { fireEvent } from '@testing-library/dom';
 import { cleanup, render, type RenderResult } from '@testing-library/svelte';
 import type { SvelteComponent } from 'svelte';
@@ -119,9 +119,7 @@ describe('Number input', () => {
     );
 
     const input = container.querySelector('input')!;
-    await fireEvent.blur(input, {
-      target: { value: '2' }
-    });
+    await blurNode(input);
 
     expect(onBlur).toHaveBeenCalledOnce();
     expect(onBlur).lastCalledWith('');
@@ -138,9 +136,7 @@ describe('Number input', () => {
     );
 
     const input = container.querySelector('input')!;
-    fireEvent.focus(input, {
-      target: { value: '2' }
-    });
+    focusNode(input);
 
     expect(onFocus).toHaveBeenCalledOnce();
     expect(onFocus).lastCalledWith('');

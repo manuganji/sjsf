@@ -72,3 +72,15 @@ export async function changeValue(node: Element, value: any) {
     });
   });
 }
+
+export async function blurNode(node: Element) {
+  return await act(() => {
+    fireEvent.blur(node);
+  });
+}
+
+export async function focusNode(node: Element) {
+  return await act(() => {
+    fireEvent.focus(node);
+  });
+}

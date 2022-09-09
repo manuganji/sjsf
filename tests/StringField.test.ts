@@ -1,20 +1,12 @@
 import { expect, describe, beforeEach, afterEach, it, vi } from 'vitest';
-import { act, Simulate } from 'react-dom/test-utils';
 
-import { parseDateString, toDateString, utcToLocal } from '../src/utils';
-import { createFormComponent, createSandbox, submitForm } from './test_utils';
+// import { parseDateString, toDateString, utcToLocal } from '../src/utils';
+import { blurNode, changeValue, createFormComponent, focusNode, submitForm } from './test_utils';
+import { cleanup } from '@testing-library/svelte';
 
 describe('StringField', () => {
-  let sandbox;
-
-  const CustomWidget = () => <div id="custom" />;
-
   beforeEach(() => {
-    sandbox = createSandbox();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
+    cleanup();
   });
 
   describe('TextWidget', () => {
@@ -25,7 +17,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field input[type=text]')).toHaveLength((1));
+      expect(container.querySelectorAll('input[type=text]')).toHaveLength(1);
     });
 
     it('should render a string field with a label', () => {
@@ -36,7 +28,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelector('.field label').textContent).eql('foo');
+      expect(container.querySelector('label')!.textContent).eql('foo*');
     });
 
     it('should render a string field with a description', () => {
@@ -47,7 +39,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelector('.field-description').textContent).eql('bar');
+      expect(container.querySelector('.description')!.textContent).eql('bar');
     });
 
     it('should assign a default value', () => {
@@ -58,8 +50,8 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelector('.field input').value).eql('plop');
-      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((0));
+      expect(container.querySelector('input')!.value).eql('plop');
+      expect(container.querySelectorAll('datalist > option')).toHaveLength(0);
     });
 
     it('should render a string field with examples', () => {
@@ -70,9 +62,9 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
-      const datalistId = container.querySelector('.field datalist').id;
-      expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
+      expect(container.querySelectorAll('datalist > option')).toHaveLength(3);
+      const datalistId = container.querySelector('datalist')?.id;
+      expect(container.querySelector('input')?.getAttribute('list')).eql(datalistId);
     });
 
     it('should render a string with examples that includes the default value', () => {
@@ -83,9 +75,9 @@ describe('StringField', () => {
           examples: ['Chrome', 'Vivaldi']
         }
       });
-      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
-      const datalistId = container.querySelector('.field datalist').id;
-      expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
+      expect(container.querySelectorAll('datalist > option')).toHaveLength(3);
+      const datalistId = container.querySelector('datalist')?.id;
+      expect(container.querySelector('input')?.getAttribute('list')).eql(datalistId);
     });
 
     it('should render a string with examples that overlaps with the default value', () => {
@@ -96,69 +88,63 @@ describe('StringField', () => {
           examples: ['Firefox', 'Chrome', 'Vivaldi']
         }
       });
-      expect(container.querySelectorAll('.field datalist > option')).toHaveLength((3));
-      const datalistId = container.querySelector('.field datalist').id;
-      expect(container.querySelector('.field input').getAttribute('list')).eql(datalistId);
+      expect(container.querySelectorAll('datalist > option')).toHaveLength(3);
+      const datalistId = container.querySelector('datalist')?.id;
+      expect(container.querySelector('input')?.getAttribute('list')).eql(datalistId);
     });
 
-    it('should default submit value to undefined', () => {
-      const { container, onSubmit } = createFormComponent({
-        schema: { type: 'string' },
-        noValidate: true
-      });
-      submitForm(container);
+    it('should default submit value to undefined', async () => {
+      const { container, onSubmit } = createFormComponent(
+        {
+          schema: { type: ['string', 'null'] }
+        },
+        true
+      );
+      await submitForm(container.querySelector('form')!);
 
-      expect(onSubmit.mock.lastCall).toEqual({
-        formData: undefined
-      });
+      expect(onSubmit).toHaveBeenCalledOnce();
+      const fd = new FormData(container.querySelector('form')!);
+      expect(fd.values().next().value).toBeUndefined();
     });
 
-    it('should handle a change event', () => {
-      const { container, onChange } = createFormComponent({
+    it('should handle a change event', async () => {
+      const { container } = createFormComponent({
         schema: {
           type: 'string'
         }
       });
 
-      fireEvent.change(container.querySelector('input')!, {
-        target: { value: 'yo' }
-      });
+      await changeValue(container.querySelector('input')!, 'yo');
 
-      expect(onChange.mock.lastCall).toEqual({
-        formData: 'yo'
-      });
+      expect(container.querySelector('input')!.value).toEqual('yo');
     });
 
-    it('should handle a blur event', () => {
-      const onBlur = vi.fn();
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string'
+    it('should handle a blur event', async () => {
+      const { container, onBlur } = createFormComponent(
+        {
+          schema: {
+            type: 'string'
+          }
         },
-        onBlur
-      });
+        true
+      );
       const input = container.querySelector('input')!;
-      fireEvent.blur(input, {
-        target: { value: 'yo' }
-      });
-
-      expect(onBlur.calledWith(input.id, 'yo')).to.be.true;
+      await blurNode(input);
+      expect(onBlur).toHaveBeenCalledWith('');
     });
 
-    it('should handle a focus event', () => {
-      const onFocus = vi.fn();
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string'
+    it('should handle a focus event', async () => {
+      const { container, onFocus } = createFormComponent(
+        {
+          schema: {
+            type: 'string'
+          }
         },
-        onFocus
-      });
+        true
+      );
       const input = container.querySelector('input')!;
-      fireEvent.focus(input, {
-        target: { value: 'yo' }
-      });
-
-      expect(onFocus.calledWith(input.id, 'yo')).to.be.true;
+      await focusNode(input);
+      expect(onFocus).toHaveBeenCalledWith('');
     });
 
     it('should handle an empty string change event', () => {
@@ -261,7 +247,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength((1));
+      expect(container.querySelectorAll('.field select')).toHaveLength(1);
     });
 
     it('should render a string field for an enum without a type', () => {
@@ -271,7 +257,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength((1));
+      expect(container.querySelectorAll('.field select')).toHaveLength(1);
     });
 
     it('should render a string field with a label', () => {
@@ -555,7 +541,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=datetime-local]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=datetime-local]')).toHaveLength(1);
     });
 
     it('should assign a default value', () => {
@@ -685,7 +671,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field [type=date]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=date]')).toHaveLength(1);
     });
 
     it('should assign a default value', () => {
@@ -844,7 +830,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength((6));
+      expect(container.querySelectorAll('.field select')).toHaveLength(6);
     });
 
     it('should render a string field with a main label', () => {
@@ -955,7 +941,10 @@ describe('StringField', () => {
         uiSchema
       });
 
-      const lengths = [].map.call(container.querySelectorAll('select'), (container) => container.length);
+      const lengths = [].map.call(
+        container.querySelectorAll('select'),
+        (container) => container.length
+      );
 
       expect(lengths).eql([
         // from 1900 to current year + 2 (inclusive) + 1 undefined option
@@ -1109,7 +1098,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field select')).toHaveLength((3));
+      expect(container.querySelectorAll('.field select')).toHaveLength(3);
     });
 
     it('should render a string field with a main label', () => {
@@ -1228,7 +1217,10 @@ describe('StringField', () => {
         uiSchema
       });
 
-      const lengths = [].map.call(container.querySelectorAll('select'), (container) => container.length);
+      const lengths = [].map.call(
+        container.querySelectorAll('select'),
+        (container) => container.length
+      );
 
       expect(lengths).eql([
         // from 1900 to current year + 2 (inclusive) + 1 undefined option
@@ -1390,7 +1382,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=email]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=email]')).toHaveLength(1);
     });
 
     it('should render a string field with a label', () => {
@@ -1530,7 +1522,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=url]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=url]')).toHaveLength(1);
     });
 
     it('should render a string field with a label', () => {
@@ -1674,7 +1666,7 @@ describe('StringField', () => {
         uiSchema
       });
 
-      expect(container.querySelectorAll('.field [type=color]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=color]')).toHaveLength(1);
     });
 
     it('should assign a default value', () => {
@@ -1789,7 +1781,7 @@ describe('StringField', () => {
         }
       });
 
-      expect(container.querySelectorAll('.field [type=file]')).toHaveLength((1));
+      expect(container.querySelectorAll('.field [type=file]')).toHaveLength(1);
     });
 
     it('should assign a default value', () => {
@@ -1919,56 +1911,6 @@ describe('StringField', () => {
       });
 
       expect(container.querySelector('#custom')).to.exist;
-    });
-  });
-
-  describe('Label', () => {
-    const Widget = (props) => <div id={`label-${props.label}`} />;
-
-    const widgets = { Widget };
-
-    it('should pass field name to widget if there is no title', () => {
-      const schema = {
-        type: 'object',
-        properties: {
-          string: {
-            type: 'string'
-          }
-        }
-      };
-      const uiSchema = {
-        string: {
-          'ui:widget': 'Widget'
-        }
-      };
-
-      const { container } = createFormComponent({ schema, widgets, uiSchema });
-      expect(container.querySelector('#label-string')).to.not.be.null;
-    });
-
-    it('should pass schema title to widget', () => {
-      const schema = {
-        type: 'string',
-        title: 'test'
-      };
-      const uiSchema = {
-        'ui:widget': 'Widget'
-      };
-
-      const { container } = createFormComponent({ schema, widgets, uiSchema });
-      expect(container.querySelector('#label-test')).to.not.be.null;
-    });
-
-    it('should pass empty schema title to widget', () => {
-      const schema = {
-        type: 'string',
-        title: ''
-      };
-      const uiSchema = {
-        'ui:widget': 'Widget'
-      };
-      const { container } = createFormComponent({ schema, widgets, uiSchema });
-      expect(container.querySelector('#label-')).to.not.be.null;
     });
   });
 });
