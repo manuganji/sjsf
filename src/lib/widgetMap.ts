@@ -4,33 +4,14 @@ import ArrayField from './components/fields/ArrayField.svelte';
 import InputField from './components/fields/InputField.svelte';
 import NullField from './components/fields/NullField.svelte';
 import ObjectField from './components/fields/ObjectField.svelte';
+import TextareaField from './components/fields/TextareaField.svelte';
 
 export const BY_WIDGET_CODE: Partial<
   Record<JSONSchema7TypeName, Record<string, typeof SvelteComponent>>
 > = {
-  string: {}
-};
-
-export const BY_STRING_FORMAT: Record<string, typeof SvelteComponent> = {
-  // text: 'TextWidget',
-  // password: 'PasswordWidget',
-  // email: InputField,
-  // hostname: 'TextWidget',
-  // ipv4: 'TextWidget',
-  // ipv6: 'TextWidget',
-  // uri: 'URLWidget',
-  // 'data-url': 'FileWidget',
-  // radio: 'RadioWidget',
-  // select: 'SelectWidget',
-  // textarea: 'TextareaWidget',
-  // hidden: 'HiddenWidget',
-  // date: 'DateWidget',
-  // datetime: 'DateTimeWidget',
-  // 'date-time': 'DateTimeWidget',
-  // 'alt-date': 'AltDateWidget',
-  // 'alt-datetime': 'AltDateTimeWidget',
-  // color: 'ColorWidget',
-  // file: 'FileWidget'
+  string: {
+    textarea: TextareaField
+  }
 };
 
 export const BY_SCHEMA_TYPE: Record<JSONSchema7TypeName, typeof SvelteComponent> = {

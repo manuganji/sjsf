@@ -46,6 +46,18 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
   string: [
     {
       type: 'string',
+      default: 'x',
+      widget: 'textarea',
+      ctx: {
+        rows: 20
+      }
+    },
+    {
+      type: 'string',
+      format: 'date-time'
+    },
+    {
+      type: 'string',
       enum: ['foo', 'bar'],
       default: 'bar'
     },

@@ -437,52 +437,30 @@ describe('TextareaWidget', () => {
   beforeEach(() => {
     cleanup();
   });
-  it('should handle an empty string change event', () => {
-    const { container, onChange } = createFormComponent({
-      schema: { type: 'string' },
-      uiSchema: { 'ui:widget': 'textarea' },
-      formData: 'x'
+  it('should handle an empty string change event', async () => {
+    const { container } = createFormComponent({
+      schema: { type: 'string', default: 'x', widget: 'textarea' }
     });
 
-    fireEvent.change(container.querySelector('textarea')!, {
-      target: { value: '' }
-    });
-
-    expect(onChange.mock.lastCall).toEqual({
-      formData: undefined
-    });
-  });
-
-  it('should handle an empty string change event with custom ui:emptyValue', () => {
-    const { container, onChange } = createFormComponent({
-      schema: { type: 'string' },
-      uiSchema: {
-        'ui:widget': 'textarea',
-        'ui:emptyValue': 'default'
-      },
-      formData: 'x'
-    });
-
-    fireEvent.change(container.querySelector('textarea')!, {
-      target: { value: '' }
-    });
-
-    expect(onChange.mock.lastCall).toEqual({
-      formData: 'default'
-    });
+    expect(container.querySelectorAll('textarea')).toHaveLength(1);
+    expect(container.querySelector('textarea')?.value).to.eql('x');
+    changeValue(container.querySelector('textarea')!, '');
+    expect(container.querySelector('textarea')?.value).to.eql('');
   });
 
   it('should render a textarea field with rows', () => {
     const { container } = createFormComponent({
-      schema: { type: 'string' },
-      uiSchema: {
-        'ui:widget': 'textarea',
-        'ui:options': { rows: 20 }
+      schema: {
+        type: 'string',
+        widget: 'textarea',
+        ctx: {
+          rows: 20
+        }
       },
-      formData: 'x'
+      value: 'x'
     });
 
-    expect(container.querySelector('textarea')!.getAttribute('rows')).eql('20');
+    expect(container.querySelector('textarea')).to.have.property('rows', 20);
   });
 });
 
@@ -498,7 +476,7 @@ describe('DateTimeWidget', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field [type=datetime-local]')).toHaveLength(1);
+    expect(container.querySelectorAll('[type=datetime-local]')).toHaveLength(1);
   });
 
   it('should assign a default value', () => {
@@ -530,7 +508,7 @@ describe('DateTimeWidget', () => {
       target: { value: newDatetime }
     });
 
-    expect(container.querySelector('[type=datetime-local]').value).eql(utcToLocal(newDatetime));
+    expect(container.querySelector('[type=datetime-local]')?.value).eql(utcToLocal(newDatetime));
   });
 
   it('should fill field with data', () => {
@@ -631,7 +609,7 @@ describe('DateWidget', () => {
       uiSchema
     });
 
-    expect(container.querySelectorAll('.field [type=date]')).toHaveLength(1);
+    expect(container.querySelectorAll('[type=date]')).toHaveLength(1);
   });
 
   it('should assign a default value', () => {
@@ -778,567 +756,6 @@ describe('DateWidget', () => {
   });
 });
 
-describe('AltDateTimeWidget', () => {
-  beforeEach(() => {
-    cleanup();
-  });
-  const uiSchema = { 'ui:widget': 'alt-datetime' };
-
-  it('should render a datetime field', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema
-    });
-
-    expect(container.querySelectorAll('.field select')).toHaveLength(6);
-  });
-
-  it('should render a string field with a main label', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time',
-        title: 'foo'
-      },
-      uiSchema
-    });
-
-    expect(container.querySelector('.field label').textContent).eql('foo');
-  });
-
-  it('should assign a default value', () => {
-    const datetime = new Date().toJSON();
-    const { container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time',
-        default: datetime
-      },
-      uiSchema
-    });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: datetime
-    });
-  });
-
-  it('should reflect the change into the dom', () => {
-    const { container, onChange } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema
-    });
-
-    act(() => {
-      fireEvent.change(container.querySelector('#root_year')!, {
-        target: { value: 2012 }
-      });
-      fireEvent.change(container.querySelector('#root_month')!, {
-        target: { value: 10 }
-      });
-      fireEvent.change(container.querySelector('#root_day')!, {
-        target: { value: 2 }
-      });
-      fireEvent.change(container.querySelector('#root_hour')!, {
-        target: { value: 1 }
-      });
-      fireEvent.change(container.querySelector('#root_minute')!, {
-        target: { value: 2 }
-      });
-      fireEvent.change(container.querySelector('#root_second')!, {
-        target: { value: 3 }
-      });
-    });
-    expect(onChange.mock.lastCall).toEqual({
-      formData: '2012-10-02T01:02:03.000Z'
-    });
-  });
-
-  it('should fill field with data', () => {
-    const datetime = new Date().toJSON();
-    const { container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      formData: datetime
-    });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: datetime
-    });
-  });
-
-  it('should render the widgets with the expected ids', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema
-    });
-
-    const ids = [].map.call(container.querySelectorAll('select'), (container) => container.id);
-
-    expect(ids).eql([
-      'root_year',
-      'root_month',
-      'root_day',
-      'root_hour',
-      'root_minute',
-      'root_second'
-    ]);
-  });
-
-  it("should render the widgets with the expected options' values", () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema
-    });
-
-    const lengths = [].map.call(
-      container.querySelectorAll('select'),
-      (container) => container.length
-    );
-
-    expect(lengths).eql([
-      // from 1900 to current year + 2 (inclusive) + 1 undefined option
-      new Date().getFullYear() - 1900 + 3 + 1,
-      12 + 1,
-      31 + 1,
-      24 + 1,
-      60 + 1,
-      60 + 1
-    ]);
-    const monthOptions = container.querySelectorAll('select#root_month option');
-    const monthOptionsValues = [].map.call(monthOptions, (o) => o.value);
-    expect(monthOptionsValues).eql([
-      '',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12'
-    ]);
-  });
-
-  it("should render the widgets with the expected options' labels", () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema
-    });
-
-    const monthOptions = container.querySelectorAll('select#root_month option');
-    const monthOptionsLabels = [].map.call(monthOptions, (o) => o.text);
-    expect(monthOptionsLabels).eql([
-      'month',
-      '01',
-      '02',
-      '03',
-      '04',
-      '05',
-      '06',
-      '07',
-      '08',
-      '09',
-      '10',
-      '11',
-      '12'
-    ]);
-  });
-
-  describe('Action buttons', () => {
-    it('should render action buttons', () => {
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date-time'
-        },
-        uiSchema
-      });
-
-      const buttonLabels = [].map.call(container.querySelectorAll('a.btn'), (x) => x.textContent);
-      expect(buttonLabels).eql(['Now', 'Clear']);
-    });
-
-    it('should set current date when pressing the Now button', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date-time'
-        },
-        uiSchema
-      });
-
-      fireEvent.click(container.querySelector('a.btn-now'));
-      const formValue = onChange.lastCall.args[0].formData;
-      // Test that the two DATETIMEs are within 5 seconds of each other.
-      const now = new Date().getTime();
-      const timeDiff = now - new Date(formValue).getTime();
-      expect(timeDiff).to.be.at.most(5000);
-    });
-
-    it('should clear current date when pressing the Clear button', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date-time'
-        },
-        uiSchema
-      });
-
-      fireEvent.click(container.querySelector('a.btn-now'));
-      fireEvent.click(container.querySelector('a.btn-clear'));
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: undefined
-      });
-    });
-  });
-
-  it('should render customized AltDateWidget', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      },
-      uiSchema: {
-        'ui:widget': 'alt-datetime'
-      },
-      widgets: {
-        AltDateTimeWidget: CustomWidget
-      }
-    });
-
-    expect(container.querySelector('#custom')).to.exist;
-  });
-
-  it('should render customized AltDateTimeWidget', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema: {
-        'ui:widget': 'alt-datetime'
-      },
-      widgets: {
-        AltDateTimeWidget: CustomWidget
-      }
-    });
-
-    expect(container.querySelector('#custom')).to.exist;
-  });
-});
-
-describe('AltDateWidget', () => {
-  beforeEach(() => {
-    cleanup();
-  });
-  const uiSchema = { 'ui:widget': 'alt-date' };
-
-  it('should render a date field', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    expect(container.querySelectorAll('.field select')).toHaveLength(3);
-  });
-
-  it('should render a string field with a main label', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date',
-        title: 'foo'
-      },
-      uiSchema
-    });
-
-    expect(container.querySelector('.field label').textContent).eql('foo');
-  });
-
-  it('should assign a default value', () => {
-    const datetime = '2012-12-12';
-    const { container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date',
-        default: datetime
-      },
-      uiSchema
-    });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: datetime
-    });
-  });
-
-  it('should call the provided onChange function once all values are filled', () => {
-    const { container, onChange } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    act(() => {
-      fireEvent.change(container.querySelector('#root_year')!, {
-        target: { value: 2012 }
-      });
-      fireEvent.change(container.querySelector('#root_month')!, {
-        target: { value: 10 }
-      });
-      fireEvent.change(container.querySelector('#root_day')!, {
-        target: { value: 2 }
-      });
-    });
-    expect(onChange.mock.lastCall).toEqual({
-      formData: '2012-10-02'
-    });
-  });
-
-  it('should reflect the change into the dom, even when not all values are filled', () => {
-    const { container, onChange } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    act(() => {
-      fireEvent.change(container.querySelector('#root_year')!, {
-        target: { value: 2012 }
-      });
-      fireEvent.change(container.querySelector('#root_month')!, {
-        target: { value: 10 }
-      });
-    });
-    expect(container.querySelector('#root_year').value).eql('2012');
-    expect(container.querySelector('#root_month').value).eql('10');
-    expect(container.querySelector('#root_day').value).eql('');
-    expect(onChange).not.toHaveBeenCalled();
-  });
-
-  it('should fill field with data', () => {
-    const datetime = '2012-12-12';
-    const { container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema,
-      formData: datetime
-    });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: datetime
-    });
-  });
-
-  it('should render the widgets with the expected ids', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    const ids = [].map.call(container.querySelectorAll('select'), (container) => container.id);
-
-    expect(ids).eql(['root_year', 'root_month', 'root_day']);
-  });
-
-  it("should render the widgets with the expected options' values", () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    const lengths = [].map.call(
-      container.querySelectorAll('select'),
-      (container) => container.length
-    );
-
-    expect(lengths).eql([
-      // from 1900 to current year + 2 (inclusive) + 1 undefined option
-      new Date().getFullYear() - 1900 + 3 + 1,
-      12 + 1,
-      31 + 1
-    ]);
-    const monthOptions = container.querySelectorAll('select#root_month option');
-    const monthOptionsValues = [].map.call(monthOptions, (o) => o.value);
-    expect(monthOptionsValues).eql([
-      '',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '10',
-      '11',
-      '12'
-    ]);
-  });
-
-  it("should render the widgets with the expected options' labels", () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema
-    });
-
-    const monthOptions = container.querySelectorAll('select#root_month option');
-    const monthOptionsLabels = [].map.call(monthOptions, (o) => o.text);
-    expect(monthOptionsLabels).eql([
-      'month',
-      '01',
-      '02',
-      '03',
-      '04',
-      '05',
-      '06',
-      '07',
-      '08',
-      '09',
-      '10',
-      '11',
-      '12'
-    ]);
-  });
-
-  it('should accept a valid date', () => {
-    const { onError } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema,
-      liveValidate: true,
-      formData: '2012-12-12'
-    });
-
-    expect(onError).not.toHaveBeenCalled();
-  });
-
-  it('should throw on invalid date', () => {
-    try {
-      createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date'
-        },
-        uiSchema,
-        liveValidate: true,
-        formData: '2012-1212'
-      });
-    } catch (err) {
-      expect(err.message).eql('Unable to parse date 2012-1212');
-    }
-  });
-
-  describe('Action buttons', () => {
-    it('should render action buttons', () => {
-      const { container } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date'
-        },
-        uiSchema
-      });
-
-      const buttonLabels = [].map.call(container.querySelectorAll('a.btn'), (x) => x.textContent);
-      expect(buttonLabels).eql(['Now', 'Clear']);
-    });
-
-    it('should set current date when pressing the Now button', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date'
-        },
-        uiSchema
-      });
-
-      fireEvent.click(container.querySelector('a.btn-now'));
-
-      const expected = toDateString(parseDateString(new Date().toJSON()), false);
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: expected
-      });
-    });
-
-    it('should clear current date when pressing the Clear button', () => {
-      const { container, onChange } = createFormComponent({
-        schema: {
-          type: 'string',
-          format: 'date'
-        },
-        uiSchema
-      });
-
-      fireEvent.click(container.querySelector('a.btn-now'));
-      fireEvent.click(container.querySelector('a.btn-clear'));
-
-      expect(onChange.mock.lastCall).toEqual({
-        formData: undefined
-      });
-    });
-  });
-
-  it('should render customized AltDateWidget', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema: {
-        'ui:widget': 'alt-date'
-      },
-      widgets: {
-        AltDateWidget: CustomWidget
-      }
-    });
-
-    expect(container.querySelector('#custom')).to.exist;
-  });
-});
-
 describe('EmailWidget', () => {
   beforeEach(() => {
     cleanup();
@@ -1447,7 +864,7 @@ describe('URLWidget', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field [type=url]')).toHaveLength(1);
+    expect(container.querySelectorAll('[type=url]')).toHaveLength(1);
   });
 
   it('should render a string field with a label', () => {
@@ -1459,7 +876,7 @@ describe('URLWidget', () => {
       }
     });
 
-    expect(container.querySelector('.field label').textContent).eql('foo');
+    expect(container.querySelector('label')?.textContent).eql('foo*');
   });
 
   it('should render a select field with a placeholder', () => {
@@ -1471,7 +888,7 @@ describe('URLWidget', () => {
       }
     });
 
-    expect(container.querySelector('.field-description').textContent).eql('baz');
+    expect(container.querySelector('description')?.textContent).eql('baz');
   });
 
   it('should assign a default value', () => {
@@ -1594,7 +1011,7 @@ describe('ColorWidget', () => {
       uiSchema
     });
 
-    expect(container.querySelectorAll('.field [type=color]')).toHaveLength(1);
+    expect(container.querySelectorAll('[type=color]')).toHaveLength(1);
   });
 
   it('should assign a default value', () => {
@@ -1712,7 +1129,7 @@ describe('FileWidget', () => {
       }
     });
 
-    expect(container.querySelectorAll('.field [type=file]')).toHaveLength(1);
+    expect(container.querySelectorAll('[type=file]')).toHaveLength(1);
   });
 
   it('should assign a default value', () => {

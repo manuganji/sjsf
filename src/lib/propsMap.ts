@@ -17,6 +17,18 @@ export const BY_STRING_FORMAT: Record<string, Record<string, any>> = {
   },
   email: {
     type: 'email'
+  },
+  'date-time': {
+    type: 'datetime-local'
+  },
+  password: {
+    type: 'password'
+  },
+  date: {
+    type: 'date'
+  },
+  uri: {
+    type: 'url'
   }
 };
 

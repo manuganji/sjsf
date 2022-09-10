@@ -1239,20 +1239,20 @@ export const differentiatedSchemaType = memoize(function (
  */
 export function getComponent<T = JSONSchema7TypeName>(
   schema: JSONSchemaType,
+  widget?: string,
   propKey: string = ''
 ) {
   if ('enum' in schema) {
     return EnumField;
   }
   const dtype = differentiatedSchemaType(schema.type) || 'string';
-  if (Object.hasOwn(schema, 'widget')) {
+  if (widget) {
+    
     return get(
       widgetMap.BY_WIDGET_CODE,
-      `${dtype}.${schema.widget!}`,
+      `${dtype}.${widget!}`,
       get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField)
     );
-  } else if (dtype == 'string' && 'format' in schema) {
-    return get(widgetMap.BY_STRING_FORMAT, schema.format!, InputField);
   } else {
     return get(widgetMap.BY_SCHEMA_TYPE, dtype, InputField);
   }
@@ -1314,6 +1314,7 @@ export function getProps<T>(
     onFocus?: (arg0: string) => void;
     placeholder?: string;
     autocomplete?: string;
+    rows?: number;
   } = {
     propKey: '',
     id: '',

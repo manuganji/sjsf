@@ -26,13 +26,14 @@
   export let action: string = '';
   export let method: string = '';
 
+
   onMount(function () {
     if (typeof value == 'undefined' && 'default' in schema) {
       value = schema.default;
     }
   });
 
-  const { ctx, ...rest } = schema;
+  const { ctx, widget, ...rest } = schema;
   export let getProps = defGetProps;
   export let getComponent = defGetComponent;
   export let arrayKeyGetter = defArrayKeyGetter;
@@ -50,16 +51,17 @@
       onFocus
     })
   };
+  let Component = getComponent(rest, widget);
 </script>
 
 {#if onSubmit}
   <form {id} on:submit|preventDefault={onSubmit}>
-    <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
+    <svelte:component this={Component} {...propsToPass} bind:value />
     <slot><button class="my-2" type="submit">Submit</button></slot>
   </form>
 {:else}
   <form {id} {action} {method}>
-    <svelte:component this={getComponent(schema)} {...propsToPass} bind:value />
+    <svelte:component this={Component} {...propsToPass} bind:value />
     <slot><button class="my-2" type="submit">Submit</button></slot>
   </form>
 {/if}

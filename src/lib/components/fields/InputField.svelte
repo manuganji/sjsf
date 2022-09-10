@@ -2,7 +2,6 @@
   import type { GetProps } from '$lib/utils';
   import Layout from '$lib/components/Layout.svelte';
   import type { JSONSchemaType } from '$lib/types';
-  import { uniq } from 'lodash-es';
 </script>
 
 <script lang="ts">
@@ -64,6 +63,27 @@
         {/each}
       </datalist>
     {/if}
+  {:else if widget['type'] == 'url'}
+    <input
+      id={inputId}
+      class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
+      type="url"
+      bind:value
+      required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
+      list={'examples' in schema ? `${inputId}examples` : undefined}
+      placeholder={widget?.placeholder}
+      autocomplete={widget?.autocomplete}
+    />
+    {#if 'examples' in schema}
+      <datalist id={`${inputId}examples`}>
+        {#each examples as example}
+          <option value={example} />
+        {/each}
+      </datalist>
+    {/if}
   {:else if widget['type'] == 'email'}
     <input
       id={inputId}
@@ -91,6 +111,28 @@
       class={`${commonInputClass}`}
       name={`${widget.propKey}`}
       type="checkbox"
+      bind:value
+      required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
+    />
+  {:else if widget['type'] == 'datetime-local'}
+    <input
+      id={inputId}
+      class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
+      type="datetime-local"
+      bind:value
+      required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
+    />
+  {:else if widget['type'] == 'date'}
+    <input
+      id={inputId}
+      class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
+      type="date"
       bind:value
       required={widget.required}
       on:blur={widget.onBlur}

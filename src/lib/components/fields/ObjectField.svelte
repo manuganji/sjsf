@@ -37,7 +37,7 @@
 <Layout {schema} {errors} {id}>
   {#each order as key}
     <svelte:component
-      this={getComponent(schema.properties[key], key)}
+      this={getComponent(schema.properties[key], schema.properties[key]?.widget, key)}
       {getProps}
       {getComponent}
       {arrayKeyGetter}
