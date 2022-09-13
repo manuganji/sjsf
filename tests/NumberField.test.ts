@@ -55,33 +55,29 @@ describe('Number input', () => {
       title: 'foo'
     };
     const { container, rerender } = render(Form, {
-      props: {
-        id: 'b1',
-        schema
-      }
+      schema,
+      value: null
     });
-    expect(container.querySelector('#b1 label')!.textContent).eql('foo*');
+    expect(container.querySelector('label')!.textContent).eql('foo*');
     rerender({
-      id: 'b1',
       schema: {
         ...schema,
         type: ['null', schema.type]
-      }
+      },
+      value: null
     });
-    expect(container.querySelector('#b1 label')!.textContent).eql('foo');
+    expect(container.querySelector('label')!.textContent).eql('foo');
   });
 
   it('should render a string field with a description', () => {
     const { container } = render(Form, {
-      props: {
-        id: 'b2',
-        schema: {
-          type: 'number',
-          description: 'bar'
-        }
-      }
+      schema: {
+        type: 'number',
+        description: 'bar'
+      },
+      value: null
     });
-    expect(container.querySelector('#b2 input + .description')!.textContent).eql('bar');
+    expect(container.querySelector('input + .description')!.textContent).eql('bar');
   });
 
   it('value should default to undefined', async () => {
@@ -396,7 +392,7 @@ describe('With enum', () => {
     });
 
     const selects = container.querySelectorAll('select');
-    expect(selects[0].value).eql('');
+    expect(selects[0].value).eql('null');
 
     const options = container.querySelectorAll('option');
     expect(options.length).eql(2);
@@ -419,14 +415,14 @@ describe('With enum', () => {
     });
 
     const selects = container.querySelectorAll('select');
-    expect(selects[0].value).eql('');
+    expect(selects[0].value).eql('null');
 
     const options = container.querySelectorAll('option');
     expect(options.length).eql(2);
     expect(options[0].innerHTML).eql('');
   });
 
-  it('should render a select element without a blank option, if required.', async () => {
+  it('should render a select element with an unselectable blank option even if required.', async () => {
     const schema = {
       type: 'object',
       properties: {
@@ -446,7 +442,7 @@ describe('With enum', () => {
     const selects = container.querySelectorAll('select');
     expect(selects).toHaveLength(1);
     const options = container.querySelectorAll('option');
-    expect(options.length).eql(1);
-    expect(options[0].innerHTML).eql('2');
+    expect(options.length).eql(2);
+    expect(options[0]).to.have.property('disabled', true);
   });
 });

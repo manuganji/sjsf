@@ -27,7 +27,6 @@
 </script>
 
 <Layout {schema} id={widget.id} required={widget.required}>
-  {@debug schema}
   <textarea
     id={inputId}
     class={`${commonInputClass}`}

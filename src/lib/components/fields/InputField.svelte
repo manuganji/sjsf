@@ -105,6 +105,27 @@
         {/each}
       </datalist>
     {/if}
+  {:else if widget['type'] == 'color'}
+    <input
+      id={inputId}
+      class={`${commonInputClass}`}
+      name={`${widget.propKey}`}
+      type="color"
+      bind:value
+      required={widget.required}
+      on:blur={widget.onBlur}
+      on:focus={widget.onFocus}
+      list={'examples' in schema ? `${inputId}examples` : undefined}
+      placeholder={widget?.placeholder}
+      autocomplete={widget?.autocomplete}
+    />
+    {#if 'examples' in schema}
+      <datalist id={`${inputId}examples`}>
+        {#each examples as example}
+          <option value={example} />
+        {/each}
+      </datalist>
+    {/if}
   {:else if widget['type'] == 'checkbox'}
     <input
       id={inputId}

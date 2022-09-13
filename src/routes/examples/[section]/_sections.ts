@@ -58,6 +58,10 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
     },
     {
       type: 'string',
+      format: 'date'
+    },
+    {
+      type: 'string',
       enum: ['foo', 'bar'],
       default: 'bar'
     },
@@ -83,6 +87,12 @@ const sections: Record<string, Array<JSONSchemaType<JSONTypes>>> = {
       type: 'string',
       description: 'This is a string field',
       examples: ['one', 'two', 'three']
+    },
+    {
+      type: 'string',
+      format: 'color',
+      description: 'This is a color field',
+      examples: ['red', 'yellow', 'blue'],
     },
     {
       type: 'string',

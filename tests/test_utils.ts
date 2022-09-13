@@ -65,11 +65,15 @@ export async function submitForm(node: Element) {
 
 export async function changeValue(node: Element, value: any) {
   return await act(() => {
-    fireEvent.change(node, {
-      target: {
-        value
-      }
-    });
+    fireEvent
+      .change(node, {
+        target: {
+          value
+        }
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   });
 }
 

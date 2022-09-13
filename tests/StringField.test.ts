@@ -494,7 +494,7 @@ describe('DateTimeWidget', () => {
     });
   });
 
-  it('should reflect the change into the dom', () => {
+  it('should reflect the change into the dom', async () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
@@ -503,11 +503,7 @@ describe('DateTimeWidget', () => {
     });
 
     const newDatetime = new Date().toJSON();
-
-    fireEvent.change(container.querySelector('[type=datetime-local]')!, {
-      target: { value: newDatetime }
-    });
-
+    await changeValue(container.querySelector('[type=datetime-local]')!, newDatetime);
     expect(container.querySelector('[type=datetime-local]')?.value).eql(utcToLocal(newDatetime));
   });
 
@@ -526,19 +522,8 @@ describe('DateTimeWidget', () => {
     });
   });
 
-  it('should render the widget with the expected id', () => {
+  it('should reject an invalid entered datetime', async () => {
     const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date-time'
-      }
-    });
-
-    expect(container.querySelector('[type=datetime-local]').id).eql('root');
-  });
-
-  it('should reject an invalid entered datetime', () => {
-    const { container, onChange } = createFormComponent({
       schema: {
         type: 'string',
         format: 'date-time'
@@ -546,9 +531,7 @@ describe('DateTimeWidget', () => {
       liveValidate: true
     });
 
-    fireEvent.change(container.querySelector('[type=datetime-local]')!, {
-      target: { value: 'invalid' }
-    });
+    changeValue(container.querySelector('[type=datetime-local]')!, 'invalid');
 
     expect(onChange.mock.lastCall).toEqual({
       errorSchema: { __errors: ['should be string'] },
@@ -598,51 +581,42 @@ describe('DateWidget', () => {
   beforeEach(() => {
     cleanup();
   });
-  const uiSchema = { 'ui:widget': 'date' };
 
   it('should render a date field', () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'date'
-      },
-      uiSchema
+      }
     });
 
     expect(container.querySelectorAll('[type=date]')).toHaveLength(1);
   });
 
-  it('should assign a default value', () => {
+  it('should assign a default value', async () => {
     const datetime = new Date().toJSON();
-    const { container, onSubmit } = createFormComponent({
+    const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'date',
         default: datetime
-      },
-      uiSchema,
-      noValidate: true
+      }
     });
-    submitForm(container);
-    expect(onSubmit.mock.lastCall).toEqual({
-      formData: datetime
-    });
+    const fd = new FormData(container.querySelector('form')!);
+    expect(fd.values().next()).toEqual(datetime);
   });
 
-  it('should reflect the change into the dom', () => {
+  it('should reflect the change into the dom', async () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'date'
-      },
-      uiSchema
+      }
     });
 
     const newDatetime = '2012-12-12';
 
-    fireEvent.change(container.querySelector('[type=date]')!, {
-      target: { value: newDatetime }
-    });
+    await changeValue(container.querySelector('[type=date]')!, newDatetime);
 
     expect(container.querySelector('[type=date]').value)
       // XXX import and use conversion helper
@@ -665,52 +639,28 @@ describe('DateWidget', () => {
     });
   });
 
-  it('should render the widget with the expected id', () => {
+  it('should accept a valid entered date', async () => {
+    const { container, onError } = createFormComponent({
+      schema: {
+        type: 'string',
+        format: 'date'
+      }
+    }, true);
+
+    await changeValue(container.querySelector('[type=date]')!, '2012-12-12');
+    expect(onError).not.toHaveBeenCalled();
+    expect(container.querySelector<HTMLInputElement>('[type=date]')!.value).to.eq('2012-12-12');
+  });
+
+  it('should reject an invalid entered date', async () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'date'
       },
-      uiSchema
     });
 
-    expect(container.querySelector('[type=date]').id).eql('root');
-  });
-
-  it('should accept a valid entered date', () => {
-    const { container, onError, onChange } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema,
-      liveValidate: true
-    });
-
-    fireEvent.change(container.querySelector('[type=date]')!, {
-      target: { value: '2012-12-12' }
-    });
-
-    expect(onError).not.toHaveBeenCalled();
-
-    expect(onChange.mock.lastCall).toEqual({
-      formData: '2012-12-12'
-    });
-  });
-
-  it('should reject an invalid entered date', () => {
-    const { container, onChange } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'date'
-      },
-      uiSchema,
-      liveValidate: true
-    });
-
-    fireEvent.change(container.querySelector('[type=date]')!, {
-      target: { value: 'invalid' }
-    });
+    await changeValue(container.querySelector('[type=date]')!, 'invalid');
 
     expect(onChange.mock.lastCall).toEqual({
       errorSchema: { __errors: ['should match format "date"'] },
@@ -908,22 +858,6 @@ describe('URLWidget', () => {
     });
   });
 
-  it('should reflect the change into the dom', () => {
-    const { container } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'uri'
-      }
-    });
-
-    const newDatetime = new Date().toJSON();
-    fireEvent.change(container.querySelector('[type=url]')!, {
-      target: { value: newDatetime }
-    });
-
-    expect(container.querySelector('[type=url]').value).eql(newDatetime);
-  });
-
   it('should fill field with data', () => {
     const url = 'http://foo.bar/baz';
     const { container, onSubmit } = createFormComponent({
@@ -952,7 +886,7 @@ describe('URLWidget', () => {
     expect(container.querySelector('[type=url]').id).eql('root');
   });
 
-  it('should reject an invalid entered url', () => {
+  it('should reject an invalid entered url', async () => {
     const { container, onChange } = createFormComponent({
       schema: {
         type: 'string',
@@ -960,10 +894,7 @@ describe('URLWidget', () => {
       },
       liveValidate: true
     });
-
-    fireEvent.change(container.querySelector('[type=url]')!, {
-      target: { value: 'invalid' }
-    });
+    await changeValue(container.querySelector('[type=url]')!, 'invalid');
 
     expect(onChange.mock.lastCall).toEqual({
       errorSchema: { __errors: ['should match format "uri"'] },
@@ -999,7 +930,6 @@ describe('ColorWidget', () => {
   beforeEach(() => {
     cleanup();
   });
-  const uiSchema = { 'ui:widget': 'color' };
   const color = '#123456';
 
   it('should render a color field', () => {
@@ -1007,8 +937,7 @@ describe('ColorWidget', () => {
       schema: {
         type: 'string',
         format: 'color'
-      },
-      uiSchema
+      }
     });
 
     expect(container.querySelectorAll('[type=color]')).toHaveLength(1);
@@ -1020,70 +949,49 @@ describe('ColorWidget', () => {
         type: 'string',
         format: 'color',
         default: color
-      },
-      uiSchema
+      }
     });
     submitForm(container);
-
-    expect(onSubmit.mock.lastCall).toEqual({ formData: color });
+    expect(container.querySelector<HTMLInputElement>('[type=color]')?.value).to.eq(color);
   });
 
-  it('should reflect the change into the dom', () => {
+  it('should reflect the change into the dom', async () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'color'
-      },
-      uiSchema
+      }
     });
 
     const newColor = '#654321';
 
-    fireEvent.change(container.querySelector('[type=color]')!, {
-      target: { value: newColor }
-    });
+    await changeValue(container.querySelector('[type=color]')!, newColor);
 
-    expect(container.querySelector('[type=color]').value).eql(newColor);
+    expect(container.querySelector<HTMLInputElement>('[type=color]')?.value).eql(newColor);
   });
 
   it('should fill field with data', () => {
-    const { container, onSubmit } = createFormComponent({
-      schema: {
-        type: 'string',
-        format: 'color'
-      },
-      formData: color
-    });
-    submitForm(container);
-
-    expect(onSubmit.mock.lastCall).toEqual({ formData: color });
-  });
-
-  it('should render the widget with the expected id', () => {
     const { container } = createFormComponent({
       schema: {
         type: 'string',
         format: 'color'
       },
-      uiSchema
+      value: color
     });
+    submitForm(container);
 
-    expect(container.querySelector('[type=color]').id).eql('root');
+    expect(container.querySelector<HTMLInputElement>('[type=color]')?.value).to.eq(color);
   });
 
-  it('should reject an invalid entered color', () => {
+  it('should reject an invalid entered color', async () => {
     const { container, onChange } = createFormComponent({
       schema: {
         type: 'string',
         format: 'color'
-      },
-      uiSchema,
-      liveValidate: true
+      }
     });
 
-    fireEvent.change(container.querySelector('[type=color]')!, {
-      target: { value: 'invalid' }
-    });
+    await changeValue(container.querySelector('[type=color]')!, 'invalid');
 
     expect(onChange.mock.lastCall).toEqual({
       errorSchema: { __errors: ['should match format "color"'] },
